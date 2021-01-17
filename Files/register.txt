@@ -1,0 +1,17 @@
+First Name: Nutan
+Last Name: Panta
+Email: nutanrajpanta@gmail.com
+Password: [C@7b761e55
+User Type: Student
+
+First Name: Panta
+Last Name: Nutan
+Email: pantanutan@gmail.com
+Password: [C@6f07e53b
+User Type: Student
+
+First Name: Shiva
+Last Name: Giri
+Email: girishiva93@gmail.com
+Password: [C@34e46ba9
+User Type: Student
