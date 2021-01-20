@@ -1,0 +1,7 @@
+Course Id: 1
+Course Name: C for Dummies
+Course Status: Open
+
+Course Id: 2
+Course Name: Object Oriented Programming
+Course Status: Open

@@ -1,0 +1,31 @@
+First Name: test
+Last Name: tested
+Email: test@test.com
+Password: test
+User Type: Course Administrator
+Course: Empty
+Level: Empty
+
+First Name: test1
+Last Name: tested
+Email: test1@test.com
+Password: test1
+User Type: Instructor
+Course: Empty
+Level: Empty
+
+First Name: test2
+Last Name: tested
+Email: test2@test.com
+Password: test2
+User Type: Student
+Course: BIT
+Level: 4
+
+First Name: test3
+Last Name: tested
+Email: test3@test.com
+Password: test3
+User Type: Student
+Course: BIM
+Level: 6

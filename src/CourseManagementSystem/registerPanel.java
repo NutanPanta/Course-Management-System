@@ -33,7 +33,7 @@ public class registerPanel extends JPanel implements AppLayout, ActionListener {
         registerCourse.setBounds(50, 50,90,20);
         registerButton = new JButton("Register");
         registerUserType.setSelectedItem(users[0]);
-        loginLabel = new JButton("<HTML><U style='color: blue;'>Haven't Registered Yet?Register</U></HTML>");
+        loginLabel = new JButton("<HTML><U style='color: blue;'>Already Registered?Login</U></HTML>");
         loginLabel.setFocusPainted(false);
         loginLabel.setMargin(new Insets(0, 0, 0, 0));
         loginLabel.setContentAreaFilled(false);

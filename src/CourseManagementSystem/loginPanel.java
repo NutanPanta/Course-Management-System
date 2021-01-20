@@ -4,8 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class loginPanel extends JPanel implements AppLayout {
-    private JTextField emailTextField;
-    private JTextField passwordField;
+    private JTextField emailTextField, passwordField;
+    private JComboBox userType;
     private JButton loginButton;
     private JButton registerLabel;
     private GridBagConstraints layout;
@@ -16,6 +16,9 @@ public class loginPanel extends JPanel implements AppLayout {
         emailTextField.setPreferredSize(new Dimension(40,30));
         passwordField = new JTextField(20);
         passwordField.setPreferredSize(new Dimension(40,30));
+        String users[]={"Student","Instructor","Course Administrator"};
+        userType =new JComboBox(users);
+        userType.setBounds(50, 50,90,20);
         loginButton = new JButton("Login");
         registerLabel = new JButton("<HTML><U style='color: blue;'>Haven't Registered Yet?Register</U></HTML>");
         registerLabel.setFocusPainted(false);
@@ -51,14 +54,24 @@ public class loginPanel extends JPanel implements AppLayout {
         layout.gridwidth = 3;
         add(passwordField,layout);
 
-        layout.ipady = 5;
         layout.gridx=0;
         layout.gridy=2;
+        layout.gridwidth = 1;
+        add(new JLabel("User Type"),layout);
+
+        layout.gridx=1;
+        layout.gridy=2;
+        layout.gridwidth = 4;
+        add(userType,layout);
+
+        layout.ipady = 5;
+        layout.gridx=0;
+        layout.gridy=3;
         layout.gridwidth = 4;
         add(loginButton,layout);
 
-        layout.gridy=3;
         layout.gridx = 3;
+        layout.gridy=4;
         layout.insets = new Insets(3, 50, 3, 3);
         add(registerLabel,layout);
 
@@ -70,6 +83,9 @@ public class loginPanel extends JPanel implements AppLayout {
     }
     public JTextField getLoginPassword() {
         return  passwordField;
+    }
+    public JComboBox getLoginUserType() {
+        return  userType;
     }
     public JButton getLoginButton() {
         return  loginButton;
