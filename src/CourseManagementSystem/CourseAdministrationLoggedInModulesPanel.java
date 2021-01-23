@@ -5,19 +5,19 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
 
-public class CourseAdministrationLoggedInCoursesPanel  extends JPanel implements AppLayout {
+public class CourseAdministrationLoggedInModulesPanel extends JPanel implements AppLayout {
     private DefaultTableModel courseAdministratorCourseModel;
-    private JTable courseAdministratorCourseTable;
-    private JTextField courseName;
+    private JTable courseAdministratorModuleTable;
+    private JTextField moduleName;
     private JButton addCourse,cancelCourse,openCourse,deleteCourse,updateCourse, back;
     private GridBagConstraints layout, formLayout, buttonLayout;
 
-    public CourseAdministrationLoggedInCoursesPanel() {
+    public CourseAdministrationLoggedInModulesPanel() {
         DefaultTableModel courseAdministratorCourseModel = new DefaultTableModel();
         String[] courseNames = {"Course Id","Course Name","Course Status"};
         courseAdministratorCourseModel.setColumnIdentifiers(courseNames);
-        courseName = new JTextField(20);
-        courseName.setPreferredSize(new Dimension(40,30));
+        moduleName = new JTextField(20);
+        moduleName.setPreferredSize(new Dimension(40,30));
         addCourse = new JButton("Add Course");
         cancelCourse = new JButton("Cancel Course");
         openCourse = new JButton("Open Course");
@@ -25,18 +25,18 @@ public class CourseAdministrationLoggedInCoursesPanel  extends JPanel implements
         updateCourse = new JButton("Update Course");
         back = new JButton("Back");
 
-        courseAdministratorCourseTable = new JTable(courseAdministratorCourseModel);
+        courseAdministratorModuleTable = new JTable(courseAdministratorCourseModel);
 
 
     }
 
     private JPanel courseAdministratorCourseTablePanel() {
 
-        courseAdministratorCourseTable.setDefaultEditor(Object.class, null);
-        JScrollPane scrollPane =new JScrollPane(courseAdministratorCourseTable);
-        courseAdministratorCourseTable.setSelectionBackground(Color.BLACK);
-        courseAdministratorCourseTable.setSelectionForeground(Color.WHITE);
-        JTableHeader header = courseAdministratorCourseTable.getTableHeader();
+        courseAdministratorModuleTable.setDefaultEditor(Object.class, null);
+        JScrollPane scrollPane =new JScrollPane(courseAdministratorModuleTable);
+        courseAdministratorModuleTable.setSelectionBackground(Color.BLACK);
+        courseAdministratorModuleTable.setSelectionForeground(Color.WHITE);
+        JTableHeader header = courseAdministratorModuleTable.getTableHeader();
         header.setBackground(Color.decode("#D6D9DF"));
 
         JPanel courseAdministratorCoursePanel = new JPanel();
@@ -59,7 +59,7 @@ public class CourseAdministrationLoggedInCoursesPanel  extends JPanel implements
 
         formLayout.gridx = 1;
         formLayout.gridy = 0;
-        courseAdministratorCourseForm.add(courseName,formLayout);
+        courseAdministratorCourseForm.add(moduleName,formLayout);
 
         return courseAdministratorCourseForm;
     }
@@ -134,9 +134,9 @@ public class CourseAdministrationLoggedInCoursesPanel  extends JPanel implements
 
     public DefaultTableModel getCourseModel(){ return (DefaultTableModel) getTable().getModel();}
     public  JTable getTable(){
-        return courseAdministratorCourseTable;
+        return courseAdministratorModuleTable;
     }
-    public JTextField getCourseName() { return courseName; }
+    public JTextField getCourseName() { return moduleName; }
     public JButton getAddCourse() {
         return addCourse;
     }

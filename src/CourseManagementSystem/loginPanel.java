@@ -38,10 +38,11 @@ public class loginPanel extends JPanel implements AppLayout {
         layout.gridy = 0;
         add(new JLabel("Email"),layout);
 
-        layout.weightx = 1;
-        layout.gridwidth = 3;
+
         layout.gridx = 1;
         layout.gridy = 0;
+        layout.weightx = 1;
+        layout.gridwidth = 3;
         add(emailTextField,layout);
 
         layout.gridx=0;

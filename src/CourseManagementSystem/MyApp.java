@@ -1,8 +1,15 @@
 package CourseManagementSystem;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -14,8 +21,9 @@ public class MyApp extends JFrame {
     StudentLoggedInCoursePanel studentLoggedInCoursePanel;
     CourseAdministrationLoggedInMainPanel courseAdministrationLoggedInMainPanel;
     CourseAdministrationLoggedInCoursesPanel courseAdministrationLoggedInCoursesPanel;
+    courseTable coursetable;
     File file = new File("Files");
-    int rln,cln;
+    int rln;
 
     MyApp self = this;
 
@@ -33,17 +41,23 @@ public class MyApp extends JFrame {
         studentLoggedInCoursePanel = new StudentLoggedInCoursePanel();
         courseAdministrationLoggedInMainPanel = new CourseAdministrationLoggedInMainPanel();
         courseAdministrationLoggedInCoursesPanel = new CourseAdministrationLoggedInCoursesPanel();
-        LoginPanel.setVisible(true);
+        coursetable = new courseTable();
+        LoginPanel.setVisible(false);
         RegisterPanel.setVisible(false);
         studentLoggedInMainPanel.setVisible(false);
         studentLoggedInCoursePanel.setVisible(false);
         courseAdministrationLoggedInMainPanel.setVisible(false);
-        courseAdministrationLoggedInCoursesPanel.setVisible(false);
+        courseAdministrationLoggedInCoursesPanel.setVisible(true);
 
         add(appLayout());
         registerUsers();
         loginUser();
         implementCourses();
+        updateCourseName();
+        updateCourseStatusToCancel();
+        updateCourseStatusToOpen();
+        deleteCourse();
+        refreshCourseTable();
         panelChange();
         pack();
         setLocationRelativeTo(null);
@@ -126,7 +140,6 @@ public class MyApp extends JFrame {
 
         courseAdministratorCourseBackButton.addActionListener(e -> {
             try {
-                courseAdministrationLoggedInCoursesPanel.getCourseId().setText("");
                 courseAdministrationLoggedInCoursesPanel.getCourseName().setText("");
                 courseAdministrationLoggedInMainPanel.setVisible(true);
                 courseAdministrationLoggedInCoursesPanel.setVisible(false);
@@ -149,18 +162,6 @@ public class MyApp extends JFrame {
             }
     }
 
-    private void readCourseFile() {
-        try{
-            FileReader fr = new FileReader(file + "\\courses.txt");
-        } catch (FileNotFoundException ex) {
-            try {
-                FileWriter fw = new FileWriter(file + "\\courses.txt");
-            } catch (IOException ex1) {
-                JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
     private void addRegistrationData(String firstName, String lastName, String Email, String Password, String userType, String course, String level) {
         try{
             RandomAccessFile raf = new RandomAccessFile(file + "\\register.txt","rw");
@@ -177,24 +178,6 @@ public class MyApp extends JFrame {
             raf.writeBytes("User Type: " + userType + "\r\n");
             raf.writeBytes("Course: " + course + "\r\n");
             raf.writeBytes("Level: " + level + "\r\n");
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void addCourses(String courseId, String courseName, String courseStatus) {
-        try{
-            RandomAccessFile raf = new RandomAccessFile(file + "\\courses.txt","rw");
-            for(int i = 0; i< cln; i++) {
-                raf.readLine();
-            }
-            if(cln >0) {
-                raf.writeBytes("\r\n");
-            }
-            raf.writeBytes("Course Id: " + courseId + "\r\n");
-            raf.writeBytes("Course Name: " + courseName + "\r\n");
-            raf.writeBytes("Course Status: " + courseStatus + "\r\n");
 
         } catch (IOException e) {
             JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -233,27 +216,6 @@ public class MyApp extends JFrame {
             JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
         return isEmailDuplicate;
-    }
-
-    private boolean courseDuplication(String courseId) {
-        boolean isCourseDuplicate = false;
-        try {
-            RandomAccessFile raf = new RandomAccessFile(file + "\\courses.txt", "rw");
-            for(int i = 0; i< cln; i+=4) {
-                String id = raf.readLine().substring(11);
-
-                if (courseId.equals(id)) {
-                    isCourseDuplicate = true;
-                    break;
-                }
-                for(int k = 1; k<=3; k++) {
-                    raf.readLine();
-                }
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        return isCourseDuplicate;
     }
 
     private boolean administrationDuplication(String userType) {
@@ -353,7 +315,7 @@ public class MyApp extends JFrame {
         String registrationCourse = Objects.requireNonNull(RegisterPanel.getRegistrationCourse().getSelectedItem()).toString();
         String registrationLevel = Objects.requireNonNull(RegisterPanel.getRegistrationLevel().getSelectedItem()).toString();
 
-
+        System.out.println(registrationFirstName);
         boolean emailValidation = emailValidation(registrationEmail);
         boolean isEmailDuplicate = emailDuplication(registrationEmail);
         boolean isUserDuplicate = administrationDuplication(registrationUserType);
@@ -392,7 +354,9 @@ public class MyApp extends JFrame {
         boolean matchLoginData = readAndValidateLoginData(loginEmail, loginPassword);
         boolean  matchUserType = readAndValidateLoginUserType(loginEmail,loginUserType);
 
-        if(loginEmail.isEmpty() && loginPassword.isEmpty()){
+
+        if(loginEmail.isEmpty() &&
+                loginPassword.isEmpty()){
             JOptionPane.showMessageDialog(this,"Complete all fields!!!");
         } else if(loginEmail.isEmpty()){
             JOptionPane.showMessageDialog(this,"Email field is empty!!!");
@@ -420,23 +384,14 @@ public class MyApp extends JFrame {
         }
     }
 
-    private void checkModuleData(String courseId, String courseName,String courseStatus) {
-        String id = courseAdministrationLoggedInCoursesPanel.getCourseId().getText().trim();
+    private void checkModuleData(String courseName,String courseStatus) {
         String name = courseAdministrationLoggedInCoursesPanel.getCourseName().getText().trim();
-        boolean isCourseDublicate = courseDuplication(id);
 
-        if (id.isEmpty() && name.isEmpty()) {
+        if (name.isEmpty()) {
             JOptionPane.showMessageDialog(this,"Complete all fields!!!");
-        } else if (id.isEmpty()) {
-            JOptionPane.showMessageDialog(this,"Course Id field is empty!!!");
-        } else if (name.isEmpty()) {
-            JOptionPane.showMessageDialog(this,"Course Name field is empty!!!");
-        } else  if(isCourseDublicate) {
-            JOptionPane.showMessageDialog(this, "This course with this id has already been Registered. Please Login!!!");
-        } else {
-            addCourses(id,name,"Open");
+        }  else {
+            coursetable.insert(name,courseStatus);
             JOptionPane.showMessageDialog(this, "You have been successfully registered. Thank You!!!");
-            courseAdministrationLoggedInCoursesPanel.getCourseId().setText("");
             courseAdministrationLoggedInCoursesPanel.getCourseName().setText("");
         }
     }
@@ -447,19 +402,6 @@ public class MyApp extends JFrame {
             RandomAccessFile raf = new RandomAccessFile(file + "\\register.txt","rw");
             for(int i=0;raf.readLine()!=null;i++){
                 rln++;
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-
-    }
-
-    private void countCoursesLine(){
-        try {
-            cln =0;
-            RandomAccessFile raf = new RandomAccessFile(file + "\\courses.txt","rw");
-            for(int i=0;raf.readLine()!=null;i++){
-                cln++;
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -479,10 +421,12 @@ public class MyApp extends JFrame {
 
         registerBtn.addActionListener(e -> {
             try {
+
                 createFolder();
                 readRegistrationFile();
                 countRegistrationLines();
                 checkRegistrationData(registrationFirstName,registrationLastName,registrationEmail,registrationPassword,registrationUserType,registrationCourse,registrationLevel);
+
             }
             catch (Exception ex){
                 JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -507,17 +451,217 @@ public class MyApp extends JFrame {
     }
 
     private void implementCourses() {
-        String id = courseAdministrationLoggedInCoursesPanel.getCourseId().getText().trim();
         String name = courseAdministrationLoggedInCoursesPanel.getCourseName().getText().trim();
         JButton addCourseBtn = courseAdministrationLoggedInCoursesPanel.getAddCourse();
 
         addCourseBtn.addActionListener(e -> {
             try {
-                readCourseFile();
-                countCoursesLine();
-                checkModuleData(id,name,"Open");
+                checkModuleData(name,"Open");
+                refreshCourseTable();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+    }
+
+    private void refreshCourseTable() {
+        courseAdministrationLoggedInCoursesPanel.getCourseModel().setRowCount(0);
+        try {
+            ResultSet resultSet = coursetable.getCourseData();
+            while (resultSet.next()) {
+                courseAdministrationLoggedInCoursesPanel.getCourseModel().addRow(new Object[]{
+                        resultSet.getInt("courseid"),
+                        resultSet.getString("courseName"),
+                        resultSet.getString("courseStatus"),
+
+                });
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void updateCourseName(){
+        JButton updateCourseBtn = courseAdministrationLoggedInCoursesPanel.getUpdateCourse();
+        DefaultTableModel courseModel = courseAdministrationLoggedInCoursesPanel.getCourseModel();
+        JTable dataTable = courseAdministrationLoggedInCoursesPanel.getTable();
+        dataTable.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int selectedRow = dataTable.getSelectedRow();
+                courseAdministrationLoggedInCoursesPanel.getCourseName().setText(courseModel.getValueAt(selectedRow,1).toString());
+            }
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+        updateCourseBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = dataTable.getSelectedRow();
+                if (selectedRow==-1){
+                    JOptionPane.showMessageDialog(self,"Please select the row from table","Warning",JOptionPane.WARNING_MESSAGE);
+                }
+                try {
+                    String courseName = courseAdministrationLoggedInCoursesPanel.getCourseName().getText().trim();
+                    if (courseName.isEmpty()) {
+                        JOptionPane.showMessageDialog(self, "Please enter the valid Data", "Warning", JOptionPane.WARNING_MESSAGE);
+                    }
+                    else{
+                        int id = Integer.parseInt(courseModel.getValueAt(selectedRow, 0).toString());
+                        coursetable.updateCourseName(id,courseName);
+                        refreshCourseTable();
+                        JOptionPane.showMessageDialog(self,"The data has been update successfully", "Success", JOptionPane.INFORMATION_MESSAGE  );
+                        courseAdministrationLoggedInCoursesPanel.getCourseName().setText("");
+                        dataTable.clearSelection();
+                    }
+                }
+                catch (Exception ex){
+                    JOptionPane.showMessageDialog(self, "Coding error", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+    }
+
+    private void updateCourseStatusToCancel(){
+        JButton cancelCourseBtn = courseAdministrationLoggedInCoursesPanel.getCancelCourse();
+        DefaultTableModel courseModel = courseAdministrationLoggedInCoursesPanel.getCourseModel();
+        JTable dataTable = courseAdministrationLoggedInCoursesPanel.getTable();
+        dataTable.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int selectedRow = dataTable.getSelectedRow();
+                courseAdministrationLoggedInCoursesPanel.getCourseName().setText(courseModel.getValueAt(selectedRow,1).toString());
+            }
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+        cancelCourseBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = dataTable.getSelectedRow();
+                if (selectedRow == -1){
+                    JOptionPane.showMessageDialog(self,"Please select the row from table to cancel","Warning",JOptionPane.WARNING_MESSAGE);
+                }else {
+                    try {
+                        String status = courseModel.getValueAt(selectedRow, 2).toString();
+                        if(status.equals("Cancel")){
+                            JOptionPane.showMessageDialog(self,"THe data you have selected is already canceled.");
+                        } else {
+                            int id = Integer.parseInt(courseModel.getValueAt(selectedRow, 0).toString());
+                            coursetable.updateCourseStatus(id,"Cancel");
+                            refreshCourseTable();
+                            JOptionPane.showMessageDialog(self,"The data has been updated to cancel successfully", "Success", JOptionPane.INFORMATION_MESSAGE  );
+                            courseAdministrationLoggedInCoursesPanel.getCourseName().setText("");
+                            dataTable.clearSelection();
+                        }
+                    }
+                    catch (Exception ex){
+//                    JOptionPane.showMessageDialog(self, "Coding error", "Error", JOptionPane.ERROR_MESSAGE);
+                        ex.printStackTrace();
+                    }
+                }
+
+            }
+        });
+    }
+
+    private void updateCourseStatusToOpen(){
+        JButton openCourseBtn = courseAdministrationLoggedInCoursesPanel.getOpenCourse();
+        DefaultTableModel courseModel = courseAdministrationLoggedInCoursesPanel.getCourseModel();
+        JTable dataTable = courseAdministrationLoggedInCoursesPanel.getTable();
+        dataTable.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int selectedRow = dataTable.getSelectedRow();
+                courseAdministrationLoggedInCoursesPanel.getCourseName().setText(courseModel.getValueAt(selectedRow,1).toString());
+            }
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+        openCourseBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = dataTable.getSelectedRow();
+                if (selectedRow == -1){
+                    JOptionPane.showMessageDialog(self,"Please select the row from table to open","Warning",JOptionPane.WARNING_MESSAGE);
+                }else {
+                    try {
+                        String status = courseModel.getValueAt(selectedRow, 2).toString();
+                        if(status.equals("Open")){
+                            JOptionPane.showMessageDialog(self,"THe data you have selected is already open.");
+                        } else {
+                            int id = Integer.parseInt(courseModel.getValueAt(selectedRow, 0).toString());
+                            coursetable.updateCourseStatus(id,"Open");
+                            refreshCourseTable();
+                            JOptionPane.showMessageDialog(self,"The data has been updated to open successfully", "Success", JOptionPane.INFORMATION_MESSAGE  );
+                            courseAdministrationLoggedInCoursesPanel.getCourseName().setText("");
+                            dataTable.clearSelection();
+                        }
+                    }
+                    catch (Exception ex){
+//                    JOptionPane.showMessageDialog(self, "Coding error", "Error", JOptionPane.ERROR_MESSAGE);
+                        ex.printStackTrace();
+                    }
+                }
+
+            }
+        });
+    }
+
+    private void deleteCourse(){
+        JButton courseDeleteBtn = courseAdministrationLoggedInCoursesPanel.getDeleteCourse();
+        DefaultTableModel courseModel = courseAdministrationLoggedInCoursesPanel.getCourseModel();
+        JTable dataTable = courseAdministrationLoggedInCoursesPanel.getTable();
+        courseDeleteBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int confirm = JOptionPane.showConfirmDialog(self,"Are you sure you want to Delete this data? ", "Confirmation",JOptionPane.YES_NO_OPTION);
+                int selectedRow = dataTable.getSelectedRow();
+                if (confirm==JOptionPane.YES_OPTION){
+                    try {
+                        courseAdministrationLoggedInCoursesPanel.getCourseName().setText("");
+                        int  courseName=Integer.parseInt(courseModel.getValueAt(selectedRow,0).toString());
+                        coursetable.deleteCourse(courseName);
+                        refreshCourseTable();
+                    }
+                    catch (Exception ex){
+                        JOptionPane.showMessageDialog(self, "Please select a row", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+                else {
+                    return;
+                }
             }
         });
     }
