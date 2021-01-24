@@ -1,5 +1,6 @@
 package CourseManagementSystem;
 
+import javax.swing.*;
 import java.sql.*;
 
 public class courseTable {
@@ -15,24 +16,42 @@ public class courseTable {
 
     void insert(String courseName,String courseStatus){
         try {
-            String insert = "INSERT INTO course(courseName,courseStatus)" + "VALUES(?,?)";
+            String insert = "INSERT INTO courses(courseName,courseStatus)" + "VALUES(?,?)";
             PreparedStatement statement = con.prepareStatement(insert);
+
 
             statement.setString(1,courseName);
             statement.setString(2,courseStatus);
 
             statement.executeUpdate();
             statement.close();
+            JOptionPane.showMessageDialog(null, "Course has been successfully added. Thank You!!!");
 
         }catch (SQLException e){
-            e.printStackTrace();
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                JOptionPane.showMessageDialog(null,"Duplicate Course Name");
+            }else {
+                e.printStackTrace();
+            }
         }
-
     }
 
     ResultSet getCourseData(){
         try {
-            String select = "SELECT *FROM course";
+            String select = "SELECT *FROM courses";
+
+            PreparedStatement statement = con.prepareStatement(select);
+            return statement.executeQuery();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    ResultSet getCourseDetails(){
+        try {
+            String select = "SELECT courseName FROM courses WHERE courseStatus = 'Open'";
 
             PreparedStatement statement = con.prepareStatement(select);
             return statement.executeQuery();
@@ -45,22 +64,27 @@ public class courseTable {
 
     void updateCourseName(int id, String courseName) {
         try {
-            String update = "UPDATE course SET courseName = ? WHERE  courseid = ?";
+            String update = "UPDATE courses SET courseName = ? WHERE  courseId = ?";
             PreparedStatement statement = con.prepareStatement(update);
             statement.setString(1, courseName);
             statement.setInt(2, id);
 
             statement.executeUpdate();
             statement.close();
+            JOptionPane.showMessageDialog(null,"The data has been update successfully", "Success", JOptionPane.INFORMATION_MESSAGE  );
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException e){
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                JOptionPane.showMessageDialog(null,"Duplicate Course Name");
+            }else {
+                e.printStackTrace();
+            }
         }
     }
 
     void updateCourseStatus(int id, String courseStatus) {
         try {
-            String update = "UPDATE course SET courseStatus = ? WHERE  courseid = ?";
+            String update = "UPDATE courses SET courseStatus = ? WHERE  courseId = ?";
             PreparedStatement statement = con.prepareStatement(update);
             statement.setString(1, courseStatus);
             statement.setInt(2, id);
@@ -74,7 +98,7 @@ public class courseTable {
     }
 
     void deleteCourse(int id){
-        String delete = "DELETE FROM course WHERE courseid=?";
+        String delete = "DELETE FROM courses WHERE courseId=?";
         try {
             PreparedStatement statement = con.prepareStatement(delete);
             statement.setInt(1, id);

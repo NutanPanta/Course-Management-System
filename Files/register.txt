@@ -29,35 +29,3 @@ Password: test3
 User Type: Student
 Course: BIM
 Level: 6
-
-First Name: sadasd
-Last Name: asda
-Email: sadas@a.com
-Password: sadasd
-User Type: Student
-Course: BIT
-Level: 4
-
-First Name: a
-Last Name: a
-Email: a@a.com
-Password: a
-User Type: Student
-Course: BIT
-Level: 4
-
-First Name: ada
-Last Name: asdas
-Email: da@ad.com
-Password: sadad
-User Type: Student
-Course: BIT
-Level: 4
-
-First Name: adsd
-Last Name: ada
-Email: c@a.com
-Password: asdasd
-User Type: Student
-Course: BIT
-Level: 4

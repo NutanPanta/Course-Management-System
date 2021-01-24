@@ -4,43 +4,78 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-public class CourseAdministrationLoggedInModulesPanel extends JPanel implements AppLayout {
-    private DefaultTableModel courseAdministratorCourseModel;
+public class CourseAdministrationLoggedInModulesPanel extends JPanel implements AppLayout, ActionListener {
+    private DefaultTableModel courseAdministratorModuleModel;
     private JTable courseAdministratorModuleTable;
+    private JButton addModule, deleteModule, updateModule, back;
     private JTextField moduleName;
-    private JButton addCourse,cancelCourse,openCourse,deleteCourse,updateCourse, back;
+    private JComboBox course, level,semester;
+    private JCheckBox isElective;
+    private JLabel elective;
     private GridBagConstraints layout, formLayout, buttonLayout;
+    courseTable coursetable;
 
     public CourseAdministrationLoggedInModulesPanel() {
-        DefaultTableModel courseAdministratorCourseModel = new DefaultTableModel();
-        String[] courseNames = {"Course Id","Course Name","Course Status"};
-        courseAdministratorCourseModel.setColumnIdentifiers(courseNames);
+        setBorder(BorderFactory.createTitledBorder("Register Module"));
         moduleName = new JTextField(20);
         moduleName.setPreferredSize(new Dimension(40,30));
-        addCourse = new JButton("Add Course");
-        cancelCourse = new JButton("Cancel Course");
-        openCourse = new JButton("Open Course");
-        deleteCourse = new JButton("Delete Course");
-        updateCourse = new JButton("Update Course");
+        String[] TableNames = {"Module Id","Module Name","Course Name","level","Course Type","Semester"};
+        String ll[]={"4","5","6"};
+        String st[] = {"1","2"};
+        course = new JComboBox();
+        semester =new JComboBox(st);
+        level =new JComboBox(ll);
+        level.setBounds(50, 50,90,20);
+        course.setBounds(50, 50,90,20);
+        semester.setBounds(50, 50,90,20);
+        DefaultTableModel courseAdministratorCourseModel = new DefaultTableModel();
+        courseAdministratorCourseModel.setColumnIdentifiers(TableNames);
+
+        isElective = new JCheckBox();
+
         back = new JButton("Back");
+        addModule = new JButton("Add Module");
+        deleteModule = new JButton("Delete Module");
+        updateModule = new JButton("Update Module");
 
         courseAdministratorModuleTable = new JTable(courseAdministratorCourseModel);
+
+        coursetable = new courseTable();
+        courseName();
+        isElective.setVisible(false);
 
 
     }
 
+    private void courseName(){
+        course.removeAllItems();
+        try {
+            ResultSet resultSet = coursetable.getCourseDetails();
+
+            while (resultSet.next()) {
+                course.addItem(resultSet.getString("courseName"));
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private JPanel courseAdministratorCourseTablePanel() {
 
-        courseAdministratorModuleTable.setDefaultEditor(Object.class, null);
         JScrollPane scrollPane =new JScrollPane(courseAdministratorModuleTable);
+        courseAdministratorModuleTable.setDefaultEditor(Object.class, null);
         courseAdministratorModuleTable.setSelectionBackground(Color.BLACK);
         courseAdministratorModuleTable.setSelectionForeground(Color.WHITE);
         JTableHeader header = courseAdministratorModuleTable.getTableHeader();
         header.setBackground(Color.decode("#D6D9DF"));
 
         JPanel courseAdministratorCoursePanel = new JPanel();
-        courseAdministratorCoursePanel.setBackground(Color.decode("#D6D9DF"));
         courseAdministratorCoursePanel.add(scrollPane);
 
         return courseAdministratorCoursePanel;
@@ -48,25 +83,73 @@ public class CourseAdministrationLoggedInModulesPanel extends JPanel implements 
 
     private JPanel courseAdministratorCourseFormPanel(){
         JPanel courseAdministratorCourseForm = new JPanel();
-        courseAdministratorCourseForm.setBackground(Color.decode("#D6D9DF"));
+        courseAdministratorCourseForm.setLayout(new GridBagLayout());
+
         courseAdministratorCourseForm.setLayout(new GridBagLayout());
         formLayout = new GridBagConstraints();
-        formLayout.insets = new Insets(80,0,0,0);
+        formLayout.fill = GridBagConstraints.HORIZONTAL;
+        formLayout.insets = new Insets(5,5,5,5);
 
         formLayout.gridx = 0;
         formLayout.gridy = 0;
-        courseAdministratorCourseForm.add(new JLabel("Course Name   "),formLayout);
+        formLayout.gridwidth = 1;
+        courseAdministratorCourseForm.add(new JLabel("Course"), formLayout);
 
+        formLayout.weightx = 1;
+        formLayout.gridwidth = 3;
         formLayout.gridx = 1;
         formLayout.gridy = 0;
+        courseAdministratorCourseForm.add(course,formLayout);
+
+        formLayout.gridx=0;
+        formLayout.gridy=1;
+        formLayout.gridwidth = 1;
+        courseAdministratorCourseForm.add(new JLabel("Module Name"),formLayout);
+
+        formLayout.gridx=1;
+        formLayout.gridy=1;
+        formLayout.gridwidth = 3;
         courseAdministratorCourseForm.add(moduleName,formLayout);
+
+        formLayout.gridx = 0;
+        formLayout.gridy = 2;
+        formLayout.gridwidth = 1;
+        courseAdministratorCourseForm.add(new JLabel("Level"), formLayout);
+
+        formLayout.gridx = 1;
+        formLayout.gridy = 2;
+        formLayout.gridwidth = 4;
+        courseAdministratorCourseForm.add(level, formLayout);
+
+        formLayout.gridx = 0;
+        formLayout.gridy = 3;
+        formLayout.gridwidth = 1;
+        courseAdministratorCourseForm.add(new JLabel("Semester"), formLayout);
+
+        formLayout.gridx = 1;
+        formLayout.gridy = 3;
+        formLayout.gridwidth = 4;
+        courseAdministratorCourseForm.add(semester, formLayout);
+
+        formLayout.gridx = 0;
+        formLayout.gridy = 4;
+        formLayout.gridwidth = 1;
+        elective = new JLabel("Elective");
+        courseAdministratorCourseForm.add(elective, formLayout);
+
+        formLayout.gridx = 1;
+        formLayout.gridy = 4;
+        courseAdministratorCourseForm.add(isElective, formLayout);
+
+
+
+        elective.setVisible(false);
 
         return courseAdministratorCourseForm;
     }
 
     private JPanel courseAdministratorCourseButtonPanel() {
         JPanel courseAdministratorCourseButton = new JPanel();
-        courseAdministratorCourseButton.setBackground(Color.decode("#D6D9DF"));
         courseAdministratorCourseButton.setLayout(new GridBagLayout());
         buttonLayout = new GridBagConstraints();
         buttonLayout.fill = GridBagConstraints.HORIZONTAL;
@@ -76,27 +159,19 @@ public class CourseAdministrationLoggedInModulesPanel extends JPanel implements 
 
         buttonLayout.gridx = 0;
         buttonLayout.gridy = 0;
-        courseAdministratorCourseButton.add(addCourse, buttonLayout);
+        courseAdministratorCourseButton.add(addModule, buttonLayout);
 
         buttonLayout.gridx = 1;
         buttonLayout.gridy = 0;
-        courseAdministratorCourseButton.add(cancelCourse, buttonLayout);
+        courseAdministratorCourseButton.add(deleteModule, buttonLayout);
 
         buttonLayout.gridx = 0;
         buttonLayout.gridy = 1;
-        courseAdministratorCourseButton.add(openCourse, buttonLayout);
-
-        buttonLayout.gridx = 1;
-        buttonLayout.gridy = 1;
-        courseAdministratorCourseButton.add(deleteCourse, buttonLayout);
+        buttonLayout.gridwidth = 4;
+        courseAdministratorCourseButton.add(updateModule, buttonLayout);
 
         buttonLayout.gridx = 0;
         buttonLayout.gridy = 2;
-        buttonLayout.gridwidth = 4;
-        courseAdministratorCourseButton.add(updateCourse, buttonLayout);
-
-        buttonLayout.gridx = 0;
-        buttonLayout.gridy = 3;
         buttonLayout.gridwidth = 4;
         courseAdministratorCourseButton.add(back, buttonLayout);
 
@@ -105,7 +180,6 @@ public class CourseAdministrationLoggedInModulesPanel extends JPanel implements 
 
     @Override
     public JPanel panelUI() {
-        this.setBackground(Color.decode("#D6D9DF"));
         setLayout(new GridBagLayout());
         layout = new GridBagConstraints();
         layout.fill = GridBagConstraints.BOTH;
@@ -128,32 +202,51 @@ public class CourseAdministrationLoggedInModulesPanel extends JPanel implements 
         layout.gridheight=3;
         add(courseAdministratorCourseTablePanel(),layout);
 
+
+        level.addActionListener(this);
+
         return this;
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String item = level.getSelectedItem().toString();
 
-    public DefaultTableModel getCourseModel(){ return (DefaultTableModel) getTable().getModel();}
+        if (item == "6") {
+            isElective.setVisible(true);
+            elective.setVisible(true);
+        }  else {
+            isElective.setVisible(false);
+            elective.setVisible(false);
+            isElective.setSelected(false);
+        }
+
+    }
+
+
+    public DefaultTableModel getCourseAdministratorModuleModel(){ return (DefaultTableModel) getTable().getModel();}
     public  JTable getTable(){
         return courseAdministratorModuleTable;
     }
-    public JTextField getCourseName() { return moduleName; }
-    public JButton getAddCourse() {
-        return addCourse;
+    public JComboBox getCourse() { return course; }
+    public JComboBox getLevel() { return level; }
+    public JComboBox getSemester() { return semester; }
+    public JCheckBox getIsElective() { return isElective; }
+    public JTextField getModuleName() { return moduleName; }
+    public JButton getAddModule() {
+        return addModule;
     }
-    public JButton getCancelCourse() {
-        return cancelCourse;
+    public JButton getDeleteModule() {
+        return deleteModule;
     }
-    public JButton getOpenCourse() {
-        return openCourse;
-    }
-    public JButton getDeleteCourse() {
-        return deleteCourse;
-    }
-    public JButton getUpdateCourse() {
-        return updateCourse;
+    public JButton getUpdateModule() {
+        return updateModule;
     }
     public JButton getBack() {
         return back;
+    }
+    public void getCourseName(){
+        courseName();
     }
 }
 
