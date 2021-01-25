@@ -33,20 +33,33 @@ public class ModuleTable {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 JOptionPane.showMessageDialog(null,"Duplicate Course Name");
             }else {
-                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
-    ResultSet getModuleData(){
+    ResultSet getModuleName(){
         try {
-            String select = "SELECT * FROM modules";
+            String select = "Select moduleName FROM modules m, courses c WHERE c.courseName=m.courseName and c.courseStatus = 'Open'";
 
             PreparedStatement statement = con.prepareStatement(select);
             return statement.executeQuery();
         }
         catch (SQLException e){
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return null;
+    }
+
+    ResultSet getModuleData(){
+        try {
+            String select = "Select * FROM modules m, courses c WHERE c.courseName=m.courseName and c.courseStatus = 'Open'";
+
+            PreparedStatement statement = con.prepareStatement(select);
+            return statement.executeQuery();
+        }
+        catch (SQLException e){
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
         return null;
     }
@@ -65,13 +78,13 @@ public class ModuleTable {
 
             statement.executeUpdate();
             statement.close();
-            JOptionPane.showMessageDialog(null, "Module has been successfully added. Thank You!!!");
+            JOptionPane.showMessageDialog(null, "Module has been successfully updated. Thank You!!!");
 
         } catch (SQLException e) {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 JOptionPane.showMessageDialog(null,"Duplicate Module Name");
             }else {
-                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -86,7 +99,7 @@ public class ModuleTable {
             statement.close();
         }
         catch (SQLException e){
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

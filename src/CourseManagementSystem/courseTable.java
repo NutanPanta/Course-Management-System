@@ -31,7 +31,7 @@ public class courseTable {
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 JOptionPane.showMessageDialog(null,"Duplicate Course Name");
             }else {
-                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -44,7 +44,7 @@ public class courseTable {
             return statement.executeQuery();
         }
         catch (SQLException e){
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
         return null;
     }
@@ -57,7 +57,7 @@ public class courseTable {
             return statement.executeQuery();
         }
         catch (SQLException e){
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
         return null;
     }
@@ -71,13 +71,13 @@ public class courseTable {
 
             statement.executeUpdate();
             statement.close();
-            JOptionPane.showMessageDialog(null,"The data has been update successfully", "Success", JOptionPane.INFORMATION_MESSAGE  );
+            JOptionPane.showMessageDialog(null,"Course Name Has Been Successfully Updated To " + courseName + ".", "Success", JOptionPane.INFORMATION_MESSAGE  );
 
         } catch (SQLException e){
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 JOptionPane.showMessageDialog(null,"Duplicate Course Name");
             }else {
-                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -93,7 +93,7 @@ public class courseTable {
             statement.close();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -106,7 +106,7 @@ public class courseTable {
             statement.close();
         }
         catch (SQLException e){
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

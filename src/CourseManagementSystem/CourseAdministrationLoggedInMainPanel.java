@@ -6,13 +6,13 @@ import java.awt.*;
 public class CourseAdministrationLoggedInMainPanel extends JPanel implements AppLayout {
     private JButton Courses;
     private JButton Modules;
-    private JButton Results;
+    private JButton addInstructor;
     private GridBagConstraints layout;
 
     public CourseAdministrationLoggedInMainPanel() {
         Courses = new JButton("Courses");
         Modules = new JButton("Modules");
-        Results = new JButton("Results");
+        addInstructor = new JButton("Add Instructor to a module");
     }
 
     @Override
@@ -32,7 +32,7 @@ public class CourseAdministrationLoggedInMainPanel extends JPanel implements App
 
         layout.gridx = 0;
         layout.gridy = 2;
-        add(Results,layout);
+        add(addInstructor,layout);
 
         return this;
     }
@@ -43,8 +43,8 @@ public class CourseAdministrationLoggedInMainPanel extends JPanel implements App
     public JButton getModules() {
         return Modules;
     }
-    public JButton getResults() {
-        return Results;
+    public JButton getAddInstructor() {
+        return addInstructor;
     }
 }
 

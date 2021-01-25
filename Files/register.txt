@@ -1,31 +1,47 @@
-First Name: test
-Last Name: tested
+First Name: Test
+Last Name: Tested
 Email: test@test.com
 Password: test
 User Type: Course Administrator
-Course: Empty
-Level: Empty
+Course: null
+Level: null
 
-First Name: test1
-Last Name: tested
-Email: test1@test.com
-Password: test1
-User Type: Instructor
-Course: Empty
-Level: Empty
-
-First Name: test2
-Last Name: tested
+First Name: TestTwo
+Last Name: Tested
 Email: test2@test.com
 Password: test2
 User Type: Student
 Course: BIT
 Level: 4
 
-First Name: test3
-Last Name: tested
-Email: test3@test.com
-Password: test3
-User Type: Student
-Course: BIM
-Level: 6
+First Name: Nutan
+Last Name: Panta
+Email: nutanpanta@gmail.com
+Password: nutanpanta
+User Type: Instructor
+Course: null
+Level: null
+
+First Name: Shiva
+Last Name: Giri
+Email: shivagiri@gmail.com
+Password: shivagiri
+User Type: Instructor
+Course: null
+Level: null
+
+First Name: Nirmal
+Last Name: Thing
+Email: nirmalthing@gmail.com
+Password: nirmalthing
+User Type: Instructor
+Course: null
+Level: null
+
+First Name: Johnson
+Last Name: Dhakal
+Email: johnsondhakal@gmail.com
+Password: johnsondhakal
+User Type: Instructor
+Course: null
+Level: null

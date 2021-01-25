@@ -22,8 +22,11 @@ public class MyApp extends JFrame {
     CourseAdministrationLoggedInMainPanel courseAdministrationLoggedInMainPanel;
     CourseAdministrationLoggedInCoursesPanel courseAdministrationLoggedInCoursesPanel;
     CourseAdministrationLoggedInModulesPanel courseAdministrationLoggedInModulesPanel;
+    CourseAdministrationLoggedInInstructorAddToModulePanel courseAdministrationLoggedInInstructorAddToModulePanel;
     courseTable coursetable;
     ModuleTable moduleTable;
+    UserTable userTable;
+    InstructorToModuleTable instructorToModuleTable;
     File file = new File("Files");
     int rln;
 
@@ -33,7 +36,7 @@ public class MyApp extends JFrame {
         setVisible(true);
         setResizable(true);
         setTitle("Course Management System");
-        setMinimumSize(new Dimension(800,550));
+        setMinimumSize(new Dimension(900,550));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 400, 300);
 
@@ -44,16 +47,20 @@ public class MyApp extends JFrame {
         courseAdministrationLoggedInMainPanel = new CourseAdministrationLoggedInMainPanel();
         courseAdministrationLoggedInCoursesPanel = new CourseAdministrationLoggedInCoursesPanel();
         courseAdministrationLoggedInModulesPanel = new CourseAdministrationLoggedInModulesPanel();
+        courseAdministrationLoggedInInstructorAddToModulePanel = new CourseAdministrationLoggedInInstructorAddToModulePanel();
         coursetable = new courseTable();
         moduleTable = new ModuleTable();
+        userTable = new UserTable();
+        instructorToModuleTable = new InstructorToModuleTable();
 
-        LoginPanel.setVisible(true);
+        LoginPanel.setVisible(false);
         RegisterPanel.setVisible(false);
         studentLoggedInMainPanel.setVisible(false);
         studentLoggedInCoursePanel.setVisible(false);
-        courseAdministrationLoggedInMainPanel.setVisible(false);
+        courseAdministrationLoggedInMainPanel.setVisible(true);
         courseAdministrationLoggedInCoursesPanel.setVisible(false);
         courseAdministrationLoggedInModulesPanel.setVisible(false);
+        courseAdministrationLoggedInInstructorAddToModulePanel.setVisible(false);
 
         add(appLayout());
         registerUsers();
@@ -61,22 +68,28 @@ public class MyApp extends JFrame {
 
         implementCourses();
         implementModules();
+        implementInstructorToModule();
 
         updateCourseName();
         updateCourseStatusToCancel();
         updateCourseStatusToOpen();
         updateModule();
+        updateInstructorFromModel();
 
         deleteCourse();
         deleteModule();
+        deleteInstructorFromModule();
 
         refreshCourseTable();
         refreshModuleTable();
+        refreshCourseAdministratorInstructorTable();
 
         panelChange();
         pack();
         setLocationRelativeTo(null);
     }
+
+//    All JPanel adding
 
     private JPanel appLayout() {
         JPanel mainPanel = new JPanel();
@@ -91,9 +104,12 @@ public class MyApp extends JFrame {
         mainPanel.add(courseAdministrationLoggedInMainPanel.panelUI(),layout);
         mainPanel.add(courseAdministrationLoggedInCoursesPanel.panelUI(),layout);
         mainPanel.add(courseAdministrationLoggedInModulesPanel.panelUI(),layout);
+        mainPanel.add(courseAdministrationLoggedInInstructorAddToModulePanel.panelUI(),layout);
 
         return mainPanel;
     }
+
+//    Creating files folder in not exist
 
     private void createFolder() {
         if (!file.exists()) {
@@ -101,14 +117,20 @@ public class MyApp extends JFrame {
         }
     }
 
+//    Different JPanel visible during different button clicks
+
     private void panelChange() {
         JButton registerLabel = LoginPanel.getRegisterLabel();
         JButton loginLabel = RegisterPanel.getLoginLabel();
+//        Admin Main Panel Buttons
         JButton studentViewCoursesButton = studentLoggedInMainPanel.getViewCourses();
         JButton courseAdministratorCourseButton = courseAdministrationLoggedInMainPanel.getCourses();
         JButton courseAdministratorCourseModuleButton = courseAdministrationLoggedInMainPanel.getModules();
+        JButton courseAdministratorInstructorAddToModuleButton = courseAdministrationLoggedInMainPanel.getAddInstructor();
+//        Back Buttons
         JButton courseAdministratorCourseBackButton = courseAdministrationLoggedInCoursesPanel.getBack();
         JButton courseAdministratorModuleBackButton = courseAdministrationLoggedInModulesPanel.getBack();
+        JButton courseAdministratorInstructorAddToModuleBackButton = courseAdministrationLoggedInInstructorAddToModulePanel.getBack();
 
         registerLabel.addActionListener(e -> {
             try {
@@ -145,7 +167,7 @@ public class MyApp extends JFrame {
 
             }
         });
-
+//        Admin Main Panel Action Listeners
         courseAdministratorCourseButton.addActionListener(e -> {
             try {
                 courseAdministrationLoggedInMainPanel.setVisible(false);
@@ -161,6 +183,20 @@ public class MyApp extends JFrame {
                 courseAdministrationLoggedInMainPanel.setVisible(false);
                 courseAdministrationLoggedInModulesPanel.setVisible(true);
                 courseAdministrationLoggedInModulesPanel.getCourseName();
+                refreshModuleTable();
+            } catch (Exception ex){
+                JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
+        });
+
+        courseAdministratorInstructorAddToModuleButton.addActionListener(e -> {
+            try {
+                courseAdministrationLoggedInMainPanel.setVisible(false);
+                courseAdministrationLoggedInInstructorAddToModulePanel.setVisible(true);
+                courseAdministrationLoggedInInstructorAddToModulePanel.getRefreshModuleName();
+                courseAdministrationLoggedInInstructorAddToModulePanel.getRefreshInstructorName();
+                refreshCourseAdministratorInstructorTable();
             } catch (Exception ex){
                 JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
 
@@ -188,7 +224,19 @@ public class MyApp extends JFrame {
 
             }
         });
+
+        courseAdministratorInstructorAddToModuleBackButton.addActionListener(e -> {
+            try {
+                courseAdministrationLoggedInMainPanel.setVisible(true);
+                courseAdministrationLoggedInInstructorAddToModulePanel.setVisible(false);
+            } catch (Exception ex){
+                JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
+        });
     }
+
+//    Read register.txt file
 
     private void readRegistrationFile() {
             try{
@@ -201,6 +249,8 @@ public class MyApp extends JFrame {
                 }
             }
     }
+
+//    Add Registration Data to register.txt file
 
     private void addRegistrationData(String firstName, String lastName, String Email, String Password, String userType, String course, String level) {
         try{
@@ -224,6 +274,8 @@ public class MyApp extends JFrame {
         }
     }
 
+//    Validate Email During Registration
+
     private boolean emailValidation(String Email) {
         boolean valid = false;
         if (Email.contains("@")) {
@@ -233,6 +285,8 @@ public class MyApp extends JFrame {
         }
         return valid;
     }
+
+//    Check Duplicate Email During Registration
 
     private boolean emailDuplication(String Email) {
         boolean isEmailDuplicate = false;
@@ -281,6 +335,8 @@ public class MyApp extends JFrame {
         }
         return isUserDuplicate;
     }
+
+//    Read and validate login data
 
     private boolean readAndValidateLoginData(String Email, String pwd) throws IOException {
         String loginEmail = LoginPanel.getLoginEmail().getText().trim();
@@ -346,6 +402,8 @@ public class MyApp extends JFrame {
         return matchUserType;
     }
 
+//    Validate register data
+
     private void checkRegistrationData(String firstName, String lastName, String Email, String Password, String userType,String course, String level){
         String registrationFirstName = RegisterPanel.getFirstName().getText().trim();
         String registrationLastName = RegisterPanel.getLastName().getText().trim();
@@ -355,7 +413,6 @@ public class MyApp extends JFrame {
         String registrationCourse = Objects.requireNonNull(RegisterPanel.getRegistrationCourse().getSelectedItem()).toString();
         String registrationLevel = Objects.requireNonNull(RegisterPanel.getRegistrationLevel().getSelectedItem()).toString();
 
-        System.out.println(registrationFirstName);
         boolean emailValidation = emailValidation(registrationEmail);
         boolean isEmailDuplicate = emailDuplication(registrationEmail);
         boolean isUserDuplicate = administrationDuplication(registrationUserType);
@@ -372,10 +429,11 @@ public class MyApp extends JFrame {
             } else {
                 if(RegisterPanel.getRegistrationCourse().isVisible()){
                 addRegistrationData(registrationFirstName, registrationLastName, registrationEmail, registrationPassword, registrationUserType, registrationCourse, registrationLevel);
+                    userTable.insert(registrationFirstName,registrationLastName,registrationEmail,registrationPassword,registrationUserType,registrationCourse,registrationLevel);
                 } else  {
-                    addRegistrationData(registrationFirstName, registrationLastName, registrationEmail, registrationPassword, registrationUserType, "Empty", "Empty");
+                    userTable.insert(registrationFirstName,registrationLastName,registrationEmail,registrationPassword,registrationUserType,null,null);
+                    addRegistrationData(registrationFirstName, registrationLastName, registrationEmail, registrationPassword, registrationUserType, null, null);
                 }
-                JOptionPane.showMessageDialog(this, "You have been successfully registered. Thank You!!!");
                 RegisterPanel.getFirstName().setText("");
                 RegisterPanel.getLastName().setText("");
                 RegisterPanel.getRegistrationEmail().setText("");
@@ -386,6 +444,8 @@ public class MyApp extends JFrame {
                 LoginPanel.setVisible(true);
             }
     }
+
+//    Validate Login Data
 
     private void checkLoginData(String Email, String pwd,String userType) throws IOException {
         String loginEmail = LoginPanel.getLoginEmail().getText().trim();
@@ -403,7 +463,7 @@ public class MyApp extends JFrame {
         } else if(loginPassword.isEmpty()){
             JOptionPane.showMessageDialog(this,"Password field is empty!!!");
         } else if(!matchUserType){
-            JOptionPane.showMessageDialog(this,"User Type is incorrect!!!");
+            JOptionPane.showMessageDialog(this,"User Type or email is incorrect!!!");
         } else if (matchLoginData == true && loginUserType == "Student" && matchUserType) {
             JOptionPane.showMessageDialog(this,"You are logged in as Student!!!");
             LoginPanel.getLoginEmail().setText("");
@@ -420,9 +480,11 @@ public class MyApp extends JFrame {
             LoginPanel.setVisible(false);
         }
         else {
-            JOptionPane.showMessageDialog(this,"Email or Password Did Not Match!!!");
+            JOptionPane.showMessageDialog(this,"Email or Password or userType Did Not Match!!!");
         }
     }
+
+//    Validate Course Data From Course Administrator
 
     private void checkCourseData(String courseName,String courseStatus) {
         String name = courseAdministrationLoggedInCoursesPanel.getCourseName().getText().trim();
@@ -434,6 +496,8 @@ public class MyApp extends JFrame {
             courseAdministrationLoggedInCoursesPanel.getCourseName().setText("");
         }
     }
+
+//    Validate Module Data from Course Administrator
 
     private void checkModuleData(String courseName,String moduleName,String level,String elective, String semester) {
         String cname =  courseAdministrationLoggedInModulesPanel.getCourse().getSelectedItem().toString();
@@ -450,6 +514,25 @@ public class MyApp extends JFrame {
         }
     }
 
+    //    Validate Add Instructor TO Module Data From Course Administrator
+
+    private void checkInstructorData(String moduleName,String instructorName) {
+        String caModuleName = courseAdministrationLoggedInInstructorAddToModulePanel.getModuleName().getSelectedItem().toString();
+        String caInstructorName = courseAdministrationLoggedInInstructorAddToModulePanel.getInstructorName().getSelectedItem().toString();
+
+        if(caModuleName == "Select Module Names" &&  caInstructorName == "Select Instructor Names"){
+            JOptionPane.showMessageDialog(self,"Please select module and instructor names and try again.");
+        }else if (caModuleName == "Select Module Names"){
+            JOptionPane.showMessageDialog(self,"No module is selected.");
+        } else if(caInstructorName == "Select Instructor Names"){
+            JOptionPane.showMessageDialog(self,"No Instructor is selected.");
+        } else {
+            instructorToModuleTable.insert(caModuleName,caInstructorName);
+        }
+    }
+
+//    Count register.txt lines
+
     private void countRegistrationLines(){
         try {
             rln =0;
@@ -462,6 +545,8 @@ public class MyApp extends JFrame {
         }
 
     }
+
+//    Register
 
     private void registerUsers() {
         String registrationLastName = RegisterPanel.getLastName().getText().trim();
@@ -488,6 +573,8 @@ public class MyApp extends JFrame {
         });
     }
 
+//    Login
+
     private void loginUser() {
         String loginEmail = LoginPanel.getLoginEmail().getText().trim();
         String loginPassword = LoginPanel.getLoginPassword().getText().trim();
@@ -503,6 +590,8 @@ public class MyApp extends JFrame {
             }
         });
     }
+
+//    Add
 
     private void implementCourses() {
         String name = courseAdministrationLoggedInCoursesPanel.getCourseName().getText().trim();
@@ -538,6 +627,24 @@ public class MyApp extends JFrame {
             }
         });
     }
+
+    private void implementInstructorToModule() {
+        String moduleName = courseAdministrationLoggedInInstructorAddToModulePanel.getModuleName().getSelectedItem().toString();
+        String instructorName = courseAdministrationLoggedInInstructorAddToModulePanel.getInstructorName().getSelectedItem().toString();
+        JButton addInstructorToModuleBtn = courseAdministrationLoggedInInstructorAddToModulePanel.getAddInstructor();
+
+        addInstructorToModuleBtn.addActionListener(e -> {
+            try {
+                checkInstructorData(moduleName,instructorName);
+                refreshCourseAdministratorInstructorTable();
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+    }
+
+//    Refresh Table
 
     private void refreshCourseTable() {
         courseAdministrationLoggedInCoursesPanel.getCourseModel().setRowCount(0);
@@ -576,6 +683,30 @@ public class MyApp extends JFrame {
         }
 
     }
+
+    private void refreshCourseAdministratorInstructorTable() {
+        courseAdministrationLoggedInInstructorAddToModulePanel.getCourseAdministratorInstructorModel().setRowCount(0);
+        try {
+            ResultSet resultSet = instructorToModuleTable.getModuleDetails();
+            while (resultSet.next()) {
+                courseAdministrationLoggedInInstructorAddToModulePanel.getCourseAdministratorInstructorModel().addRow(new Object[]{
+                        resultSet.getInt("id"),
+                        resultSet.getString("courseName"),
+                        resultSet.getString("moduleName"),
+                        resultSet.getString("level"),
+                        resultSet.getString("moduleType"),
+                        resultSet.getString("semester"),
+                        resultSet.getString("instructorName"),
+
+                });
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+//    Update
 
     private void updateCourseName(){
         JButton updateCourseBtn = courseAdministrationLoggedInCoursesPanel.getUpdateCourse();
@@ -791,6 +922,54 @@ public class MyApp extends JFrame {
         });
     }
 
+    private void updateInstructorFromModel(){
+        JButton instructorFromModuleUpdateBtn = courseAdministrationLoggedInInstructorAddToModulePanel.getUpdateInstructor();
+        DefaultTableModel courseAdministratorInstructorModel = courseAdministrationLoggedInInstructorAddToModulePanel.getCourseAdministratorInstructorModel();
+        JTable dataTable = courseAdministrationLoggedInInstructorAddToModulePanel.getTable();
+        dataTable.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int selectedRow = dataTable.getSelectedRow();
+                courseAdministrationLoggedInInstructorAddToModulePanel.getModuleName().setSelectedItem(courseAdministratorInstructorModel.getValueAt(selectedRow, 0).toString());
+                courseAdministrationLoggedInInstructorAddToModulePanel.getInstructorName().setSelectedItem(courseAdministratorInstructorModel.getValueAt(selectedRow, 1).toString());
+            }
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+        instructorFromModuleUpdateBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = dataTable.getSelectedRow();
+                if (selectedRow==-1){
+                    JOptionPane.showMessageDialog(self,"Please select the row from table","Warning",JOptionPane.WARNING_MESSAGE);
+                }
+                try {
+                    String moduleName = courseAdministrationLoggedInInstructorAddToModulePanel.getModuleName().getSelectedItem().toString();
+                    String instructorName = courseAdministrationLoggedInInstructorAddToModulePanel.getInstructorName().getSelectedItem().toString();
+                        int id = Integer.parseInt(courseAdministratorInstructorModel.getValueAt(selectedRow, 0).toString());
+                        instructorToModuleTable.updateInstructorTeachingModules(id,moduleName,instructorName);
+                        refreshCourseAdministratorInstructorTable();
+                        dataTable.clearSelection();
+                }
+                catch (Exception ex){
+                    JOptionPane.showMessageDialog(self, "Coding error", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+    }
+
+//    Delete
+
     private void deleteCourse(){
         JButton courseDeleteBtn = courseAdministrationLoggedInCoursesPanel.getDeleteCourse();
         DefaultTableModel courseModel = courseAdministrationLoggedInCoursesPanel.getCourseModel();
@@ -834,6 +1013,33 @@ public class MyApp extends JFrame {
                         int  moduleName=Integer.parseInt(moduleModel.getValueAt(selectedRow,0).toString());
                         moduleTable.deleteModule(moduleName);
                         refreshModuleTable();
+                    }
+                    catch (Exception ex){
+                        JOptionPane.showMessageDialog(self, "Please select a row", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+                else {
+                    return;
+                }
+            }
+        });
+    }
+
+    private void deleteInstructorFromModule(){
+        DefaultTableModel instructorModuleModel = courseAdministrationLoggedInInstructorAddToModulePanel.getCourseAdministratorInstructorModel();
+        JTable dataTable = courseAdministrationLoggedInInstructorAddToModulePanel.getTable();
+        JButton instructorFromModuleDeleteBtn = courseAdministrationLoggedInInstructorAddToModulePanel.getDeleteInstructor();
+
+        instructorFromModuleDeleteBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int confirm = JOptionPane.showConfirmDialog(self,"Are you sure you want to Delete this data? ", "Confirmation",JOptionPane.YES_NO_OPTION);
+                int selectedRow = dataTable.getSelectedRow();
+                if (confirm==JOptionPane.YES_OPTION){
+                    try {
+                        int  id=Integer.parseInt(instructorModuleModel.getValueAt(selectedRow,0).toString());
+                        instructorToModuleTable.deleteInstructorFromModule(id);
+                        refreshCourseAdministratorInstructorTable();
                     }
                     catch (Exception ex){
                         JOptionPane.showMessageDialog(self, "Please select a row", "Error", JOptionPane.ERROR_MESSAGE);
