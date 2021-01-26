@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="Java Final Coursework:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/Java_Final_Coursework_jar</output-path>
-    <root id="archive" name="Java Final Coursework.jar">
-      <element id="module-output" name="Java Final Coursework" />
-    </root>
-  </artifact>
-</component>
