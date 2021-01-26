@@ -34,9 +34,9 @@ public class MyApp extends JFrame {
 
     public MyApp() {
         setVisible(true);
-        setResizable(true);
+        setResizable(false);
         setTitle("Course Management System");
-        setMinimumSize(new Dimension(900,550));
+        setMinimumSize(new Dimension(800,520));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 400, 300);
 
@@ -53,11 +53,11 @@ public class MyApp extends JFrame {
         userTable = new UserTable();
         instructorToModuleTable = new InstructorToModuleTable();
 
-        LoginPanel.setVisible(false);
+        LoginPanel.setVisible(true);
         RegisterPanel.setVisible(false);
         studentLoggedInMainPanel.setVisible(false);
         studentLoggedInCoursePanel.setVisible(false);
-        courseAdministrationLoggedInMainPanel.setVisible(true);
+        courseAdministrationLoggedInMainPanel.setVisible(false);
         courseAdministrationLoggedInCoursesPanel.setVisible(false);
         courseAdministrationLoggedInModulesPanel.setVisible(false);
         courseAdministrationLoggedInInstructorAddToModulePanel.setVisible(false);
@@ -96,6 +96,7 @@ public class MyApp extends JFrame {
         mainPanel.setLayout(new GridBagLayout());
         GridBagConstraints layout = new GridBagConstraints();
         layout.fill = GridBagConstraints.BOTH;
+        mainPanel.setBackground(Color.decode("#D6D9DF"));
 
         mainPanel.add(LoginPanel.panelUI(),layout);
         mainPanel.add(RegisterPanel.panelUI(),layout);
@@ -131,6 +132,9 @@ public class MyApp extends JFrame {
         JButton courseAdministratorCourseBackButton = courseAdministrationLoggedInCoursesPanel.getBack();
         JButton courseAdministratorModuleBackButton = courseAdministrationLoggedInModulesPanel.getBack();
         JButton courseAdministratorInstructorAddToModuleBackButton = courseAdministrationLoggedInInstructorAddToModulePanel.getBack();
+//        Logout Buttons
+        JButton studentLogoutButton = studentLoggedInMainPanel.getLogOut();
+        JButton courseAdministratorLogoutButton = courseAdministrationLoggedInMainPanel.getLogOut();
 
         registerLabel.addActionListener(e -> {
             try {
@@ -172,6 +176,9 @@ public class MyApp extends JFrame {
             try {
                 courseAdministrationLoggedInMainPanel.setVisible(false);
                 courseAdministrationLoggedInCoursesPanel.setVisible(true);
+                this.setMinimumSize(new Dimension(780,480));
+                pack();
+                setLocationRelativeTo(null);
             } catch (Exception ex){
                 JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
 
@@ -184,6 +191,9 @@ public class MyApp extends JFrame {
                 courseAdministrationLoggedInModulesPanel.setVisible(true);
                 courseAdministrationLoggedInModulesPanel.getCourseName();
                 refreshModuleTable();
+                this.setMinimumSize(new Dimension(800,520));
+                pack();
+                setLocationRelativeTo(null);
             } catch (Exception ex){
                 JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
 
@@ -197,11 +207,16 @@ public class MyApp extends JFrame {
                 courseAdministrationLoggedInInstructorAddToModulePanel.getRefreshModuleName();
                 courseAdministrationLoggedInInstructorAddToModulePanel.getRefreshInstructorName();
                 refreshCourseAdministratorInstructorTable();
+                this.setMinimumSize(new Dimension(820,520));
+                pack();
+                setLocationRelativeTo(null);
             } catch (Exception ex){
                 JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
 
             }
         });
+
+//        Admin Inside Panels Back Buttons Action Listeners
 
         courseAdministratorCourseBackButton.addActionListener(e -> {
             try {
@@ -234,6 +249,29 @@ public class MyApp extends JFrame {
 
             }
         });
+
+//        Logout from main panels from different users Action Listeners
+
+        studentLogoutButton.addActionListener(e -> {
+            try {
+                studentLoggedInMainPanel.setVisible(false);
+                LoginPanel.setVisible(true);
+            } catch (Exception ex){
+                JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
+        });
+
+        courseAdministratorLogoutButton.addActionListener(e -> {
+            try {
+                courseAdministrationLoggedInMainPanel.setVisible(false);
+                LoginPanel.setVisible(true);
+            } catch (Exception ex){
+                JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
+        });
+
     }
 
 //    Read register.txt file

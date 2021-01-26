@@ -6,8 +6,6 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -69,8 +67,7 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
     }
 
     private void refreshModuleName(){
-        int a = 0;
-        int size = 0;
+        int a = 0,size = 0;
         try {
             ResultSet resultSet = moduleTable.getModuleName();
             while (resultSet.next()) {
@@ -81,7 +78,6 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
                 }
 
             }
-            System.out.println(a + " " + size);
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -141,16 +137,17 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         header.setBackground(Color.decode("#D6D9DF"));
 
         JPanel courseAdministratorCoursePanel = new JPanel();
+        courseAdministratorCoursePanel.setBackground(Color.decode("#D6D9DF"));
         courseAdministratorCoursePanel.add(scrollPane);
 
         return courseAdministratorCoursePanel;
     }
 
-    private JPanel courseAdministratorCourseFormPanel(){
-        JPanel courseAdministratorCourseForm = new JPanel();
-        courseAdministratorCourseForm.setLayout(new GridBagLayout());
+    private JPanel courseAdministratorInstructorFormPanel(){
+        JPanel courseAdministratorInstructorForm = new JPanel();
+        courseAdministratorInstructorForm.setLayout(new GridBagLayout());
+        courseAdministratorInstructorForm.setBackground(Color.decode("#D6D9DF"));
 
-        courseAdministratorCourseForm.setLayout(new GridBagLayout());
         formLayout = new GridBagConstraints();
         formLayout.fill = GridBagConstraints.HORIZONTAL;
         formLayout.insets = new Insets(5,5,5,5);
@@ -158,73 +155,74 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         formLayout.gridx = 0;
         formLayout.gridy = 0;
         formLayout.gridwidth = 1;
-        courseAdministratorCourseForm.add(new JLabel("Module Name"), formLayout);
+        courseAdministratorInstructorForm.add(new JLabel("Module Name"), formLayout);
 
         formLayout.weightx = 1;
         formLayout.gridwidth = 3;
         formLayout.gridx = 1;
         formLayout.gridy = 0;
-        courseAdministratorCourseForm.add(moduleName,formLayout);
+        courseAdministratorInstructorForm.add(moduleName,formLayout);
 
         formLayout.gridx = 0;
         formLayout.gridy = 1;
         formLayout.gridwidth = 1;
-        courseAdministratorCourseForm.add(new JLabel("Instructor Name"), formLayout);
+        courseAdministratorInstructorForm.add(new JLabel("Instructor Name"), formLayout);
 
         formLayout.weightx = 1;
         formLayout.gridwidth = 3;
         formLayout.gridx = 1;
         formLayout.gridy = 1;
-        courseAdministratorCourseForm.add(instructorName,formLayout);
+        courseAdministratorInstructorForm.add(instructorName,formLayout);
 
         formLayout.gridx = 0;
         formLayout.gridy = 2;
         formLayout.gridwidth = 1;
-        courseAdministratorCourseForm.add(new JLabel("Course Name"), formLayout);
+        courseAdministratorInstructorForm.add(new JLabel("Course Name"), formLayout);
 
         formLayout.gridx=1;
         formLayout.gridy=2;
         formLayout.gridwidth = 1;
-        courseAdministratorCourseForm.add(courseName,formLayout);
+        courseAdministratorInstructorForm.add(courseName,formLayout);
 
         formLayout.gridx = 0;
         formLayout.gridy = 3;
         formLayout.gridwidth = 1;
-        courseAdministratorCourseForm.add(new JLabel("Level"), formLayout);
+        courseAdministratorInstructorForm.add(new JLabel("Level"), formLayout);
 
         formLayout.gridx=1;
         formLayout.gridy=3;
         formLayout.gridwidth = 1;
-        courseAdministratorCourseForm.add(level,formLayout);
+        courseAdministratorInstructorForm.add(level,formLayout);
 
         formLayout.gridx = 0;
         formLayout.gridy = 4;
         formLayout.gridwidth = 1;
-        courseAdministratorCourseForm.add(new JLabel("Module Type"), formLayout);
+        courseAdministratorInstructorForm.add(new JLabel("Module Type"), formLayout);
 
         formLayout.gridx=1;
         formLayout.gridy=4;
         formLayout.gridwidth = 1;
-        courseAdministratorCourseForm.add(moduleType,formLayout);
+        courseAdministratorInstructorForm.add(moduleType,formLayout);
 
         formLayout.gridx = 0;
         formLayout.gridy = 5;
         formLayout.gridwidth = 1;
-        courseAdministratorCourseForm.add(new JLabel("Semester"), formLayout);
+        courseAdministratorInstructorForm.add(new JLabel("Semester"), formLayout);
 
         formLayout.gridx=1;
         formLayout.gridy=5;
         formLayout.gridwidth = 1;
-        courseAdministratorCourseForm.add(semester,formLayout);
+        courseAdministratorInstructorForm.add(semester,formLayout);
 
 
 
-        return courseAdministratorCourseForm;
+        return courseAdministratorInstructorForm;
     }
 
-    private JPanel courseAdministratorCourseButtonPanel() {
-        JPanel courseAdministratorCourseButton = new JPanel();
-        courseAdministratorCourseButton.setLayout(new GridBagLayout());
+    private JPanel courseAdministratorInstructorButtonPanel() {
+        JPanel courseAdministratorInstructorButton = new JPanel();
+        courseAdministratorInstructorButton.setLayout(new GridBagLayout());
+        courseAdministratorInstructorButton.setBackground(Color.decode("#D6D9DF"));
         buttonLayout = new GridBagConstraints();
         buttonLayout.fill = GridBagConstraints.HORIZONTAL;
         buttonLayout.insets = new Insets(13,10,5,10);
@@ -233,23 +231,23 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
 
         buttonLayout.gridx = 0;
         buttonLayout.gridy = 0;
-        courseAdministratorCourseButton.add(addInstructor, buttonLayout);
+        courseAdministratorInstructorButton.add(addInstructor, buttonLayout);
 
         buttonLayout.gridx = 1;
         buttonLayout.gridy = 0;
-        courseAdministratorCourseButton.add(deleteInstructor, buttonLayout);
+        courseAdministratorInstructorButton.add(deleteInstructor, buttonLayout);
 
         buttonLayout.gridx = 0;
         buttonLayout.gridy = 1;
         buttonLayout.gridwidth = 4;
-        courseAdministratorCourseButton.add(updateInstructor, buttonLayout);
+        courseAdministratorInstructorButton.add(updateInstructor, buttonLayout);
 
         buttonLayout.gridx = 0;
         buttonLayout.gridy = 2;
         buttonLayout.gridwidth = 4;
-        courseAdministratorCourseButton.add(back, buttonLayout);
+        courseAdministratorInstructorButton.add(back, buttonLayout);
 
-        return courseAdministratorCourseButton;
+        return courseAdministratorInstructorButton;
     }
 
     @Override
@@ -258,17 +256,18 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         layout = new GridBagConstraints();
         layout.fill = GridBagConstraints.BOTH;
         layout.insets = new Insets(5,0,5,0);
+        this.setBackground(Color.decode("#D6D9DF"));
 
         layout.gridx=3;
         layout.gridy=3;
 
         layout.gridx = 1;
         layout.gridy = 0;
-        add(courseAdministratorCourseFormPanel(),layout);
+        add(courseAdministratorInstructorFormPanel(),layout);
 
         layout.gridx = 1;
         layout.gridy = 1;
-        add(courseAdministratorCourseButtonPanel(),layout);
+        add(courseAdministratorInstructorButtonPanel(),layout);
 
         layout.weighty = 0.5;
         layout.gridx = 0;

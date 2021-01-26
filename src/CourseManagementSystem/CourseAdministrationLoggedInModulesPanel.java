@@ -76,16 +76,17 @@ public class CourseAdministrationLoggedInModulesPanel extends JPanel implements 
         header.setBackground(Color.decode("#D6D9DF"));
 
         JPanel courseAdministratorCoursePanel = new JPanel();
+        courseAdministratorCoursePanel.setBackground(Color.decode("#D6D9DF"));
         courseAdministratorCoursePanel.add(scrollPane);
 
         return courseAdministratorCoursePanel;
     }
 
-    private JPanel courseAdministratorCourseFormPanel(){
-        JPanel courseAdministratorCourseForm = new JPanel();
-        courseAdministratorCourseForm.setLayout(new GridBagLayout());
+    private JPanel courseAdministratorModuleFormPanel(){
+        JPanel courseAdministratorModuleForm = new JPanel();
+        courseAdministratorModuleForm.setLayout(new GridBagLayout());
+        courseAdministratorModuleForm.setBackground(Color.decode("#D6D9DF"));
 
-        courseAdministratorCourseForm.setLayout(new GridBagLayout());
         formLayout = new GridBagConstraints();
         formLayout.fill = GridBagConstraints.HORIZONTAL;
         formLayout.insets = new Insets(5,5,5,5);
@@ -93,64 +94,65 @@ public class CourseAdministrationLoggedInModulesPanel extends JPanel implements 
         formLayout.gridx = 0;
         formLayout.gridy = 0;
         formLayout.gridwidth = 1;
-        courseAdministratorCourseForm.add(new JLabel("Course"), formLayout);
+        courseAdministratorModuleForm.add(new JLabel("Course"), formLayout);
 
         formLayout.weightx = 1;
         formLayout.gridwidth = 3;
         formLayout.gridx = 1;
         formLayout.gridy = 0;
-        courseAdministratorCourseForm.add(course,formLayout);
+        courseAdministratorModuleForm.add(course,formLayout);
 
         formLayout.gridx=0;
         formLayout.gridy=1;
         formLayout.gridwidth = 1;
-        courseAdministratorCourseForm.add(new JLabel("Module Name"),formLayout);
+        courseAdministratorModuleForm.add(new JLabel("Module Name"),formLayout);
 
         formLayout.gridx=1;
         formLayout.gridy=1;
         formLayout.gridwidth = 3;
-        courseAdministratorCourseForm.add(moduleName,formLayout);
+        courseAdministratorModuleForm.add(moduleName,formLayout);
 
         formLayout.gridx = 0;
         formLayout.gridy = 2;
         formLayout.gridwidth = 1;
-        courseAdministratorCourseForm.add(new JLabel("Level"), formLayout);
+        courseAdministratorModuleForm.add(new JLabel("Level"), formLayout);
 
         formLayout.gridx = 1;
         formLayout.gridy = 2;
         formLayout.gridwidth = 4;
-        courseAdministratorCourseForm.add(level, formLayout);
+        courseAdministratorModuleForm.add(level, formLayout);
 
         formLayout.gridx = 0;
         formLayout.gridy = 3;
         formLayout.gridwidth = 1;
-        courseAdministratorCourseForm.add(new JLabel("Semester"), formLayout);
+        courseAdministratorModuleForm.add(new JLabel("Semester"), formLayout);
 
         formLayout.gridx = 1;
         formLayout.gridy = 3;
         formLayout.gridwidth = 4;
-        courseAdministratorCourseForm.add(semester, formLayout);
+        courseAdministratorModuleForm.add(semester, formLayout);
 
         formLayout.gridx = 0;
         formLayout.gridy = 4;
         formLayout.gridwidth = 1;
         elective = new JLabel("Elective");
-        courseAdministratorCourseForm.add(elective, formLayout);
+        courseAdministratorModuleForm.add(elective, formLayout);
 
         formLayout.gridx = 1;
         formLayout.gridy = 4;
-        courseAdministratorCourseForm.add(isElective, formLayout);
+        courseAdministratorModuleForm.add(isElective, formLayout);
 
 
 
         elective.setVisible(false);
 
-        return courseAdministratorCourseForm;
+        return courseAdministratorModuleForm;
     }
 
-    private JPanel courseAdministratorCourseButtonPanel() {
-        JPanel courseAdministratorCourseButton = new JPanel();
-        courseAdministratorCourseButton.setLayout(new GridBagLayout());
+    private JPanel courseAdministratorModuleButtonPanel() {
+        JPanel courseAdministratorModuleButton = new JPanel();
+        courseAdministratorModuleButton.setLayout(new GridBagLayout());
+        courseAdministratorModuleButton.setBackground(Color.decode("#D6D9DF"));
         buttonLayout = new GridBagConstraints();
         buttonLayout.fill = GridBagConstraints.HORIZONTAL;
         buttonLayout.insets = new Insets(20,10,5,10);
@@ -159,23 +161,23 @@ public class CourseAdministrationLoggedInModulesPanel extends JPanel implements 
 
         buttonLayout.gridx = 0;
         buttonLayout.gridy = 0;
-        courseAdministratorCourseButton.add(addModule, buttonLayout);
+        courseAdministratorModuleButton.add(addModule, buttonLayout);
 
         buttonLayout.gridx = 1;
         buttonLayout.gridy = 0;
-        courseAdministratorCourseButton.add(deleteModule, buttonLayout);
+        courseAdministratorModuleButton.add(deleteModule, buttonLayout);
 
         buttonLayout.gridx = 0;
         buttonLayout.gridy = 1;
         buttonLayout.gridwidth = 4;
-        courseAdministratorCourseButton.add(updateModule, buttonLayout);
+        courseAdministratorModuleButton.add(updateModule, buttonLayout);
 
         buttonLayout.gridx = 0;
         buttonLayout.gridy = 2;
         buttonLayout.gridwidth = 4;
-        courseAdministratorCourseButton.add(back, buttonLayout);
+        courseAdministratorModuleButton.add(back, buttonLayout);
 
-        return courseAdministratorCourseButton;
+        return courseAdministratorModuleButton;
     }
 
     @Override
@@ -184,17 +186,18 @@ public class CourseAdministrationLoggedInModulesPanel extends JPanel implements 
         layout = new GridBagConstraints();
         layout.fill = GridBagConstraints.BOTH;
         layout.insets = new Insets(5,0,5,0);
+        this.setBackground(Color.decode("#D6D9DF"));
 
         layout.gridx=3;
         layout.gridy=3;
 
         layout.gridx = 1;
         layout.gridy = 0;
-        add(courseAdministratorCourseFormPanel(),layout);
+        add(courseAdministratorModuleFormPanel(),layout);
 
         layout.gridx = 1;
         layout.gridy = 1;
-        add(courseAdministratorCourseButtonPanel(),layout);
+        add(courseAdministratorModuleButtonPanel(),layout);
 
         layout.weighty = 0.5;
         layout.gridx = 0;
@@ -222,7 +225,6 @@ public class CourseAdministrationLoggedInModulesPanel extends JPanel implements 
         }
 
     }
-
 
     public DefaultTableModel getCourseAdministratorModuleModel(){ return (DefaultTableModel) getTable().getModel();}
     public  JTable getTable(){
