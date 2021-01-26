@@ -62,7 +62,7 @@ public class CourseAdministrationLoggedInModulesPanel extends JPanel implements 
 
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

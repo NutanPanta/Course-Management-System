@@ -76,7 +76,7 @@ public class InstructorToModuleTable {
             statement.close();
         }
         catch (SQLException e){
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

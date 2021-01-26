@@ -19,7 +19,6 @@ public class UserTable {
             String insert = "INSERT INTO users(firstName,lastName,email,password,userType,courseType,level)" + "VALUES(?,?,?,?,?,?,?)";
             PreparedStatement statement = con.prepareStatement(insert);
 
-
             statement.setString(1,firstName);
             statement.setString(2,lastName);
             statement.setString(3,email);

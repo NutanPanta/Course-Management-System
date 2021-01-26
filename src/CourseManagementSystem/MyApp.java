@@ -455,8 +455,7 @@ public class MyApp extends JFrame {
         boolean  matchUserType = readAndValidateLoginUserType(loginEmail,loginUserType);
 
 
-        if(loginEmail.isEmpty() &&
-                loginPassword.isEmpty()){
+        if(loginEmail.isEmpty() && loginPassword.isEmpty()){
             JOptionPane.showMessageDialog(this,"Complete all fields!!!");
         } else if(loginEmail.isEmpty()){
             JOptionPane.showMessageDialog(this,"Email field is empty!!!");
@@ -658,7 +657,7 @@ public class MyApp extends JFrame {
                 });
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
     }
@@ -679,7 +678,7 @@ public class MyApp extends JFrame {
                 });
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
     }
@@ -701,7 +700,7 @@ public class MyApp extends JFrame {
                 });
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
     }
@@ -930,8 +929,12 @@ public class MyApp extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int selectedRow = dataTable.getSelectedRow();
-                courseAdministrationLoggedInInstructorAddToModulePanel.getModuleName().setSelectedItem(courseAdministratorInstructorModel.getValueAt(selectedRow, 0).toString());
-                courseAdministrationLoggedInInstructorAddToModulePanel.getInstructorName().setSelectedItem(courseAdministratorInstructorModel.getValueAt(selectedRow, 1).toString());
+                courseAdministrationLoggedInInstructorAddToModulePanel.getCourseName().setText(courseAdministratorInstructorModel.getValueAt(selectedRow,1).toString());
+                courseAdministrationLoggedInInstructorAddToModulePanel.getModuleName().setSelectedItem(courseAdministratorInstructorModel.getValueAt(selectedRow, 2).toString());
+                courseAdministrationLoggedInInstructorAddToModulePanel.getLevel().setText(courseAdministratorInstructorModel.getValueAt(selectedRow,3).toString());
+                courseAdministrationLoggedInInstructorAddToModulePanel.getModuleType().setText(courseAdministratorInstructorModel.getValueAt(selectedRow,4).toString());
+                courseAdministrationLoggedInInstructorAddToModulePanel.getSemester().setText(courseAdministratorInstructorModel.getValueAt(selectedRow,5).toString());
+                courseAdministrationLoggedInInstructorAddToModulePanel.getInstructorName().setSelectedItem(courseAdministratorInstructorModel.getValueAt(selectedRow, 6).toString());
             }
             @Override
             public void mousePressed(MouseEvent e) {
@@ -1042,7 +1045,7 @@ public class MyApp extends JFrame {
                         refreshCourseAdministratorInstructorTable();
                     }
                     catch (Exception ex){
-                        JOptionPane.showMessageDialog(self, "Please select a row", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(self, "Please select a row", "Warning", JOptionPane.WARNING_MESSAGE);
                     }
                 }
                 else {

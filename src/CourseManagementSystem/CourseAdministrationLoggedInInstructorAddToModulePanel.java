@@ -6,6 +6,8 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -13,18 +15,40 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
     private DefaultTableModel courseAdministratorInstructorModel;
     private JTable courseAdministratorInstructorTable;
     private JComboBox moduleName, instructorName;
+    private JTextField courseName,level,moduleType,semester;
     private JButton addInstructor, deleteInstructor, updateInstructor, back;
     private GridBagConstraints layout, formLayout, buttonLayout;
     ModuleTable moduleTable;
     UserTable userTable;
 
+
     public CourseAdministrationLoggedInInstructorAddToModulePanel() {
         setBorder(BorderFactory.createTitledBorder("Register Instructor To Module"));
         String[] TableNames = {"Id","Course Name","Module Name","level","moduleType","semester","Instructor Name"};
+
         moduleName = new JComboBox();
         instructorName =new JComboBox();
+        courseName = new JTextField(20);
+        courseName.setPreferredSize(new Dimension(40,30));
+        courseName.setEnabled(false);
+        courseName.setDisabledTextColor(new Color(0,0,0));
+        level = new JTextField(20);
+        level.setPreferredSize(new Dimension(40,30));
+        level.setEnabled(false);
+        level.setDisabledTextColor(new Color(0,0,0));
+        moduleType = new JTextField(20);
+        moduleType.setPreferredSize(new Dimension(40,30));
+        moduleType.setEnabled(false);
+        moduleType.setDisabledTextColor(new Color(0,0,0));
+        semester = new JTextField(20);
+        semester.setPreferredSize(new Dimension(40,30));
+        semester.setEnabled(false);
+        semester.setDisabledTextColor(new Color(0,0,0));
+
         moduleName.setBounds(50, 50,90,20);
+        moduleName.addItem("Select Module Names");
         instructorName.setBounds(50, 50,90,20);
+
         DefaultTableModel courseAdministratorInstructorModel = new DefaultTableModel();
         courseAdministratorInstructorModel.setColumnIdentifiers(TableNames);
 
@@ -37,23 +61,30 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
 
         moduleTable = new ModuleTable();
         userTable = new UserTable();
-        refreshModuleName();
         instructorName();
-
+        refreshModuleName();
+        moduleDetailsAtTextField();
+        refreshModuleTextFields();
 
     }
 
     private void refreshModuleName(){
-        moduleName.removeAllItems();
+        int a = 0;
+        int size = 0;
         try {
             ResultSet resultSet = moduleTable.getModuleName();
-            moduleName.addItem("Select Module Names");
             while (resultSet.next()) {
-                moduleName.addItem(resultSet.getString("moduleName"));
+                size = moduleName.getItemCount();
+                a++;
+                if (size <= a){
+                    moduleName.addItem(resultSet.getString("moduleName"));
+                }
 
             }
+            System.out.println(a + " " + size);
+
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -68,7 +99,35 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
 
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void moduleDetailsAtTextField(){
+        courseName.setText("");
+        level.setText("");
+        moduleType.setText("");
+        semester.setText("");
+        try {
+            String name = moduleName.getSelectedItem().toString();
+
+            if (name == "Select Module Names"){
+                courseName.setText("");
+                level.setText("");
+                moduleType.setText("");
+                semester.setText("");
+            } else {
+                ResultSet resultSet1 = moduleTable.getModulesDataIntoInstructorPanel(name);
+                while (resultSet1.next()) {
+                    courseName.setText(resultSet1.getString("courseName"));
+                    level.setText(resultSet1.getString("level"));
+                    moduleType.setText(resultSet1.getString("moduleType"));
+                    semester.setText(resultSet1.getString("semester"));
+                }
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -118,6 +177,47 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         formLayout.gridy = 1;
         courseAdministratorCourseForm.add(instructorName,formLayout);
 
+        formLayout.gridx = 0;
+        formLayout.gridy = 2;
+        formLayout.gridwidth = 1;
+        courseAdministratorCourseForm.add(new JLabel("Course Name"), formLayout);
+
+        formLayout.gridx=1;
+        formLayout.gridy=2;
+        formLayout.gridwidth = 1;
+        courseAdministratorCourseForm.add(courseName,formLayout);
+
+        formLayout.gridx = 0;
+        formLayout.gridy = 3;
+        formLayout.gridwidth = 1;
+        courseAdministratorCourseForm.add(new JLabel("Level"), formLayout);
+
+        formLayout.gridx=1;
+        formLayout.gridy=3;
+        formLayout.gridwidth = 1;
+        courseAdministratorCourseForm.add(level,formLayout);
+
+        formLayout.gridx = 0;
+        formLayout.gridy = 4;
+        formLayout.gridwidth = 1;
+        courseAdministratorCourseForm.add(new JLabel("Module Type"), formLayout);
+
+        formLayout.gridx=1;
+        formLayout.gridy=4;
+        formLayout.gridwidth = 1;
+        courseAdministratorCourseForm.add(moduleType,formLayout);
+
+        formLayout.gridx = 0;
+        formLayout.gridy = 5;
+        formLayout.gridwidth = 1;
+        courseAdministratorCourseForm.add(new JLabel("Semester"), formLayout);
+
+        formLayout.gridx=1;
+        formLayout.gridy=5;
+        formLayout.gridwidth = 1;
+        courseAdministratorCourseForm.add(semester,formLayout);
+
+
 
         return courseAdministratorCourseForm;
     }
@@ -127,7 +227,7 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         courseAdministratorCourseButton.setLayout(new GridBagLayout());
         buttonLayout = new GridBagConstraints();
         buttonLayout.fill = GridBagConstraints.HORIZONTAL;
-        buttonLayout.insets = new Insets(20,10,5,10);
+        buttonLayout.insets = new Insets(13,10,5,10);
         buttonLayout.ipadx = 20;
         buttonLayout.ipady = 20;
 
@@ -176,9 +276,18 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         layout.gridheight=3;
         add(courseAdministratorCourseTablePanel(),layout);
 
+
         return this;
     }
 
+    private void refreshModuleTextFields() {
+        moduleName.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                moduleDetailsAtTextField();
+            }
+        });
+    }
 
     public DefaultTableModel getCourseAdministratorInstructorModel(){ return (DefaultTableModel) getTable().getModel();}
     public  JTable getTable(){
@@ -186,6 +295,18 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
     }
     public JComboBox getModuleName() { return moduleName; }
     public JComboBox getInstructorName() { return instructorName; }
+    public JTextField getCourseName() {
+        return courseName;
+    }
+    public JTextField getLevel() {
+        return level;
+    }
+    public JTextField getModuleType() {
+        return moduleType;
+    }
+    public JTextField getSemester() {
+        return semester;
+    }
     public JButton getAddInstructor() {
         return addInstructor;
     }

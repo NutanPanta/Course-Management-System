@@ -40,7 +40,7 @@ public class ModuleTable {
 
     ResultSet getModuleName(){
         try {
-            String select = "Select moduleName FROM modules m, courses c WHERE c.courseName=m.courseName and c.courseStatus = 'Open'";
+            String select = "SELECT moduleName FROM modules m, courses c WHERE c.courseName=m.courseName and c.courseStatus = 'Open'";
 
             PreparedStatement statement = con.prepareStatement(select);
             return statement.executeQuery();
@@ -54,8 +54,22 @@ public class ModuleTable {
     ResultSet getModuleData(){
         try {
             String select = "Select * FROM modules m, courses c WHERE c.courseName=m.courseName and c.courseStatus = 'Open'";
-
             PreparedStatement statement = con.prepareStatement(select);
+            return statement.executeQuery();
+        }
+        catch (SQLException e){
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return null;
+    }
+
+    ResultSet getModulesDataIntoInstructorPanel(String moduleName){
+        try {
+            String select = "select courseName,level,moduleType,semester from modules where moduleName = ?";
+            PreparedStatement statement = con.prepareStatement(select);
+
+            statement.setString(1,moduleName);
+
             return statement.executeQuery();
         }
         catch (SQLException e){
@@ -88,7 +102,6 @@ public class ModuleTable {
             }
         }
     }
-
 
     void deleteModule(int id){
         String delete = "DELETE FROM modules WHERE moduleId=?";
