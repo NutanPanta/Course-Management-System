@@ -543,9 +543,17 @@ public class MyApp extends JFrame {
         String sem = courseAdministrationLoggedInModulesPanel.getSemester().getSelectedItem().toString();
         String moduleType = courseAdministrationLoggedInModulesPanel.getIsElective().isSelected() ? "Elective" : "Compulsory";
 
-        if (mname.isEmpty() || mname.isEmpty()) {
+        if (cname == "Select Course Names" ) {
+            JOptionPane.showMessageDialog(this,"Select course name!!!");
+        } else if(mname.isEmpty()){
+            JOptionPane.showMessageDialog(this,"Module Name Field is empty!!!");
+        } else if (lvl == "Select Level" ) {
+            JOptionPane.showMessageDialog(this,"Select Level!!!");
+        } else if (sem == "Select Semester" ) {
+            JOptionPane.showMessageDialog(this,"Select Semester!!!");
+        } else if (cname == "Select Course Names" && mname.isEmpty()) {
             JOptionPane.showMessageDialog(this,"Complete all fields!!!");
-        }  else {
+        } else {
                 moduleTable.insert(mname,cname, lvl, moduleType, sem);
             courseAdministrationLoggedInModulesPanel.getModuleName().setText("");
         }
@@ -940,10 +948,17 @@ public class MyApp extends JFrame {
                     String lvl = courseAdministrationLoggedInModulesPanel.getLevel().getSelectedItem().toString();
                     String sem = courseAdministrationLoggedInModulesPanel.getSemester().getSelectedItem().toString();
                     String courseType = courseAdministrationLoggedInModulesPanel.getIsElective().isSelected() ? "Elective" : "Compulsory";
-                    if (mname.isEmpty()) {
-                        JOptionPane.showMessageDialog(self, "Module Name is Empty", "Warning", JOptionPane.WARNING_MESSAGE);
-                    }
-                    else{
+                    if (cname == "Select Course Names" ) {
+                        JOptionPane.showMessageDialog(self,"Select course name!!!");
+                    } else if(mname.isEmpty()){
+                        JOptionPane.showMessageDialog(self,"Module Name Field is empty!!!");
+                    } else if (lvl == "Select Level" ) {
+                        JOptionPane.showMessageDialog(self,"Select Level!!!");
+                    } else if (sem == "Select Semester" ) {
+                        JOptionPane.showMessageDialog(self,"Select Semester!!!");
+                    } else if (cname == "Select Course Names" && mname.isEmpty()) {
+                        JOptionPane.showMessageDialog(self,"Complete all fields!!!");
+                    } else{
                         int id = Integer.parseInt(moduleModel.getValueAt(selectedRow, 0).toString());
                         moduleTable.updateModule(id,mname,cname,lvl,courseType,sem);
                         refreshModuleTable();
@@ -1023,8 +1038,8 @@ public class MyApp extends JFrame {
                 if (confirm==JOptionPane.YES_OPTION){
                     try {
                         courseAdministrationLoggedInCoursesPanel.getCourseName().setText("");
-                        int  courseName=Integer.parseInt(courseModel.getValueAt(selectedRow,0).toString());
-                        coursetable.deleteCourse(courseName);
+                        int  courseId=Integer.parseInt(courseModel.getValueAt(selectedRow,0).toString());
+                        coursetable.deleteCourse(courseId);
                         refreshCourseTable();
                     }
                     catch (Exception ex){
@@ -1094,7 +1109,5 @@ public class MyApp extends JFrame {
     }
 
 
-    public static void main(String[] args) {
-        new MyApp();
-    }
+    public static void main(String[] args) { new MyApp(); }
 }

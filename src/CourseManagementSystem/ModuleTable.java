@@ -40,7 +40,7 @@ public class ModuleTable {
 
     ResultSet getModuleName(){
         try {
-            String select = "SELECT moduleName FROM modules m, courses c WHERE c.courseName=m.courseName and c.courseStatus = 'Open'";
+            String select = "SELECT moduleName FROM modules, courses WHERE courses.courseName=modules.courseName and courses.courseStatus = 'Open'";
 
             PreparedStatement statement = con.prepareStatement(select);
             return statement.executeQuery();
@@ -53,7 +53,7 @@ public class ModuleTable {
 
     ResultSet getModuleData(){
         try {
-            String select = "Select * FROM modules m, courses c WHERE c.courseName=m.courseName and c.courseStatus = 'Open'";
+            String select = "Select * FROM modules, courses WHERE courses.courseName=modules.courseName and courses.courseStatus = 'Open'";
             PreparedStatement statement = con.prepareStatement(select);
             return statement.executeQuery();
         }

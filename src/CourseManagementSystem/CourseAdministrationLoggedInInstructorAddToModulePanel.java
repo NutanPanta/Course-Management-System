@@ -6,6 +6,8 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -44,7 +46,7 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         semester.setDisabledTextColor(new Color(0,0,0));
 
         moduleName.setBounds(50, 50,90,20);
-        moduleName.addItem("Select Module Names");
+
         instructorName.setBounds(50, 50,90,20);
 
         DefaultTableModel courseAdministratorInstructorModel = new DefaultTableModel();
@@ -61,23 +63,24 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         userTable = new UserTable();
         instructorName();
         refreshModuleName();
-        moduleDetailsAtTextField();
-        refreshModuleTextFields();
 
     }
 
     private void refreshModuleName(){
-        int a = 0,size = 0;
+        int a = 1,size = 0;
         try {
             ResultSet resultSet = moduleTable.getModuleName();
+            moduleName.removeAllItems();
+            moduleName.addItem("Select Module Names");
             while (resultSet.next()) {
                 size = moduleName.getItemCount();
                 a++;
-                if (size <= a){
+                if (size < a){
                     moduleName.addItem(resultSet.getString("moduleName"));
                 }
 
             }
+            moduleDetailsAtTextField();
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -277,15 +280,6 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
 
 
         return this;
-    }
-
-    private void refreshModuleTextFields() {
-        moduleName.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                moduleDetailsAtTextField();
-            }
-        });
     }
 
     public DefaultTableModel getCourseAdministratorInstructorModel(){ return (DefaultTableModel) getTable().getModel();}

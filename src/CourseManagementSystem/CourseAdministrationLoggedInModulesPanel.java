@@ -25,8 +25,8 @@ public class CourseAdministrationLoggedInModulesPanel extends JPanel implements 
         moduleName = new JTextField(20);
         moduleName.setPreferredSize(new Dimension(40,30));
         String[] TableNames = {"Module Id","Module Name","Course Name","level","Course Type","Semester"};
-        String ll[]={"4","5","6"};
-        String st[] = {"1","2"};
+        String ll[]={"Select Level","4","5","6"};
+        String st[] = {"Select Semester","1","2"};
         course = new JComboBox();
         semester =new JComboBox(st);
         level =new JComboBox(ll);
@@ -53,10 +53,10 @@ public class CourseAdministrationLoggedInModulesPanel extends JPanel implements 
     }
 
     private void courseName(){
-        course.removeAllItems();
         try {
             ResultSet resultSet = coursetable.getCourseDetails();
-
+            course.removeAllItems();
+            course.addItem("Select Course Names");
             while (resultSet.next()) {
                 course.addItem(resultSet.getString("courseName"));
 
