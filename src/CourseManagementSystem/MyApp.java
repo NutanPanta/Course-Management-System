@@ -55,9 +55,9 @@ public class MyApp extends JFrame {
 
         LoginPanel.setVisible(false);
         RegisterPanel.setVisible(false);
-        studentLoggedInMainPanel.setVisible(false);
+        studentLoggedInMainPanel.setVisible(true);
         studentLoggedInCoursePanel.setVisible(false);
-        courseAdministrationLoggedInMainPanel.setVisible(true);
+        courseAdministrationLoggedInMainPanel.setVisible(false);
         courseAdministrationLoggedInCoursesPanel.setVisible(false);
         courseAdministrationLoggedInModulesPanel.setVisible(false);
         courseAdministrationLoggedInInstructorAddToModulePanel.setVisible(false);
