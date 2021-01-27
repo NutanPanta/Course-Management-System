@@ -14,7 +14,7 @@ import java.sql.SQLException;
 public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPanel implements AppLayout {
     private DefaultTableModel courseAdministratorInstructorModel;
     private JTable courseAdministratorInstructorTable;
-    private JComboBox moduleName, instructorName;
+    private JComboBox moduleName, instructorName,newModuleName;
     private JTextField courseName,level,moduleType,semester;
     private JButton addInstructor, deleteInstructor, updateInstructor, back;
     private GridBagConstraints layout, formLayout, buttonLayout;
@@ -44,7 +44,7 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         semester.setPreferredSize(new Dimension(40,30));
         semester.setEnabled(false);
         semester.setDisabledTextColor(new Color(0,0,0));
-
+        moduleName.addItem("Select Module Names");
         moduleName.setBounds(50, 50,90,20);
 
         instructorName.setBounds(50, 50,90,20);
@@ -63,27 +63,20 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         userTable = new UserTable();
         instructorName();
         refreshModuleName();
+        moduleDetailsAtTextField();
+        refresh();
 
     }
 
     private void refreshModuleName(){
-        int a = 1,size = 0;
         try {
             ResultSet resultSet = moduleTable.getModuleName();
             moduleName.removeAllItems();
-            moduleName.addItem("Select Module Names");
-            while (resultSet.next()) {
-                size = moduleName.getItemCount();
-                a++;
-                if (size < a){
+            while (resultSet.next() ) {
                     moduleName.addItem(resultSet.getString("moduleName"));
-                }
-
             }
-            moduleDetailsAtTextField();
-
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -93,9 +86,7 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
             ResultSet resultSet = userTable.getInstructorNames();
             instructorName.addItem("Select Instructor Names");
             while (resultSet.next()) {
-
                 instructorName.addItem(resultSet.getString("firstName") + " " +  resultSet.getString( "lastName"));
-
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -103,6 +94,10 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
     }
 
     private void moduleDetailsAtTextField(){
+        if (moduleName.getItemCount() == 0){
+            moduleName.addItem("Select Module Names");
+        }
+
         courseName.setText("");
         level.setText("");
         moduleType.setText("");
@@ -280,6 +275,15 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
 
 
         return this;
+    }
+
+    private void refresh() {
+        moduleName.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                moduleDetailsAtTextField();
+            }
+        });
     }
 
     public DefaultTableModel getCourseAdministratorInstructorModel(){ return (DefaultTableModel) getTable().getModel();}
