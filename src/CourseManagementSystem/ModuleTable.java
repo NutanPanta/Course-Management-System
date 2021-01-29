@@ -51,6 +51,20 @@ public class ModuleTable {
         return null;
     }
 
+    ResultSet getModuleNameAtStudentPanel(String semester){
+        try {
+            String select = "SELECT moduleName FROM modules, courses WHERE courses.courseName=modules.courseName and courses.courseStatus = 'Open' and modules.moduleType = 'Elective' and modules.semester =?";
+
+            PreparedStatement statement = con.prepareStatement(select);
+            statement.setString(1,semester);
+            return statement.executeQuery();
+        }
+        catch (SQLException e){
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return null;
+    }
+
     ResultSet getModuleData(){
         try {
             String select = "Select * FROM modules, courses WHERE courses.courseName=modules.courseName and courses.courseStatus = 'Open'";

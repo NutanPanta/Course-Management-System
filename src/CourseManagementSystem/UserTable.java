@@ -36,6 +36,21 @@ public class UserTable {
         }
     }
 
+
+    ResultSet getParticularStudentData(String Email) {
+        try {
+            String select = "SELECT * FROM users WHERE email = ?";
+
+            PreparedStatement statement = con.prepareStatement(select);
+            statement.setString(1,Email);
+            return statement.executeQuery();
+        }
+        catch (SQLException e){
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return null;
+    }
+
     ResultSet getInstructorNames(){
         try {
             String select = "Select firstName,lastName FROM users WHERE users.userType = 'Instructor'";

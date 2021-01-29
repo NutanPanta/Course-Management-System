@@ -45,3 +45,11 @@ Password: johnsondhakal
 User Type: Instructor
 Course: null
 Level: null
+
+First Name: Nutan
+Last Name: Panta
+Email: nutanrajpanta@gmail.com
+Password: nutan
+User Type: Student
+Course: BIT
+Level: 6

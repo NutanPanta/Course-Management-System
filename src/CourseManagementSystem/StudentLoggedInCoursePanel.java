@@ -4,16 +4,21 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class StudentLoggedInCoursePanel extends JPanel implements AppLayout {
     private DefaultTableModel StudentLoggedInCourseModel;
     private JTable StudentLoggedInCourseTable;
-    private JTextField studentName, courseName, level, moduleType;
+    private JTextField studentName, courseName, level;
     private JComboBox semester, electiveSubjectOne, electiveSubjectTwo;
-    private JButton addElectiveSubject, back;
-    private GridBagConstraints layout, studentLayout, buttonLayout,electiveLayout;
+    private JButton addElectiveSubject,viewResult, back;
+    private GridBagConstraints layout, studentLayout,electiveLayout, buttonLayout;
     ModuleTable moduleTable;
     UserTable userTable;
+    loginPanel login;
+    StudentLoggedInMainPanel studentLoggedInMainPanel;
+    JPanel studentPanelCoursesStudentElectiveSubjects;
 
 
     public StudentLoggedInCoursePanel() {
@@ -32,58 +37,73 @@ public class StudentLoggedInCoursePanel extends JPanel implements AppLayout {
         level.setPreferredSize(new Dimension(40,30));
         level.setEnabled(false);
         level.setDisabledTextColor(new Color(0,0,0));
-        moduleType = new JTextField(20);
-        moduleType.setPreferredSize(new Dimension(40,30));
-        moduleType.setEnabled(false);
-        moduleType.setDisabledTextColor(new Color(0,0,0));
 
         String sem[] = {"Select Semester","1","2"};
         semester = new JComboBox(sem);
         electiveSubjectOne = new JComboBox();
-        electiveSubjectOne.addItem("Select Elective Subject One");
         electiveSubjectTwo = new JComboBox();
-        electiveSubjectTwo.addItem("Select Elective Subject Two");
 
         DefaultTableModel courseAdministratorInstructorModel = new DefaultTableModel();
         courseAdministratorInstructorModel.setColumnIdentifiers(TableNames);
 
         addElectiveSubject = new JButton("Add Elective");
+        viewResult = new JButton("View Result");
         back = new JButton("Back");
 
         StudentLoggedInCourseTable = new JTable(courseAdministratorInstructorModel);
 
         moduleTable = new ModuleTable();
         userTable = new UserTable();
+        login = new loginPanel();
+        studentLoggedInMainPanel = new StudentLoggedInMainPanel();
 
+        electiveSubjects();
+        refreshElectiveSubjects();
     }
 
-//    private void moduleDetailsAtTextField(){
-//        courseName.setText("");
-//        level.setText("");
-//        moduleType.setText("");
-//        semester.setText("");
-//        try {
-//            String name = moduleName.getSelectedItem().toString();
-//
-//            if (name == "Select Module Names"){
-//                courseName.setText("");
-//                level.setText("");
-//                moduleType.setText("");
-//                semester.setText("");
-//            } else {
-//                ResultSet resultSet1 = moduleTable.getModulesDataIntoInstructorPanel(name);
-//                while (resultSet1.next()) {
-//                    courseName.setText(resultSet1.getString("courseName"));
-//                    level.setText(resultSet1.getString("level"));
-//                    moduleType.setText(resultSet1.getString("moduleType"));
-//                    semester.setText(resultSet1.getString("semester"));
-//                }
-//            }
-//
-//        } catch (SQLException e) {
-//            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
-//        }
-//    }
+    private void electiveSubjects() {
+        try {
+            String sem = semester.getSelectedItem().toString();
+            ResultSet resultSet = moduleTable.getModuleNameAtStudentPanel(sem);
+            electiveSubjectOne.removeAllItems();
+            electiveSubjectTwo.removeAllItems();
+            electiveSubjectOne.addItem("Select Elective Subject One");
+            electiveSubjectTwo.addItem("Select Elective Subject Two");
+            while (resultSet.next()) {
+                electiveSubjectOne.addItem(resultSet.getString("moduleName"));
+                electiveSubjectTwo.addItem(resultSet.getString("moduleName"));
+
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void refreshElectiveSubjects(){
+        semester.addActionListener(e -> {
+            electiveSubjects();
+        });
+    }
+
+    public void loggedInStudentData(String Email){
+        try {
+                ResultSet resultSet = userTable.getParticularStudentData(Email);
+                while (resultSet.next()) {
+                    studentName.setText(resultSet.getString("firstName") + " " + resultSet.getString("lastName"));
+                    courseName.setText(resultSet.getString("courseType"));
+                    level.setText(resultSet.getString("level"));
+                }
+            String lvl = level.getText().trim();
+            if (!lvl.equals("6")){
+                studentPanelCoursesStudentElectiveSubjects.setVisible(false);
+                addElectiveSubject.setVisible(false);
+
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     private JPanel courseAdministratorCourseTablePanel() {
 
@@ -113,50 +133,39 @@ public class StudentLoggedInCoursePanel extends JPanel implements AppLayout {
 
         studentLayout.gridx = 0;
         studentLayout.gridy = 0;
-        studentLayout.gridwidth = 1;
-        studentPanelCoursesStudentDetails.add(new JLabel("Student Name"), studentLayout);
+        studentPanelCoursesStudentDetails.add(new JLabel("Student Name"),studentLayout);
 
-        studentLayout.weightx = 1;
-        studentLayout.gridwidth = 3;
         studentLayout.gridx = 1;
         studentLayout.gridy = 0;
-        studentPanelCoursesStudentDetails.add(studentName, studentLayout);
+        studentLayout.weightx = 1;
+        studentLayout.gridwidth = 3;
+        studentPanelCoursesStudentDetails.add(studentName,studentLayout);
 
-        studentLayout.gridx = 0;
-        studentLayout.gridy = 1;
+        studentLayout.gridx=0;
+        studentLayout.gridy=1;
         studentLayout.gridwidth = 1;
-        studentPanelCoursesStudentDetails.add(new JLabel("Course Name"), studentLayout);
+        studentPanelCoursesStudentDetails.add(new JLabel("Enrolled Course"),studentLayout);
 
         studentLayout.gridx=1;
         studentLayout.gridy=1;
-        studentLayout.gridwidth = 1;
-        studentPanelCoursesStudentDetails.add(courseName, studentLayout);
+        studentLayout.gridwidth = 3;
+        studentPanelCoursesStudentDetails.add(courseName,studentLayout);
 
-        studentLayout.gridx = 0;
-        studentLayout.gridy = 2;
+        studentLayout.gridx=0;
+        studentLayout.gridy=2;
         studentLayout.gridwidth = 1;
-        studentPanelCoursesStudentDetails.add(new JLabel("Level"), studentLayout);
+        studentPanelCoursesStudentDetails.add(new JLabel("Level"),studentLayout);
 
         studentLayout.gridx=1;
         studentLayout.gridy=2;
-        studentLayout.gridwidth = 1;
-        studentPanelCoursesStudentDetails.add(level, studentLayout);
-
-        studentLayout.gridx = 0;
-        studentLayout.gridy = 3;
-        studentLayout.gridwidth = 1;
-        studentPanelCoursesStudentDetails.add(new JLabel("Module Type"), studentLayout);
-
-        studentLayout.gridx=1;
-        studentLayout.gridy=3;
-        studentLayout.gridwidth = 1;
-        studentPanelCoursesStudentDetails.add(moduleType, studentLayout);
+        studentLayout.gridwidth = 3;
+        studentPanelCoursesStudentDetails.add(level,studentLayout);
 
         return studentPanelCoursesStudentDetails;
     }
 
     private JPanel StudentPanelLevelSixOptionalCourses() {
-        JPanel studentPanelCoursesStudentElectiveSubjects = new JPanel();
+        studentPanelCoursesStudentElectiveSubjects = new JPanel();
         studentPanelCoursesStudentElectiveSubjects.setLayout(new GridBagLayout());
         studentPanelCoursesStudentElectiveSubjects.setBackground(Color.decode("#D6D9DF"));
         studentPanelCoursesStudentElectiveSubjects.setBorder(BorderFactory.createTitledBorder("Student Elective Subjects Panel"));
@@ -199,25 +208,40 @@ public class StudentLoggedInCoursePanel extends JPanel implements AppLayout {
         return studentPanelCoursesStudentElectiveSubjects;
     }
 
-    private JPanel courseAdministratorInstructorButtonPanel() {
-        JPanel courseAdministratorInstructorButton = new JPanel();
-        courseAdministratorInstructorButton.setLayout(new GridBagLayout());
-        courseAdministratorInstructorButton.setBackground(Color.decode("#D6D9DF"));
+    private JPanel StudentPanelCoursesButtonPanel() {
+        JPanel studentPanelCoursesButtons = new JPanel();
+        studentPanelCoursesButtons.setLayout(new GridBagLayout());
+        studentPanelCoursesButtons.setBackground(Color.decode("#D6D9DF"));
+
         buttonLayout = new GridBagConstraints();
         buttonLayout.fill = GridBagConstraints.HORIZONTAL;
         buttonLayout.insets = new Insets(5,10,5,10);
-        buttonLayout.ipadx = 60;
+        buttonLayout.ipadx = 20;
         buttonLayout.ipady = 20;
+        buttonLayout.weightx = 1;
+        buttonLayout.gridwidth = 3;
 
-        buttonLayout.gridx = 0;
-        buttonLayout.gridy = 0;
-        courseAdministratorInstructorButton.add(addElectiveSubject, buttonLayout);
+        buttonLayout.ipady = 5;
+        buttonLayout.gridx=0;
+        buttonLayout.gridy=0;
+        buttonLayout.gridwidth = 4;
+        studentPanelCoursesButtons.add(addElectiveSubject,buttonLayout);
 
-        buttonLayout.gridx = 1;
-        buttonLayout.gridy = 0;
-        courseAdministratorInstructorButton.add(back, buttonLayout);
+        buttonLayout.ipady = 5;
+        buttonLayout.gridx=0;
+        buttonLayout.gridy=1;
+        buttonLayout.gridwidth = 4;
+        studentPanelCoursesButtons.add(viewResult, buttonLayout);
 
-        return courseAdministratorInstructorButton;
+        buttonLayout.ipady = 5;
+        buttonLayout.gridx=0;
+        buttonLayout.gridy=2;
+        buttonLayout.gridwidth = 4;
+        studentPanelCoursesButtons.add(back, buttonLayout);
+
+        return studentPanelCoursesButtons;
+
+
     }
 
     @Override
@@ -239,9 +263,9 @@ public class StudentLoggedInCoursePanel extends JPanel implements AppLayout {
         layout.gridy = 1;
         add(StudentPanelLevelSixOptionalCourses(),layout);
 
-        layout.gridx = 1;
+        layout.gridx  = 1;
         layout.gridy = 2;
-        add(courseAdministratorInstructorButtonPanel(),layout);
+        add(StudentPanelCoursesButtonPanel(), layout);
 
         layout.weighty = 0.5;
         layout.gridx = 0;
@@ -257,14 +281,14 @@ public class StudentLoggedInCoursePanel extends JPanel implements AppLayout {
     public  JTable getTable(){
         return StudentLoggedInCourseTable;
     }
+    public JTextField getStudentName() {
+        return studentName;
+    }
     public JTextField getCourseName() {
         return courseName;
     }
     public JTextField getLevel() {
         return level;
-    }
-    public JTextField getModuleType() {
-        return moduleType;
     }
     public JButton getBack() {
         return back;

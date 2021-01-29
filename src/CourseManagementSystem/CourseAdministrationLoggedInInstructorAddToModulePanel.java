@@ -72,7 +72,7 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         try {
             ResultSet resultSet = moduleTable.getModuleName();
             moduleName.removeAllItems();
-            while (resultSet.next() ) {
+            while (resultSet.next()) {
                     moduleName.addItem(resultSet.getString("moduleName"));
             }
         } catch (SQLException e) {
@@ -278,12 +278,7 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
     }
 
     private void refresh() {
-        moduleName.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                moduleDetailsAtTextField();
-            }
-        });
+        moduleName.addActionListener(e -> moduleDetailsAtTextField());
     }
 
     public DefaultTableModel getCourseAdministratorInstructorModel(){ return (DefaultTableModel) getTable().getModel();}
