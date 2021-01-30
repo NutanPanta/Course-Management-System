@@ -16,7 +16,7 @@ public class InstructorToModuleTable {
 
     void insert(String moduleName,String instructorName){
         try {
-            String insert = "INSERT INTO instructorteachingmodule(moduleName,instructorName)" + "VALUES(?,?)";
+            String insert = "INSERT INTO instructorteachingmodules(moduleName,instructorName)" + "VALUES(?,?)";
             PreparedStatement statement = con.prepareStatement(insert);
 
             statement.setString(1,moduleName);
@@ -33,7 +33,7 @@ public class InstructorToModuleTable {
 
     ResultSet getModuleDetails(){
         try {
-            String select = "Select * from instructorteachingmodule inner join modules on  modules.moduleName = instructorteachingmodule.moduleName inner join courses on courses.courseStatus = 'Open' and modules.courseName = courses.courseName";
+            String select = "Select * from instructorteachingmodules inner join modules on  modules.moduleName = instructorteachingmodules.moduleName inner join courses on courses.courseStatus = 'Open' and modules.courseName = courses.courseName";
 
             PreparedStatement statement = con.prepareStatement(select);
             return statement.executeQuery();
@@ -46,7 +46,7 @@ public class InstructorToModuleTable {
 
     void updateInstructorTeachingModules(int id,String moduleName,String instructorName) {
         try {
-            String update = "UPDATE instructorteachingmodule SET moduleName = ?,instructorName = ? WHERE  id = ?";
+            String update = "UPDATE instructorteachingmodules SET moduleName = ?,instructorName = ? WHERE  id = ?";
             PreparedStatement statement = con.prepareStatement(update);
 
             statement.setString(1,moduleName);
@@ -68,7 +68,7 @@ public class InstructorToModuleTable {
 
 
     void deleteInstructorFromModule(int id){
-        String delete = "DELETE FROM instructorteachingmodule WHERE id=?";
+        String delete = "DELETE FROM instructorteachingmodules WHERE id=?";
         try {
             PreparedStatement statement = con.prepareStatement(delete);
             statement.setInt(1, id);

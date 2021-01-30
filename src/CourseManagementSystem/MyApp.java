@@ -17,7 +17,6 @@ public class MyApp extends JFrame {
 
     loginPanel LoginPanel;
     registerPanel RegisterPanel;
-    StudentLoggedInMainPanel studentLoggedInMainPanel;
     StudentLoggedInCoursePanel studentLoggedInCoursePanel;
     CourseAdministrationLoggedInMainPanel courseAdministrationLoggedInMainPanel;
     CourseAdministrationLoggedInCoursesPanel courseAdministrationLoggedInCoursesPanel;
@@ -26,6 +25,7 @@ public class MyApp extends JFrame {
     courseTable coursetable;
     ModuleTable moduleTable;
     UserTable userTable;
+    StudentCourseTable studentCourseTable;
     InstructorToModuleTable instructorToModuleTable;
     File file = new File("Files");
     int rln;
@@ -34,7 +34,7 @@ public class MyApp extends JFrame {
 
     public MyApp() {
         setVisible(true);
-        setResizable(false);
+        setResizable(true);
         setTitle("Course Management System");
         setMinimumSize(new Dimension(800,520));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -42,7 +42,6 @@ public class MyApp extends JFrame {
 
         LoginPanel = new loginPanel();
         RegisterPanel = new registerPanel();
-        studentLoggedInMainPanel = new StudentLoggedInMainPanel();
         studentLoggedInCoursePanel = new StudentLoggedInCoursePanel();
         courseAdministrationLoggedInMainPanel = new CourseAdministrationLoggedInMainPanel();
         courseAdministrationLoggedInCoursesPanel = new CourseAdministrationLoggedInCoursesPanel();
@@ -51,11 +50,11 @@ public class MyApp extends JFrame {
         coursetable = new courseTable();
         moduleTable = new ModuleTable();
         userTable = new UserTable();
+        studentCourseTable = new StudentCourseTable();
         instructorToModuleTable = new InstructorToModuleTable();
 
         LoginPanel.setVisible(true);
         RegisterPanel.setVisible(false);
-        studentLoggedInMainPanel.setVisible(false);
         studentLoggedInCoursePanel.setVisible(false);
         courseAdministrationLoggedInMainPanel.setVisible(false);
         courseAdministrationLoggedInCoursesPanel.setVisible(false);
@@ -69,6 +68,7 @@ public class MyApp extends JFrame {
         implementCourses();
         implementModules();
         implementInstructorToModule();
+        implementElectiveSubjects();
 
         updateCourseName();
         updateCourseStatusToCancel();
@@ -83,6 +83,7 @@ public class MyApp extends JFrame {
         refreshCourseTable();
         refreshModuleTable();
         refreshCourseAdministratorInstructorTable();
+        refreshStudentPanelCourseTable();
 
         panelChange();
         pack();
@@ -100,7 +101,6 @@ public class MyApp extends JFrame {
 
         mainPanel.add(LoginPanel.panelUI(),layout);
         mainPanel.add(RegisterPanel.panelUI(),layout);
-        mainPanel.add(studentLoggedInMainPanel.panelUI(),layout);
         mainPanel.add(studentLoggedInCoursePanel.panelUI(),layout);
         mainPanel.add(courseAdministrationLoggedInMainPanel.panelUI(),layout);
         mainPanel.add(courseAdministrationLoggedInCoursesPanel.panelUI(),layout);
@@ -124,7 +124,6 @@ public class MyApp extends JFrame {
         JButton registerLabel = LoginPanel.getRegisterLabel();
         JButton loginLabel = RegisterPanel.getLoginLabel();
 //        Admin Main Panel Buttons
-        JButton studentViewCoursesButton = studentLoggedInMainPanel.getViewCourses();
         JButton courseAdministratorCourseButton = courseAdministrationLoggedInMainPanel.getCourses();
         JButton courseAdministratorCourseModuleButton = courseAdministrationLoggedInMainPanel.getModules();
         JButton courseAdministratorInstructorAddToModuleButton = courseAdministrationLoggedInMainPanel.getAddInstructor();
@@ -133,7 +132,7 @@ public class MyApp extends JFrame {
         JButton courseAdministratorModuleBackButton = courseAdministrationLoggedInModulesPanel.getBack();
         JButton courseAdministratorInstructorAddToModuleBackButton = courseAdministrationLoggedInInstructorAddToModulePanel.getBack();
 //        Logout Buttons
-        JButton studentLogoutButton = studentLoggedInMainPanel.getLogOut();
+        JButton studentLogoutButton = studentLoggedInCoursePanel.getLogout();
         JButton courseAdministratorLogoutButton = courseAdministrationLoggedInMainPanel.getLogOut();
 
         registerLabel.addActionListener(e -> {
@@ -162,18 +161,6 @@ public class MyApp extends JFrame {
             }
         });
 
-        studentViewCoursesButton.addActionListener(e -> {
-            try {
-                studentLoggedInMainPanel.setVisible(false);
-                studentLoggedInCoursePanel.setVisible(true);
-                this.setMinimumSize(new Dimension(820,520));
-                pack();
-                setLocationRelativeTo(null);
-            } catch (Exception ex){
-                JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
-
-            }
-        });
 //        Admin Main Panel Action Listeners
         courseAdministratorCourseButton.addActionListener(e -> {
             try {
@@ -257,7 +244,7 @@ public class MyApp extends JFrame {
 
         studentLogoutButton.addActionListener(e -> {
             try {
-                studentLoggedInMainPanel.setVisible(false);
+                studentLoggedInCoursePanel.setVisible(false);
                 LoginPanel.setVisible(true);
             } catch (Exception ex){
                 JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -503,11 +490,15 @@ public class MyApp extends JFrame {
         } else if (matchLoginData && loginUserType.equals("Student")) {
             JOptionPane.showMessageDialog(this,"You are logged in as Student!!!");
             studentLoggedInCoursePanel.loggedInStudentData(loginEmail);
+            refreshStudentPanelCourseTable();
             LoginPanel.getLoginEmail().setText("");
             LoginPanel.getLoginPassword().setText("");
-            studentLoggedInMainPanel.setVisible(true);
+            studentLoggedInCoursePanel.setVisible(true);
             RegisterPanel.setVisible(false);
             LoginPanel.setVisible(false);
+            this.setMinimumSize(new Dimension(820,520));
+            pack();
+            setLocationRelativeTo(null);
         } else if(matchLoginData && loginUserType.equals("Course Administrator")) {
             JOptionPane.showMessageDialog(this,"You are logged in as Course Administrator!!!");
             LoginPanel.getLoginEmail().setText("");
@@ -556,6 +547,7 @@ public class MyApp extends JFrame {
             courseAdministrationLoggedInModulesPanel.getModuleName().setText("");
         }
     }
+
 
     //    Validate Add Instructor TO Module Data From Course Administrator
 
@@ -689,6 +681,34 @@ public class MyApp extends JFrame {
         });
     }
 
+    private void implementElectiveSubjects(){
+        JButton addElectiveBtn = studentLoggedInCoursePanel.getAddElectiveSubject();
+
+        addElectiveBtn.addActionListener(e -> {
+            try {
+                String email =  studentLoggedInCoursePanel.getEmail().getText().trim();
+                String electiveModule =  studentLoggedInCoursePanel.getElectiveModule().getSelectedItem().toString();
+                String semester = studentLoggedInCoursePanel.getSemester().getSelectedItem().toString();
+                String level = studentLoggedInCoursePanel.getLevel().getText().trim();
+                if (!level.equals("6")){
+                    JOptionPane.showMessageDialog(null, "You must be level 6 to choose elective subjects");
+                } else if (electiveModule == "Select Elective Module" && semester == "Select Semester"){
+                    JOptionPane.showMessageDialog(this,"Complete All Fields");
+                } else if(electiveModule == "Select Elective Module"){
+                    JOptionPane.showMessageDialog(this,"Elective Subject is not selected");
+                } else if(semester == "Select Semester"){
+                    JOptionPane.showMessageDialog(this,"Semester is not selected");
+                } else {
+                    studentCourseTable.insert(email,electiveModule);
+                    refreshCourseTable();
+                }
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+    }
+
 //    Refresh Table
 
     private void refreshCourseTable() {
@@ -751,6 +771,34 @@ public class MyApp extends JFrame {
 
     }
 
+    private void refreshStudentPanelCourseTable() {
+        studentLoggedInCoursePanel.getStudentLoggedInCourseModel().setRowCount(0);
+        try {
+            String lvl = studentLoggedInCoursePanel.getLevel().getText().trim();
+            String email = studentLoggedInCoursePanel.getEmail().getText().trim();
+            ResultSet resultSet = studentCourseTable.getModuleDetails(lvl);
+            ResultSet resultSet1 = studentCourseTable.getElectiveSubjectData(email);
+            while (resultSet.next()) {
+                studentLoggedInCoursePanel.getStudentLoggedInCourseModel().addRow(new Object[]{
+                        resultSet.getString("moduleName"),
+                        resultSet.getString("moduleType"),
+                        resultSet.getString("semester"),
+                        resultSet.getString("instructorName"),
+                });
+            }
+            while (resultSet1.next()) {
+                studentLoggedInCoursePanel.getStudentLoggedInCourseModel().addRow(new Object[]{
+                        resultSet1.getString("moduleName"),
+                        resultSet1.getString("moduleType"),
+                        resultSet1.getString("semester"),
+                        resultSet1.getString("instructorName"),
+                });
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
 //    Update
 
     private void updateCourseName(){
@@ -777,22 +825,23 @@ public class MyApp extends JFrame {
             }
         });
         updateCourseBtn.addActionListener(e -> {
-            int selectedRow = dataTable.getSelectedRow();
-            if (selectedRow==-1){
-                JOptionPane.showMessageDialog(self,"Please select the row from table","Warning",JOptionPane.WARNING_MESSAGE);
-            }
             try {
-                String courseName = courseAdministrationLoggedInCoursesPanel.getCourseName().getText().trim();
-                if (courseName.isEmpty()) {
-                    JOptionPane.showMessageDialog(self, "Please enter the valid Data", "Warning", JOptionPane.WARNING_MESSAGE);
-                }
-                else{
-                    int id = Integer.parseInt(courseModel.getValueAt(selectedRow, 0).toString());
-                    coursetable.updateCourseName(id,courseName);
-                    refreshCourseTable();
+                int selectedRow = dataTable.getSelectedRow();
+                if (selectedRow==-1){
+                    JOptionPane.showMessageDialog(self,"Please select the row from table","Warning",JOptionPane.WARNING_MESSAGE);
+                } else {
+                    String courseName = courseAdministrationLoggedInCoursesPanel.getCourseName().getText().trim();
+                    if (courseName.isEmpty()) {
+                        JOptionPane.showMessageDialog(self, "Please enter the valid Data", "Warning", JOptionPane.WARNING_MESSAGE);
+                    }
+                    else{
+                        int id = Integer.parseInt(courseModel.getValueAt(selectedRow, 0).toString());
+                        coursetable.updateCourseName(id,courseName);
+                        refreshCourseTable();
 
-                    courseAdministrationLoggedInCoursesPanel.getCourseName().setText("");
-                    dataTable.clearSelection();
+                        courseAdministrationLoggedInCoursesPanel.getCourseName().setText("");
+                        dataTable.clearSelection();
+                    }
                 }
             }
             catch (Exception ex){
@@ -825,28 +874,27 @@ public class MyApp extends JFrame {
             }
         });
         cancelCourseBtn.addActionListener(e -> {
-            int selectedRow = dataTable.getSelectedRow();
-            if (selectedRow == -1){
-                JOptionPane.showMessageDialog(self,"Please select the row from table to cancel","Warning",JOptionPane.WARNING_MESSAGE);
-            }else {
                 try {
-                    String status = courseModel.getValueAt(selectedRow, 2).toString();
-                    if(status.equals("Cancel")){
-                        JOptionPane.showMessageDialog(self,"THe data you have selected is already canceled.");
-                    } else {
-                        int id = Integer.parseInt(courseModel.getValueAt(selectedRow, 0).toString());
-                        coursetable.updateCourseStatus(id,"Cancel");
-                        refreshCourseTable();
-                        JOptionPane.showMessageDialog(self,"The data has been updated to cancel successfully", "Success", JOptionPane.INFORMATION_MESSAGE  );
-                        courseAdministrationLoggedInCoursesPanel.getCourseName().setText("");
-                        dataTable.clearSelection();
+                    int selectedRow = dataTable.getSelectedRow();
+                    if (selectedRow == -1){
+                        JOptionPane.showMessageDialog(self,"Please select the row from table to cancel","Warning",JOptionPane.WARNING_MESSAGE);
+                    }else {
+                        String status = courseModel.getValueAt(selectedRow, 2).toString();
+                        if (status.equals("Cancel")) {
+                            JOptionPane.showMessageDialog(self, "THe data you have selected is already canceled.");
+                        } else {
+                            int id = Integer.parseInt(courseModel.getValueAt(selectedRow, 0).toString());
+                            coursetable.updateCourseStatus(id, "Cancel");
+                            refreshCourseTable();
+                            JOptionPane.showMessageDialog(self, "The data has been updated to cancel successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+                            courseAdministrationLoggedInCoursesPanel.getCourseName().setText("");
+                            dataTable.clearSelection();
+                        }
                     }
                 }
                 catch (Exception ex){
                 JOptionPane.showMessageDialog(self, "Coding error", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            }
-
         });
     }
 
@@ -874,27 +922,27 @@ public class MyApp extends JFrame {
             }
         });
         openCourseBtn.addActionListener(e -> {
-            int selectedRow = dataTable.getSelectedRow();
-            if (selectedRow == -1){
-                JOptionPane.showMessageDialog(self,"Please select the row from table to open","Warning",JOptionPane.WARNING_MESSAGE);
-            }else {
                 try {
-                    String status = courseModel.getValueAt(selectedRow, 2).toString();
-                    if(status.equals("Open")){
-                        JOptionPane.showMessageDialog(self,"THe data you have selected is already open.");
-                    } else {
-                        int id = Integer.parseInt(courseModel.getValueAt(selectedRow, 0).toString());
-                        coursetable.updateCourseStatus(id,"Open");
-                        refreshCourseTable();
-                        JOptionPane.showMessageDialog(self,"The data has been updated to open successfully", "Success", JOptionPane.INFORMATION_MESSAGE  );
-                        courseAdministrationLoggedInCoursesPanel.getCourseName().setText("");
-                        dataTable.clearSelection();
+                    int selectedRow = dataTable.getSelectedRow();
+                    if (selectedRow == -1){
+                        JOptionPane.showMessageDialog(self,"Please select the row from table to open","Warning",JOptionPane.WARNING_MESSAGE);
+                    }else {
+                        String status = courseModel.getValueAt(selectedRow, 2).toString();
+                        if(status.equals("Open")){
+                            JOptionPane.showMessageDialog(self,"THe data you have selected is already open.");
+                        } else {
+                            int id = Integer.parseInt(courseModel.getValueAt(selectedRow, 0).toString());
+                            coursetable.updateCourseStatus(id,"Open");
+                            refreshCourseTable();
+                            JOptionPane.showMessageDialog(self,"The data has been updated to open successfully", "Success", JOptionPane.INFORMATION_MESSAGE  );
+                            courseAdministrationLoggedInCoursesPanel.getCourseName().setText("");
+                            dataTable.clearSelection();
+                        }
                     }
                 }
                 catch (Exception ex){
                 JOptionPane.showMessageDialog(self, "Coding error", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            }
 
         });
     }
@@ -927,31 +975,32 @@ public class MyApp extends JFrame {
             }
         });
         updateModuleBtn.addActionListener(e -> {
-            int selectedRow = dataTable.getSelectedRow();
-            if (selectedRow==-1){
-                JOptionPane.showMessageDialog(self,"Please select the row from the table","Warning",JOptionPane.WARNING_MESSAGE);
-            }
             try {
-                String mName = courseAdministrationLoggedInModulesPanel.getModuleName().getText().trim();
-                String cname =  Objects.requireNonNull(courseAdministrationLoggedInModulesPanel.getCourse().getSelectedItem()).toString();
-                String lvl = Objects.requireNonNull(courseAdministrationLoggedInModulesPanel.getLevel().getSelectedItem()).toString();
-                String sem = Objects.requireNonNull(courseAdministrationLoggedInModulesPanel.getSemester().getSelectedItem()).toString();
-                String courseType = courseAdministrationLoggedInModulesPanel.getIsElective().isSelected() ? "Elective" : "Compulsory";
-                if (cname.equals("Select Course Names")) {
-                    JOptionPane.showMessageDialog(self,"Select course name!!!");
-                } else if(mName.isEmpty()){
-                    JOptionPane.showMessageDialog(self,"Module Name Field is empty!!!");
-                } else if (lvl.equals("Select Level")) {
-                    JOptionPane.showMessageDialog(self,"Select Level!!!");
-                } else if (sem.equals("Select Semester")) {
-                    JOptionPane.showMessageDialog(self,"Select Semester!!!");
+                int selectedRow = dataTable.getSelectedRow();
+                if (selectedRow==-1){
+                    JOptionPane.showMessageDialog(self,"Please select the row from the table","Warning",JOptionPane.WARNING_MESSAGE);
                 } else {
-                    int id = Integer.parseInt(moduleModel.getValueAt(selectedRow, 0).toString());
-                    moduleTable.updateModule(id,mName,cname,lvl,courseType,sem);
-                    refreshModuleTable();
+                    String mName = courseAdministrationLoggedInModulesPanel.getModuleName().getText().trim();
+                    String cname =  Objects.requireNonNull(courseAdministrationLoggedInModulesPanel.getCourse().getSelectedItem()).toString();
+                    String lvl = Objects.requireNonNull(courseAdministrationLoggedInModulesPanel.getLevel().getSelectedItem()).toString();
+                    String sem = Objects.requireNonNull(courseAdministrationLoggedInModulesPanel.getSemester().getSelectedItem()).toString();
+                    String courseType = courseAdministrationLoggedInModulesPanel.getIsElective().isSelected() ? "Elective" : "Compulsory";
+                    if (cname.equals("Select Course Names")) {
+                        JOptionPane.showMessageDialog(self,"Select course name!!!");
+                    } else if(mName.isEmpty()){
+                        JOptionPane.showMessageDialog(self,"Module Name Field is empty!!!");
+                    } else if (lvl.equals("Select Level")) {
+                        JOptionPane.showMessageDialog(self,"Select Level!!!");
+                    } else if (sem.equals("Select Semester")) {
+                        JOptionPane.showMessageDialog(self,"Select Semester!!!");
+                    } else {
+                        int id = Integer.parseInt(moduleModel.getValueAt(selectedRow, 0).toString());
+                        moduleTable.updateModule(id,mName,cname,lvl,courseType,sem);
+                        refreshModuleTable();
 
-                    courseAdministrationLoggedInModulesPanel.getModuleName().setText("");
-                    dataTable.clearSelection();
+                        courseAdministrationLoggedInModulesPanel.getModuleName().setText("");
+                        dataTable.clearSelection();
+                    }
                 }
             }
             catch (Exception ex){
@@ -989,17 +1038,18 @@ public class MyApp extends JFrame {
             }
         });
         instructorFromModuleUpdateBtn.addActionListener(e -> {
-            int selectedRow = dataTable.getSelectedRow();
-            if (selectedRow==-1){
-                JOptionPane.showMessageDialog(self,"Please select the row from table","Warning",JOptionPane.WARNING_MESSAGE);
-            }
             try {
-                String moduleName = Objects.requireNonNull(courseAdministrationLoggedInInstructorAddToModulePanel.getModuleName().getSelectedItem()).toString();
-                String instructorName = Objects.requireNonNull(courseAdministrationLoggedInInstructorAddToModulePanel.getInstructorName().getSelectedItem()).toString();
+                int selectedRow = dataTable.getSelectedRow();
+                if (selectedRow==-1){
+                    JOptionPane.showMessageDialog(self,"Please select the row from table","Warning",JOptionPane.WARNING_MESSAGE);
+                }else{
+                    String moduleName = Objects.requireNonNull(courseAdministrationLoggedInInstructorAddToModulePanel.getModuleName().getSelectedItem()).toString();
+                    String instructorName = Objects.requireNonNull(courseAdministrationLoggedInInstructorAddToModulePanel.getInstructorName().getSelectedItem()).toString();
                     int id = Integer.parseInt(courseAdministratorInstructorModel.getValueAt(selectedRow, 0).toString());
                     instructorToModuleTable.updateInstructorTeachingModules(id,moduleName,instructorName);
                     refreshCourseAdministratorInstructorTable();
                     dataTable.clearSelection();
+                }
             }
             catch (Exception ex){
                 JOptionPane.showMessageDialog(self, "Coding error", "Error", JOptionPane.ERROR_MESSAGE);

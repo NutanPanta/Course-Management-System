@@ -47,6 +47,7 @@ public class registerPanel extends JPanel implements AppLayout, ActionListener {
         layout = new GridBagConstraints();
         layout.fill = GridBagConstraints.HORIZONTAL;
         layout.insets = new Insets(5,5,5,5);
+        this.setBackground(Color.decode("#D6D9DF"));
 
         layout.gridx = 0;
         layout.gridy = 0;

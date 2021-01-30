@@ -4,12 +4,10 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class StudentLoggedInCoursePanel extends JPanel implements AppLayout {
+public class InstructorPanel extends JPanel implements AppLayout {
     private DefaultTableModel StudentLoggedInCourseModel;
     private JTable StudentLoggedInCourseTable;
     private JTextField studentName,email, courseName, level;
@@ -23,7 +21,7 @@ public class StudentLoggedInCoursePanel extends JPanel implements AppLayout {
     JPanel studentPanelCoursesStudentElectiveSubjects;
 
 
-    public StudentLoggedInCoursePanel() {
+    public InstructorPanel() {
         setBorder(BorderFactory.createTitledBorder("Register Instructor To Module"));
         String[] TableNames = {"Module Name","moduleType","semester","Instructor Name"};
 

@@ -53,3 +53,11 @@ Password: nutan
 User Type: Student
 Course: BIT
 Level: 6
+
+First Name: Shiva
+Last Name: Giri
+Email: shiva@gmail.com
+Password: shiva
+User Type: Student
+Course: BIT
+Level: 6
