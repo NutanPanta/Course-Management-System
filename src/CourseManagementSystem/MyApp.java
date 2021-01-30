@@ -22,6 +22,7 @@ public class MyApp extends JFrame {
     CourseAdministrationLoggedInCoursesPanel courseAdministrationLoggedInCoursesPanel;
     CourseAdministrationLoggedInModulesPanel courseAdministrationLoggedInModulesPanel;
     CourseAdministrationLoggedInInstructorAddToModulePanel courseAdministrationLoggedInInstructorAddToModulePanel;
+    InstructorPanel instructorPanel;
     courseTable coursetable;
     ModuleTable moduleTable;
     UserTable userTable;
@@ -47,6 +48,7 @@ public class MyApp extends JFrame {
         courseAdministrationLoggedInCoursesPanel = new CourseAdministrationLoggedInCoursesPanel();
         courseAdministrationLoggedInModulesPanel = new CourseAdministrationLoggedInModulesPanel();
         courseAdministrationLoggedInInstructorAddToModulePanel = new CourseAdministrationLoggedInInstructorAddToModulePanel();
+        instructorPanel = new InstructorPanel();
         coursetable = new courseTable();
         moduleTable = new ModuleTable();
         userTable = new UserTable();
@@ -60,6 +62,7 @@ public class MyApp extends JFrame {
         courseAdministrationLoggedInCoursesPanel.setVisible(false);
         courseAdministrationLoggedInModulesPanel.setVisible(false);
         courseAdministrationLoggedInInstructorAddToModulePanel.setVisible(false);
+        instructorPanel.setVisible(false);
 
         add(appLayout());
         registerUsers();
@@ -106,6 +109,7 @@ public class MyApp extends JFrame {
         mainPanel.add(courseAdministrationLoggedInCoursesPanel.panelUI(),layout);
         mainPanel.add(courseAdministrationLoggedInModulesPanel.panelUI(),layout);
         mainPanel.add(courseAdministrationLoggedInInstructorAddToModulePanel.panelUI(),layout);
+        mainPanel.add(instructorPanel.panelUI(),layout);
 
         return mainPanel;
     }
@@ -494,6 +498,17 @@ public class MyApp extends JFrame {
             LoginPanel.getLoginEmail().setText("");
             LoginPanel.getLoginPassword().setText("");
             studentLoggedInCoursePanel.setVisible(true);
+            RegisterPanel.setVisible(false);
+            LoginPanel.setVisible(false);
+            this.setMinimumSize(new Dimension(820,520));
+            pack();
+            setLocationRelativeTo(null);
+        } else if (matchLoginData && loginUserType.equals("Instructor")) {
+            JOptionPane.showMessageDialog(this,"You are logged in as Instructor!!!");
+            instructorPanel.loggedInInstructorData(loginEmail);
+            LoginPanel.getLoginEmail().setText("");
+            LoginPanel.getLoginPassword().setText("");
+            instructorPanel.setVisible(true);
             RegisterPanel.setVisible(false);
             LoginPanel.setVisible(false);
             this.setMinimumSize(new Dimension(820,520));

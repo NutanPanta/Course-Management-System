@@ -8,9 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class InstructorPanel extends JPanel implements AppLayout {
-    private DefaultTableModel StudentLoggedInCourseModel;
-    private JTable StudentLoggedInCourseTable;
-    private JTextField studentName,email, courseName, level;
+    private DefaultTableModel instructorModel;
+    private JTable instructorTable;
+    private JTextField instructorName,email;
     private JComboBox semester, electiveModule;
     private JButton addElectiveSubject,viewResult, logout;
     private GridBagConstraints layout, studentLayout,electiveLayout, buttonLayout;
@@ -25,22 +25,14 @@ public class InstructorPanel extends JPanel implements AppLayout {
         setBorder(BorderFactory.createTitledBorder("Register Instructor To Module"));
         String[] TableNames = {"Module Name","moduleType","semester","Instructor Name"};
 
-        studentName = new JTextField(20);
-        studentName.setPreferredSize(new Dimension(40,30));
-        studentName.setEnabled(false);
-        studentName.setDisabledTextColor(new Color(0,0,0));
+        instructorName = new JTextField(20);
+        instructorName.setPreferredSize(new Dimension(40,30));
+        instructorName.setEnabled(false);
+        instructorName.setDisabledTextColor(new Color(0,0,0));
         email = new JTextField(20);
         email.setPreferredSize(new Dimension(40,30));
         email.setEnabled(false);
         email.setDisabledTextColor(new Color(0,0,0));
-        courseName = new JTextField(20);
-        courseName.setPreferredSize(new Dimension(40,30));
-        courseName.setEnabled(false);
-        courseName.setDisabledTextColor(new Color(0,0,0));
-        level = new JTextField(20);
-        level.setPreferredSize(new Dimension(40,30));
-        level.setEnabled(false);
-        level.setDisabledTextColor(new Color(0,0,0));
 
         String sem[] = {"Select Semester","1","2"};
         semester = new JComboBox(sem);
@@ -53,54 +45,21 @@ public class InstructorPanel extends JPanel implements AppLayout {
         viewResult = new JButton("View Result");
         logout = new JButton("Logout");
 
-        StudentLoggedInCourseTable = new JTable(courseAdministratorInstructorModel);
+        instructorTable = new JTable(courseAdministratorInstructorModel);
 
         moduleTable = new ModuleTable();
         userTable = new UserTable();
         login = new loginPanel();
         studentCourseTable = new StudentCourseTable();
-
-        electiveSubjects();
-        refreshElectiveSubjects();
     }
 
-    private void electiveSubjects() {
-        try {
-            String sem = semester.getSelectedItem().toString();
-            ResultSet resultSet = studentCourseTable.getModuleNameAtStudentPanel(sem);
-            electiveModule.removeAllItems();
-            electiveModule.addItem("Select Elective Module");
-            while (resultSet.next()) {
-                electiveModule.addItem(resultSet.getString("moduleName"));
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void refreshElectiveSubjects(){
-        semester.addActionListener(e -> {
-            electiveSubjects();
-        });
-    }
-
-    public void loggedInStudentData(String Email){
+    public void loggedInInstructorData(String Email){
         try {
                 ResultSet resultSet = userTable.getParticularStudentData(Email);
                 while (resultSet.next()) {
-                    studentName.setText(resultSet.getString("firstName") + " " + resultSet.getString("lastName"));
+                    instructorName.setText(resultSet.getString("firstName") + " " + resultSet.getString("lastName"));
                     email.setText(resultSet.getString("email"));
-                    courseName.setText(resultSet.getString("courseType"));
-                    level.setText(resultSet.getString("level"));
                 }
-            String lvl = level.getText().trim();
-            if (!lvl.equals("6")){
-                semester.setEnabled(false);
-                electiveModule.setEnabled(false);
-            } else {
-                semester.setEnabled(true);
-                electiveModule.setEnabled(true);
-            }
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -109,11 +68,11 @@ public class InstructorPanel extends JPanel implements AppLayout {
 
     private JPanel courseAdministratorCourseTablePanel() {
 
-        JScrollPane scrollPane =new JScrollPane(StudentLoggedInCourseTable);
-        StudentLoggedInCourseTable.setDefaultEditor(Object.class, null);
-        StudentLoggedInCourseTable.setSelectionBackground(Color.BLACK);
-        StudentLoggedInCourseTable.setSelectionForeground(Color.WHITE);
-        JTableHeader header = StudentLoggedInCourseTable.getTableHeader();
+        JScrollPane scrollPane =new JScrollPane(instructorTable);
+        instructorTable.setDefaultEditor(Object.class, null);
+        instructorTable.setSelectionBackground(Color.BLACK);
+        instructorTable.setSelectionForeground(Color.WHITE);
+        JTableHeader header = instructorTable.getTableHeader();
         header.setBackground(Color.decode("#D6D9DF"));
 
         JPanel courseAdministratorCoursePanel = new JPanel();
@@ -127,7 +86,7 @@ public class InstructorPanel extends JPanel implements AppLayout {
         JPanel studentPanelCoursesStudentDetails = new JPanel();
         studentPanelCoursesStudentDetails.setLayout(new GridBagLayout());
         studentPanelCoursesStudentDetails.setBackground(Color.decode("#D6D9DF"));
-        studentPanelCoursesStudentDetails.setBorder(BorderFactory.createTitledBorder("Student Details"));
+        studentPanelCoursesStudentDetails.setBorder(BorderFactory.createTitledBorder("Instructor Details"));
 
         studentLayout = new GridBagConstraints();
         studentLayout.fill = GridBagConstraints.HORIZONTAL;
@@ -135,13 +94,13 @@ public class InstructorPanel extends JPanel implements AppLayout {
 
         studentLayout.gridx = 0;
         studentLayout.gridy = 0;
-        studentPanelCoursesStudentDetails.add(new JLabel("Student Name"),studentLayout);
+        studentPanelCoursesStudentDetails.add(new JLabel("Instructor Name"),studentLayout);
 
-        studentLayout.gridx = 1;
-        studentLayout.gridy = 0;
         studentLayout.weightx = 1;
         studentLayout.gridwidth = 3;
-        studentPanelCoursesStudentDetails.add(studentName,studentLayout);
+        studentLayout.gridx = 1;
+        studentLayout.gridy = 0;
+        studentPanelCoursesStudentDetails.add(instructorName,studentLayout);
 
         studentLayout.gridx = 0;
         studentLayout.gridy = 1;
@@ -152,26 +111,6 @@ public class InstructorPanel extends JPanel implements AppLayout {
         studentLayout.weightx = 1;
         studentLayout.gridwidth = 3;
         studentPanelCoursesStudentDetails.add(email,studentLayout);
-
-        studentLayout.gridx=0;
-        studentLayout.gridy=2;
-        studentLayout.gridwidth = 1;
-        studentPanelCoursesStudentDetails.add(new JLabel("Enrolled Course"),studentLayout);
-
-        studentLayout.gridx=1;
-        studentLayout.gridy=2;
-        studentLayout.gridwidth = 3;
-        studentPanelCoursesStudentDetails.add(courseName,studentLayout);
-
-        studentLayout.gridx=0;
-        studentLayout.gridy=3;
-        studentLayout.gridwidth = 1;
-        studentPanelCoursesStudentDetails.add(new JLabel("Level"),studentLayout);
-
-        studentLayout.gridx=1;
-        studentLayout.gridy=3;
-        studentLayout.gridwidth = 3;
-        studentPanelCoursesStudentDetails.add(level,studentLayout);
 
         return studentPanelCoursesStudentDetails;
     }
@@ -278,15 +217,12 @@ public class InstructorPanel extends JPanel implements AppLayout {
         return this;
     }
 
-    public DefaultTableModel getStudentLoggedInCourseModel(){ return (DefaultTableModel) getTable().getModel();}
+    public DefaultTableModel getInstructorModel(){ return (DefaultTableModel) getTable().getModel();}
     public  JTable getTable(){
-        return StudentLoggedInCourseTable;
+        return instructorTable;
     }
     public JTextField getEmail() {
         return email;
-    }
-    public JTextField getLevel() {
-        return level;
     }
     public JComboBox getSemester(){
         return semester;
