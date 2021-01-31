@@ -92,7 +92,7 @@ public class StudentLoggedInCoursePanel extends JPanel implements AppLayout {
                 while (resultSet.next()) {
                     studentName.setText(resultSet.getString("firstName") + " " + resultSet.getString("lastName"));
                     email.setText(resultSet.getString("email"));
-                    courseName.setText(resultSet.getString("courseType"));
+                    courseName.setText(resultSet.getString("courseName"));
                     level.setText(resultSet.getString("level"));
                 }
             String lvl = level.getText().trim();

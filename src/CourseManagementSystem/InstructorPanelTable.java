@@ -38,4 +38,30 @@ public class InstructorPanelTable {
             }
         }
     }
+
+    ResultSet getStudentsDetailsOnInstructorPanel(String courseName,String level){
+        try {
+            String select = "Select * from users WHERE userType = 'Student' and courseName = ? and level = ?";
+            PreparedStatement statement = con.prepareStatement(select);
+            statement.setString(1,courseName);
+            statement.setString(2,level);
+            return statement.executeQuery();
+        }
+        catch (SQLException e){
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return null;
+    }
+
+//    ResultSet getInstructorTeachingCourses(){
+//        try {
+//            String select = "Select * from instructorteachingmodules inner join modules on instructorteachingmodules.moduleName = modules.moduleName inner join users";
+//            PreparedStatement statement = con.prepareStatement(select);
+//            return statement.executeQuery();
+//        }
+//        catch (SQLException e){
+//            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+//        }
+//        return null;
+//    }
 }

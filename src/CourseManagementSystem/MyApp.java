@@ -715,7 +715,7 @@ public class MyApp extends JFrame {
                     JOptionPane.showMessageDialog(this,"Semester is not selected");
                 } else {
                     studentCourseTable.insert(email,electiveModule);
-                    refreshCourseTable();
+                    refreshStudentPanelCourseTable();
                 }
 
             } catch (Exception ex) {
@@ -796,7 +796,7 @@ public class MyApp extends JFrame {
             while (resultSet.next()) {
                 studentLoggedInCoursePanel.getStudentLoggedInCourseModel().addRow(new Object[]{
                         resultSet.getString("moduleName"),
-                        resultSet.getString("moduleType"),
+                        resultSet.getString("moduleName"),
                         resultSet.getString("semester"),
                         resultSet.getString("instructorName"),
                 });
@@ -804,7 +804,7 @@ public class MyApp extends JFrame {
             while (resultSet1.next()) {
                 studentLoggedInCoursePanel.getStudentLoggedInCourseModel().addRow(new Object[]{
                         resultSet1.getString("moduleName"),
-                        resultSet1.getString("moduleType"),
+                        resultSet1.getString("moduleName"),
                         resultSet1.getString("semester"),
                         resultSet1.getString("instructorName"),
                 });

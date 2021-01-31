@@ -10,33 +10,41 @@ import java.sql.SQLException;
 public class InstructorPanel extends JPanel implements AppLayout {
     private DefaultTableModel instructorModel;
     private JTable instructorTable;
-    private JTextField instructorName,email;
-    private JComboBox semester, electiveModule;
+    private JTextField instructorName,email,studentEmail;
+    private JComboBox courseName,level,studentName;
     private JButton addElectiveSubject,viewResult, logout;
     private GridBagConstraints layout, studentLayout,electiveLayout, buttonLayout;
     ModuleTable moduleTable;
     UserTable userTable;
     loginPanel login;
     StudentCourseTable studentCourseTable;
+    InstructorPanelTable instructorPanelTable;
     JPanel studentPanelCoursesStudentElectiveSubjects;
 
 
     public InstructorPanel() {
         setBorder(BorderFactory.createTitledBorder("Register Instructor To Module"));
         String[] TableNames = {"Module Name","moduleType","semester","Instructor Name"};
+        String ll[]={"4","5","6"};
 
         instructorName = new JTextField(20);
         instructorName.setPreferredSize(new Dimension(40,30));
         instructorName.setEnabled(false);
         instructorName.setDisabledTextColor(new Color(0,0,0));
+
         email = new JTextField(20);
         email.setPreferredSize(new Dimension(40,30));
         email.setEnabled(false);
         email.setDisabledTextColor(new Color(0,0,0));
 
-        String sem[] = {"Select Semester","1","2"};
-        semester = new JComboBox(sem);
-        electiveModule = new JComboBox();
+        studentEmail = new JTextField(20);
+        studentEmail.setPreferredSize(new Dimension(40,30));
+        studentEmail.setEnabled(false);
+        studentEmail.setDisabledTextColor(new Color(0,0,0));
+
+        courseName = new JComboBox();
+        level = new JComboBox(ll);
+        studentName = new JComboBox();
 
         DefaultTableModel courseAdministratorInstructorModel = new DefaultTableModel();
         courseAdministratorInstructorModel.setColumnIdentifiers(TableNames);
@@ -51,6 +59,8 @@ public class InstructorPanel extends JPanel implements AppLayout {
         userTable = new UserTable();
         login = new loginPanel();
         studentCourseTable = new StudentCourseTable();
+
+        refreshElectiveSubjects();
     }
 
     public void loggedInInstructorData(String Email){
@@ -64,6 +74,30 @@ public class InstructorPanel extends JPanel implements AppLayout {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void studentName() {
+        try {
+            String course = courseName.getSelectedItem().toString();
+            String lvl = level.getSelectedItem().toString();
+            ResultSet resultSet = instructorPanelTable.getStudentsDetailsOnInstructorPanel(course,lvl);
+            studentName.addItem("Select Student");
+            while (resultSet.next()) {
+                studentName.addItem(resultSet.getString("studentName"));
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void refreshElectiveSubjects(){
+        courseName.addActionListener(e -> {
+            studentName();
+        });
+
+        level.addActionListener(e -> {
+            studentName();
+        });
     }
 
     private JPanel courseAdministratorCourseTablePanel() {
@@ -128,23 +162,43 @@ public class InstructorPanel extends JPanel implements AppLayout {
         electiveLayout.gridx = 0;
         electiveLayout.gridy = 0;
         electiveLayout.gridwidth = 1;
-        studentPanelCoursesStudentElectiveSubjects.add(new JLabel("Semester"), electiveLayout);
+        studentPanelCoursesStudentElectiveSubjects.add(new JLabel("Course Name"), electiveLayout);
 
         electiveLayout.weightx = 1;
         electiveLayout.gridwidth = 3;
         electiveLayout.gridx = 1;
         electiveLayout.gridy = 0;
-        studentPanelCoursesStudentElectiveSubjects.add(semester,electiveLayout);
+        studentPanelCoursesStudentElectiveSubjects.add(courseName,electiveLayout);
 
         electiveLayout.gridx=0;
         electiveLayout.gridy=1;
         electiveLayout.gridwidth = 1;
-        studentPanelCoursesStudentElectiveSubjects.add(new JLabel("Elective Module"),electiveLayout);
+        studentPanelCoursesStudentElectiveSubjects.add(new JLabel("Level"),electiveLayout);
 
         electiveLayout.gridx=1;
         electiveLayout.gridy=1;
         electiveLayout.gridwidth = 3;
-        studentPanelCoursesStudentElectiveSubjects.add(electiveModule,electiveLayout);
+        studentPanelCoursesStudentElectiveSubjects.add(level,electiveLayout);
+
+        electiveLayout.gridx=0;
+        electiveLayout.gridy=2;
+        electiveLayout.gridwidth = 1;
+        studentPanelCoursesStudentElectiveSubjects.add(new JLabel("Student Name"),electiveLayout);
+
+        electiveLayout.gridx=1;
+        electiveLayout.gridy=2;
+        electiveLayout.gridwidth = 3;
+        studentPanelCoursesStudentElectiveSubjects.add(studentName,electiveLayout);
+
+        electiveLayout.gridx=0;
+        electiveLayout.gridy=3;
+        electiveLayout.gridwidth = 1;
+        studentPanelCoursesStudentElectiveSubjects.add(new JLabel("Student Email"),electiveLayout);
+
+        electiveLayout.gridx=1;
+        electiveLayout.gridy=3;
+        electiveLayout.gridwidth = 3;
+        studentPanelCoursesStudentElectiveSubjects.add(studentEmail,electiveLayout);
 
         return studentPanelCoursesStudentElectiveSubjects;
     }
@@ -224,10 +278,13 @@ public class InstructorPanel extends JPanel implements AppLayout {
     public JTextField getEmail() {
         return email;
     }
-    public JComboBox getSemester(){
-        return semester;
+    public JComboBox getCourseName(){
+        return courseName;
     }
-    public JComboBox getElectiveModule(){ return electiveModule; }
+    public JComboBox getLevel(){
+        return level;
+    }
+    public JComboBox getStudentName(){ return studentName; }
     public JButton getAddElectiveSubject(){ return addElectiveSubject; }
     public JButton getLogout() {
         return logout;
