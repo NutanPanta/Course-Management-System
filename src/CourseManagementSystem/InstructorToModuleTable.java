@@ -14,20 +14,25 @@ public class InstructorToModuleTable {
         }
     }
 
-    void insert(String moduleName,String instructorName){
+    void insert(String moduleName,String instructorEmail){
         try {
-            String insert = "INSERT INTO instructorteachingmodules(moduleName,instructorName)" + "VALUES(?,?)";
+            String insert = "INSERT INTO instructorteachingmodules(moduleName,instructorEmail)" + "VALUES(?,?)";
             PreparedStatement statement = con.prepareStatement(insert);
 
             statement.setString(1,moduleName);
-            statement.setString(2,instructorName);
+            statement.setString(2,instructorEmail);
 
             statement.executeUpdate();
             statement.close();
-            JOptionPane.showMessageDialog(null, instructorName + " has been successfully added to " + moduleName + ". Thank You!!!");
+            JOptionPane.showMessageDialog(null, instructorEmail + " has been successfully added to " + moduleName + ". Thank You!!!");
 
         }catch (SQLException e){
-            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                JOptionPane.showMessageDialog(null,"This module has already been assigned to a instructor");
+            }else {
+                JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
         }
     }
 
@@ -39,18 +44,19 @@ public class InstructorToModuleTable {
             return statement.executeQuery();
         }
         catch (SQLException e){
-            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+//            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
         return null;
     }
 
-    void updateInstructorTeachingModules(int id,String moduleName,String instructorName) {
+    void updateInstructorTeachingModules(int id,String moduleName,String instructorEmail) {
         try {
-            String update = "UPDATE instructorteachingmodules SET moduleName = ?,instructorName = ? WHERE  id = ?";
+            String update = "UPDATE instructorteachingmodules SET moduleName = ?,instructorEmail = ? WHERE  id = ?";
             PreparedStatement statement = con.prepareStatement(update);
 
             statement.setString(1,moduleName);
-            statement.setString(2,instructorName);
+            statement.setString(2,instructorEmail);
             statement.setInt(3, id);
 
             statement.executeUpdate();
@@ -80,3 +86,4 @@ public class InstructorToModuleTable {
         }
     }
 }
+

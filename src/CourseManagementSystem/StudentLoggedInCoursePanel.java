@@ -4,8 +4,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -109,7 +107,7 @@ public class StudentLoggedInCoursePanel extends JPanel implements AppLayout {
         }
     }
 
-    private JPanel courseAdministratorCourseTablePanel() {
+    private JPanel StudentPanelCoursesTablePanel() {
 
         JScrollPane scrollPane =new JScrollPane(StudentLoggedInCourseTable);
         StudentLoggedInCourseTable.setDefaultEditor(Object.class, null);
@@ -275,7 +273,7 @@ public class StudentLoggedInCoursePanel extends JPanel implements AppLayout {
         layout.gridx = 0;
         layout.gridy = 0;
         layout.gridheight=3;
-        add(courseAdministratorCourseTablePanel(),layout);
+        add(StudentPanelCoursesTablePanel(),layout);
 
         return this;
     }

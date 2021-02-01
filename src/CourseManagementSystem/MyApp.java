@@ -506,6 +506,7 @@ public class MyApp extends JFrame {
         } else if (matchLoginData && loginUserType.equals("Instructor")) {
             JOptionPane.showMessageDialog(this,"You are logged in as Instructor!!!");
             instructorPanel.loggedInInstructorData(loginEmail);
+            instructorPanel.instructorTeachingCourses(loginEmail);
             LoginPanel.getLoginEmail().setText("");
             LoginPanel.getLoginPassword().setText("");
             instructorPanel.setVisible(true);
@@ -568,7 +569,7 @@ public class MyApp extends JFrame {
 
     private void checkInstructorData(String moduleName,String instructorName) {
         String caModuleName = Objects.requireNonNull(courseAdministrationLoggedInInstructorAddToModulePanel.getModuleName().getSelectedItem()).toString();
-        String caInstructorName = Objects.requireNonNull(courseAdministrationLoggedInInstructorAddToModulePanel.getInstructorName().getSelectedItem()).toString();
+        String caInstructorName = Objects.requireNonNull(courseAdministrationLoggedInInstructorAddToModulePanel.getInstructorEmail().getSelectedItem()).toString();
 
         if(caModuleName.equals("Select Module Names") && caInstructorName.equals("Select Instructor Names")){
             JOptionPane.showMessageDialog(self,"Please select module and instructor names and try again.");
@@ -619,6 +620,7 @@ public class MyApp extends JFrame {
             }
             catch (Exception ex){
                 JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
             }
         });
     }
@@ -638,7 +640,8 @@ public class MyApp extends JFrame {
 //                studentLoggedInCoursePanel.getLoggedInStudentData();
 
             } catch (Exception ex){
-                JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+//                JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
             }
         });
     }
@@ -682,12 +685,12 @@ public class MyApp extends JFrame {
 
     private void implementInstructorToModule() {
         String moduleName = Objects.requireNonNull(courseAdministrationLoggedInInstructorAddToModulePanel.getModuleName().getSelectedItem()).toString();
-        String instructorName = Objects.requireNonNull(courseAdministrationLoggedInInstructorAddToModulePanel.getInstructorName().getSelectedItem()).toString();
+        String instructorEmail = Objects.requireNonNull(courseAdministrationLoggedInInstructorAddToModulePanel.getInstructorEmail().getSelectedItem()).toString();
         JButton addInstructorToModuleBtn = courseAdministrationLoggedInInstructorAddToModulePanel.getAddInstructor();
 
         addInstructorToModuleBtn.addActionListener(e -> {
             try {
-                checkInstructorData(moduleName,instructorName);
+                checkInstructorData(moduleName,instructorEmail);
                 refreshCourseAdministratorInstructorTable();
 
             } catch (Exception ex) {
@@ -776,7 +779,7 @@ public class MyApp extends JFrame {
                         resultSet.getString("level"),
                         resultSet.getString("moduleType"),
                         resultSet.getString("semester"),
-                        resultSet.getString("instructorName"),
+                        resultSet.getString("instructorEmail"),
 
                 });
             }
@@ -798,7 +801,7 @@ public class MyApp extends JFrame {
                         resultSet.getString("moduleName"),
                         resultSet.getString("moduleName"),
                         resultSet.getString("semester"),
-                        resultSet.getString("instructorName"),
+                        resultSet.getString("instructorEmail"),
                 });
             }
             while (resultSet1.next()) {
@@ -806,7 +809,7 @@ public class MyApp extends JFrame {
                         resultSet1.getString("moduleName"),
                         resultSet1.getString("moduleName"),
                         resultSet1.getString("semester"),
-                        resultSet1.getString("instructorName"),
+                        resultSet1.getString("instructorEmail"),
                 });
             }
         } catch (SQLException e) {
@@ -1037,7 +1040,7 @@ public class MyApp extends JFrame {
                 courseAdministrationLoggedInInstructorAddToModulePanel.getLevel().setText(courseAdministratorInstructorModel.getValueAt(selectedRow,3).toString());
                 courseAdministrationLoggedInInstructorAddToModulePanel.getModuleType().setText(courseAdministratorInstructorModel.getValueAt(selectedRow,4).toString());
                 courseAdministrationLoggedInInstructorAddToModulePanel.getSemester().setText(courseAdministratorInstructorModel.getValueAt(selectedRow,5).toString());
-                courseAdministrationLoggedInInstructorAddToModulePanel.getInstructorName().setSelectedItem(courseAdministratorInstructorModel.getValueAt(selectedRow, 6).toString());
+                courseAdministrationLoggedInInstructorAddToModulePanel.getInstructorEmail().setSelectedItem(courseAdministratorInstructorModel.getValueAt(selectedRow, 6).toString());
             }
             @Override
             public void mousePressed(MouseEvent e) {
@@ -1059,9 +1062,9 @@ public class MyApp extends JFrame {
                     JOptionPane.showMessageDialog(self,"Please select the row from table","Warning",JOptionPane.WARNING_MESSAGE);
                 }else{
                     String moduleName = Objects.requireNonNull(courseAdministrationLoggedInInstructorAddToModulePanel.getModuleName().getSelectedItem()).toString();
-                    String instructorName = Objects.requireNonNull(courseAdministrationLoggedInInstructorAddToModulePanel.getInstructorName().getSelectedItem()).toString();
+                    String instructorEmail = Objects.requireNonNull(courseAdministrationLoggedInInstructorAddToModulePanel.getInstructorEmail().getSelectedItem()).toString();
                     int id = Integer.parseInt(courseAdministratorInstructorModel.getValueAt(selectedRow, 0).toString());
-                    instructorToModuleTable.updateInstructorTeachingModules(id,moduleName,instructorName);
+                    instructorToModuleTable.updateInstructorTeachingModules(id,moduleName,instructorEmail);
                     refreshCourseAdministratorInstructorTable();
                     dataTable.clearSelection();
                 }

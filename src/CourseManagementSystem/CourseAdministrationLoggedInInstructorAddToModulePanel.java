@@ -14,8 +14,8 @@ import java.sql.SQLException;
 public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPanel implements AppLayout {
     private DefaultTableModel courseAdministratorInstructorModel;
     private JTable courseAdministratorInstructorTable;
-    private JComboBox moduleName, instructorName,newModuleName;
-    private JTextField courseName,level,moduleType,semester;
+    private JComboBox moduleName, instructorEmail;
+    private JTextField courseName,level,moduleType,semester,instructorName;
     private JButton addInstructor, deleteInstructor, updateInstructor, back;
     private GridBagConstraints layout, formLayout, buttonLayout;
     ModuleTable moduleTable;
@@ -27,27 +27,38 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         String[] TableNames = {"Id","Course Name","Module Name","level","moduleType","semester","Instructor Name"};
 
         moduleName = new JComboBox();
-        instructorName =new JComboBox();
+        instructorEmail =new JComboBox();
+
         courseName = new JTextField(20);
         courseName.setPreferredSize(new Dimension(40,30));
         courseName.setEnabled(false);
         courseName.setDisabledTextColor(new Color(0,0,0));
+
         level = new JTextField(20);
         level.setPreferredSize(new Dimension(40,30));
         level.setEnabled(false);
         level.setDisabledTextColor(new Color(0,0,0));
+
         moduleType = new JTextField(20);
         moduleType.setPreferredSize(new Dimension(40,30));
         moduleType.setEnabled(false);
         moduleType.setDisabledTextColor(new Color(0,0,0));
+
         semester = new JTextField(20);
         semester.setPreferredSize(new Dimension(40,30));
         semester.setEnabled(false);
         semester.setDisabledTextColor(new Color(0,0,0));
+
+        instructorName = new JTextField(20);
+        instructorName.setPreferredSize(new Dimension(40,30));
+        instructorName.setEnabled(false);
+        instructorName.setDisabledTextColor(new Color(0,0,0));
+
         moduleName.addItem("Select Module Names");
         moduleName.setBounds(50, 50,90,20);
 
-        instructorName.setBounds(50, 50,90,20);
+        instructorEmail.setBounds(50, 50,90,20);
+        instructorEmail.addItem("Select Instructor");
 
         DefaultTableModel courseAdministratorInstructorModel = new DefaultTableModel();
         courseAdministratorInstructorModel.setColumnIdentifiers(TableNames);
@@ -61,11 +72,11 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
 
         moduleTable = new ModuleTable();
         userTable = new UserTable();
-        instructorName();
+        instructorEmails();
         refreshModuleName();
         moduleDetailsAtTextField();
-        refresh();
-
+        refreshModuleData();
+        refreshInstructorName();
     }
 
     private void refreshModuleName(){
@@ -80,24 +91,46 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         }
     }
 
-    private void instructorName(){
-        instructorName.removeAllItems();
+    private void instructorEmails(){
         try {
-            ResultSet resultSet = userTable.getInstructorNames();
-            instructorName.addItem("Select Instructor Names");
+            ResultSet resultSet = userTable.getInstructorEmails();
+            instructorEmail.removeAllItems();
+            instructorEmail.addItem("Select Instructor");
             while (resultSet.next()) {
-                instructorName.addItem(resultSet.getString("firstName") + " " +  resultSet.getString( "lastName"));
+                instructorEmail.addItem(resultSet.getString( "email"));
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
+    private void instructorName(){
+        if (instructorEmail.getItemCount() == 0){
+            moduleName.addItem("Select Instructor");
+        }else {
+            instructorName.setText("");
+            try {
+                String email = instructorEmail.getSelectedItem().toString();
+                if (email == "Select Instructor"){
+                    instructorName.setText("");
+                } else {
+                    ResultSet resultSet = userTable.getInstructorName(email);
+                    while (resultSet.next()) {
+                        instructorName.setText(resultSet.getString("firstName") + " " + resultSet.getString("lastName"));
+                    }
+                }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+        }
+
+    }
+
     private void moduleDetailsAtTextField(){
         if (moduleName.getItemCount() == 0){
             moduleName.addItem("Select Module Names");
         }
-
         courseName.setText("");
         level.setText("");
         moduleType.setText("");
@@ -123,6 +156,14 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void refreshModuleData() {
+        moduleName.addActionListener(e -> moduleDetailsAtTextField());
+    }
+
+    private void refreshInstructorName() {
+        instructorEmail.addActionListener(e -> instructorName());
     }
 
     private JPanel courseAdministratorCourseTablePanel() {
@@ -164,13 +205,12 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         formLayout.gridx = 0;
         formLayout.gridy = 1;
         formLayout.gridwidth = 1;
-        courseAdministratorInstructorForm.add(new JLabel("Instructor Name"), formLayout);
+        courseAdministratorInstructorForm.add(new JLabel("Instructor Email"), formLayout);
 
-        formLayout.weightx = 1;
-        formLayout.gridwidth = 3;
         formLayout.gridx = 1;
         formLayout.gridy = 1;
-        courseAdministratorInstructorForm.add(instructorName,formLayout);
+        formLayout.gridwidth = 1;
+        courseAdministratorInstructorForm.add(instructorEmail,formLayout);
 
         formLayout.gridx = 0;
         formLayout.gridy = 2;
@@ -187,8 +227,8 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         formLayout.gridwidth = 1;
         courseAdministratorInstructorForm.add(new JLabel("Level"), formLayout);
 
-        formLayout.gridx=1;
-        formLayout.gridy=3;
+        formLayout.gridx = 1;
+        formLayout.gridy = 3;
         formLayout.gridwidth = 1;
         courseAdministratorInstructorForm.add(level,formLayout);
 
@@ -197,8 +237,8 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         formLayout.gridwidth = 1;
         courseAdministratorInstructorForm.add(new JLabel("Module Type"), formLayout);
 
-        formLayout.gridx=1;
-        formLayout.gridy=4;
+        formLayout.gridx = 1;
+        formLayout.gridy = 4;
         formLayout.gridwidth = 1;
         courseAdministratorInstructorForm.add(moduleType,formLayout);
 
@@ -207,12 +247,20 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         formLayout.gridwidth = 1;
         courseAdministratorInstructorForm.add(new JLabel("Semester"), formLayout);
 
-        formLayout.gridx=1;
-        formLayout.gridy=5;
+        formLayout.gridx = 1;
+        formLayout.gridy = 5;
         formLayout.gridwidth = 1;
         courseAdministratorInstructorForm.add(semester,formLayout);
 
+        formLayout.gridx = 0;
+        formLayout.gridy = 6;
+        formLayout.gridwidth = 1;
+        courseAdministratorInstructorForm.add(new JLabel("Instructor Name"), formLayout);
 
+        formLayout.gridx = 1;
+        formLayout.gridy = 6;
+        formLayout.gridwidth = 1;
+        courseAdministratorInstructorForm.add(instructorName,formLayout);
 
         return courseAdministratorInstructorForm;
     }
@@ -277,16 +325,12 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         return this;
     }
 
-    private void refresh() {
-        moduleName.addActionListener(e -> moduleDetailsAtTextField());
-    }
-
     public DefaultTableModel getCourseAdministratorInstructorModel(){ return (DefaultTableModel) getTable().getModel();}
     public  JTable getTable(){
         return courseAdministratorInstructorTable;
     }
     public JComboBox getModuleName() { return moduleName; }
-    public JComboBox getInstructorName() { return instructorName; }
+    public JComboBox getInstructorEmail() { return instructorEmail; }
     public JTextField getCourseName() {
         return courseName;
     }
@@ -315,7 +359,7 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
         refreshModuleName();
     }
     public void getRefreshInstructorName(){
-        instructorName();
+        instructorEmails();
     }
 }
 

@@ -53,15 +53,31 @@ public class InstructorPanelTable {
         return null;
     }
 
-//    ResultSet getInstructorTeachingCourses(){
-//        try {
-//            String select = "Select * from instructorteachingmodules inner join modules on instructorteachingmodules.moduleName = modules.moduleName inner join users";
-//            PreparedStatement statement = con.prepareStatement(select);
-//            return statement.executeQuery();
-//        }
-//        catch (SQLException e){
-//            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
-//        }
-//        return null;
-//    }
+    ResultSet getInstructorTeachingCourses(String email){
+        try {
+            String select = "Select DISTINCT modules.courseName FROM instructorteachingmodules INNER JOIN modules ON instructorteachingmodules.moduleName = modules.moduleName INNER JOIN users ON instructorteachingmodules.instructorEmail = users.email WHERE email=?";
+            PreparedStatement statement = con.prepareStatement(select);
+            statement.setString(1,email);
+            return statement.executeQuery();
+        }
+        catch (SQLException e){
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return null;
+    }
+
+    ResultSet getInstructorTeachingModules(String email,String courseName,String level){
+        try {
+            String select = "Select DISTINCT modules.moduleName FROM instructorteachingmodules INNER JOIN modules ON instructorteachingmodules.moduleName = modules.moduleName INNER JOIN users ON instructorteachingmodules.instructorEmail = users.email WHERE email = ? AND modules.courseName=? AND modules.level = ?";
+            PreparedStatement statement = con.prepareStatement(select);
+            statement.setString(1,email);
+            statement.setString(2,courseName);
+            statement.setString(3,level);
+            return statement.executeQuery();
+        }
+        catch (SQLException e){
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return null;
+    }
 }
