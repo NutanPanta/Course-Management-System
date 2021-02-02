@@ -14,22 +14,22 @@ public class InstructorPanelTable {
         }
     }
 
-    void insert(String studentEmail,String moduleName,String instructorEmail,String obtainedMarks,String passMarks,String fullMarks){
+    void insert(String studentEmail,String moduleName,String instructorEmail,int obtainedMarks,int passMarks,int fullMarks,char grade,String status){
         try {
-            String insert = "INSERT INTO instructorMarksTable(studentEmail,moduleName,instructorEmail,obtainedMarks,passMarks,fullMarks)" + "VALUES(?,?,?,?,?,?)";
+            String insert = "INSERT INTO instructorMarksTable(studentEmail,moduleName,instructorEmail,obtainedMarks,passMarks,fullMarks,grade,status)" + "VALUES(?,?,?,?,?,?,?,?)";
             PreparedStatement statement = con.prepareStatement(insert);
-
             statement.setString(1,studentEmail);
             statement.setString(2,moduleName);
             statement.setString(3,instructorEmail);
-            statement.setString(4,obtainedMarks);
-            statement.setString(5,passMarks);
-            statement.setString(6,fullMarks);
+            statement.setInt(4,obtainedMarks);
+            statement.setInt(5,passMarks);
+            statement.setInt(6,fullMarks);
+            statement.setString(7,String.valueOf(grade));
+            statement.setString(8,status);
 
             statement.executeUpdate();
             statement.close();
-            JOptionPane.showMessageDialog(null, moduleName  + "marks has been successfully added to. " + studentEmail +  " Thank You!!!");
-
+            JOptionPane.showMessageDialog(null,"Marks has been added of" + moduleName + " to " + studentEmail + " by " + instructorEmail);
         }catch (SQLException e){
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 JOptionPane.showMessageDialog(null,"Marks has already been added for this student in this module.");
@@ -37,6 +37,19 @@ public class InstructorPanelTable {
                 JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+    }
+
+    ResultSet getAddedMarks(String email){
+        try {
+            String select = "Select * from instructormarkstable inner join modules on modules.moduleName = instructormarkstable.moduleName inner join users on instructormarkstable.instructorEmail = users.email where email = ?";
+            PreparedStatement statement = con.prepareStatement(select);
+            statement.setString(1,email);
+            return statement.executeQuery();
+        }
+        catch (SQLException e){
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return null;
     }
 
     ResultSet getStudentsDetailsOnInstructorPanel(String courseName,String level){
@@ -79,5 +92,22 @@ public class InstructorPanelTable {
             JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
         return null;
+    }
+
+    void updateStudentMarks(int marksId, int obtainedMarks,char grade,String status) {
+        try {
+            String update = "UPDATE instructormarkstable SET obtainedMarks = ?, grade = ?, status = ? WHERE  marksId = ?";
+            PreparedStatement statement = con.prepareStatement(update);
+            statement.setInt(1, obtainedMarks);
+            statement.setString(2, String.valueOf(grade));
+            statement.setString(3, status);
+            statement.setInt(4, marksId);
+
+            statement.executeUpdate();
+            statement.close();
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

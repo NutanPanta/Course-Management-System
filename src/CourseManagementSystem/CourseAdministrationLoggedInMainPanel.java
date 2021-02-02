@@ -4,13 +4,14 @@ import javax.swing.*;
 import java.awt.*;
 
 public class CourseAdministrationLoggedInMainPanel extends JPanel implements AppLayout {
-    private JButton Courses,Modules,addInstructor,logOut;
+    private JButton Courses,Modules,addInstructor,generateMarkSheet,logOut;
     private GridBagConstraints layout;
 
     public CourseAdministrationLoggedInMainPanel() {
         Courses = new JButton("Courses");
         Modules = new JButton("Modules");
         addInstructor = new JButton("Add Instructor to a module");
+        generateMarkSheet = new JButton("Generate Marks");
         logOut = new JButton("Logout");
     }
 
@@ -36,6 +37,10 @@ public class CourseAdministrationLoggedInMainPanel extends JPanel implements App
 
         layout.gridx = 0;
         layout.gridy = 3;
+        add(generateMarkSheet,layout);
+
+        layout.gridx = 0;
+        layout.gridy = 4;
         add(logOut,layout);
 
         return this;
@@ -49,6 +54,9 @@ public class CourseAdministrationLoggedInMainPanel extends JPanel implements App
     }
     public JButton getAddInstructor() {
         return addInstructor;
+    }
+    public JButton getGenerateMarkSheet() {
+        return generateMarkSheet;
     }
     public JButton getLogOut() {
         return logOut;

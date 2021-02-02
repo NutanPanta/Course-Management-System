@@ -23,7 +23,7 @@ public class StudentLoggedInCoursePanel extends JPanel implements AppLayout {
 
     public StudentLoggedInCoursePanel() {
         setBorder(BorderFactory.createTitledBorder("Register Instructor To Module"));
-        String[] TableNames = {"Module Name","moduleType","semester","Instructor Name"};
+        String[] TableNames = {"Course Name","Module Name","Semester","Instructor Name","Module Type"};
 
         studentName = new JTextField(20);
         studentName.setPreferredSize(new Dimension(40,30));
@@ -86,7 +86,7 @@ public class StudentLoggedInCoursePanel extends JPanel implements AppLayout {
 
     public void loggedInStudentData(String Email){
         try {
-                ResultSet resultSet = userTable.getParticularStudentData(Email);
+                ResultSet resultSet = userTable.getParticularUserData(Email);
                 while (resultSet.next()) {
                     studentName.setText(resultSet.getString("firstName") + " " + resultSet.getString("lastName"));
                     email.setText(resultSet.getString("email"));

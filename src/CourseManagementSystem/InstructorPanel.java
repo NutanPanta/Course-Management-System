@@ -4,8 +4,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -13,8 +11,8 @@ public class InstructorPanel extends JPanel implements AppLayout {
     private DefaultTableModel instructorModel;
     private JTable instructorTable;
     private JTextField instructorName,email,studentName,obtainedMarks,fullMarks;
-    private JComboBox courseName,level,moduleNames,studentEmail;
-    private JButton addElectiveSubject, logout;
+    private JComboBox courseName,level,moduleName,studentEmail;
+    private JButton addMarks,updateMarks, logout;
     private GridBagConstraints layout, studentLayout,electiveLayout, buttonLayout;
     ModuleTable moduleTable;
     UserTable userTable;
@@ -26,8 +24,8 @@ public class InstructorPanel extends JPanel implements AppLayout {
 
     public InstructorPanel() {
         setBorder(BorderFactory.createTitledBorder("Register Instructor To Module"));
-        String[] TableNames = {"Module Name","moduleType","semester","Instructor Name"};
-        String ll[]={"4","5","6"};
+        String[] TableNames = {"ID","Student Email","Course Name","Level","Module Name","Obtained Marks","Pass Marks","Full Marks","Grade","Status"};
+        String ll[]={"Select Level","4","5","6"};
 
         instructorName = new JTextField(20);
         instructorName.setPreferredSize(new Dimension(40,30));
@@ -49,16 +47,21 @@ public class InstructorPanel extends JPanel implements AppLayout {
 
         fullMarks = new JTextField(20);
         fullMarks.setPreferredSize(new Dimension(40,30));
+        fullMarks.setEnabled(false);
+        fullMarks.setDisabledTextColor(new Color(0,0,0));
+        fullMarks.setText("100");
+
 
         courseName = new JComboBox();
         level = new JComboBox(ll);
-        moduleNames = new JComboBox();
+        moduleName = new JComboBox();
         studentEmail = new JComboBox();
 
         DefaultTableModel courseAdministratorInstructorModel = new DefaultTableModel();
         courseAdministratorInstructorModel.setColumnIdentifiers(TableNames);
 
-        addElectiveSubject = new JButton("Add Elective");
+        addMarks = new JButton("Add Elective");
+        updateMarks = new JButton("Update Marks");
         logout = new JButton("Logout");
 
         instructorTable = new JTable(courseAdministratorInstructorModel);
@@ -75,7 +78,7 @@ public class InstructorPanel extends JPanel implements AppLayout {
 
     public void loggedInInstructorData(String Email){
         try {
-                ResultSet resultSet = userTable.getParticularStudentData(Email);
+                ResultSet resultSet = userTable.getParticularUserData(Email);
                 while (resultSet.next()) {
                     instructorName.setText(resultSet.getString("firstName") + " " + resultSet.getString("lastName"));
                     email.setText(resultSet.getString("email"));
@@ -109,8 +112,7 @@ public class InstructorPanel extends JPanel implements AppLayout {
             }
 
         } catch (SQLException e) {
-//            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -155,10 +157,10 @@ public class InstructorPanel extends JPanel implements AppLayout {
             String cName = courseName.getSelectedItem().toString().trim();
             String lvl = level.getSelectedItem().toString().trim();
             ResultSet resultSet = instructorPanelTable.getInstructorTeachingModules(Email,cName,lvl);
-            moduleNames.removeAllItems();
-            moduleNames.addItem("Select Modules");
+            moduleName.removeAllItems();
+            moduleName.addItem("Select Modules");
             while (resultSet.next()) {
-                moduleNames.addItem(resultSet.getString("modules.moduleName"));
+                moduleName.addItem(resultSet.getString("modules.moduleName"));
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -234,7 +236,7 @@ public class InstructorPanel extends JPanel implements AppLayout {
         studentPanelCoursesStudentElectiveSubjects = new JPanel();
         studentPanelCoursesStudentElectiveSubjects.setLayout(new GridBagLayout());
         studentPanelCoursesStudentElectiveSubjects.setBackground(Color.decode("#D6D9DF"));
-        studentPanelCoursesStudentElectiveSubjects.setBorder(BorderFactory.createTitledBorder("Student Elective Module Panel"));
+        studentPanelCoursesStudentElectiveSubjects.setBorder(BorderFactory.createTitledBorder("Add Student Marks"));
 
         electiveLayout = new GridBagConstraints();
         electiveLayout.fill = GridBagConstraints.HORIZONTAL;
@@ -269,7 +271,7 @@ public class InstructorPanel extends JPanel implements AppLayout {
         electiveLayout.gridx=1;
         electiveLayout.gridy=2;
         electiveLayout.gridwidth = 3;
-        studentPanelCoursesStudentElectiveSubjects.add(moduleNames,electiveLayout);
+        studentPanelCoursesStudentElectiveSubjects.add(moduleName,electiveLayout);
 
         electiveLayout.gridx=0;
         electiveLayout.gridy=3;
@@ -323,21 +325,23 @@ public class InstructorPanel extends JPanel implements AppLayout {
         buttonLayout = new GridBagConstraints();
         buttonLayout.fill = GridBagConstraints.HORIZONTAL;
         buttonLayout.insets = new Insets(5,10,5,10);
-        buttonLayout.ipadx = 20;
-        buttonLayout.ipady = 20;
+        buttonLayout.ipadx = 25;
+        buttonLayout.ipady = 25;
         buttonLayout.weightx = 1;
-        buttonLayout.gridwidth = 3;
 
         buttonLayout.ipady = 5;
         buttonLayout.gridx=0;
         buttonLayout.gridy=0;
-        buttonLayout.gridwidth = 4;
-        studentPanelCoursesButtons.add(addElectiveSubject,buttonLayout);
+        studentPanelCoursesButtons.add(addMarks,buttonLayout);
 
         buttonLayout.ipady = 5;
-        buttonLayout.gridx=0;
-        buttonLayout.gridy=2;
-        buttonLayout.gridwidth = 4;
+        buttonLayout.gridx=1;
+        buttonLayout.gridy=0;
+        studentPanelCoursesButtons.add(updateMarks, buttonLayout);
+
+                buttonLayout.ipady = 5;
+        buttonLayout.gridx=2;
+        buttonLayout.gridy=0;
         studentPanelCoursesButtons.add(logout, buttonLayout);
 
         return studentPanelCoursesButtons;
@@ -384,14 +388,24 @@ public class InstructorPanel extends JPanel implements AppLayout {
     public JTextField getEmail() {
         return email;
     }
+    public JTextField getObtainedMarks() {
+        return obtainedMarks;
+    }
+    public JTextField getFullMarks() {
+        return fullMarks;
+    }
     public JComboBox getCourseName(){
         return courseName;
+    }
+    public JComboBox getModuleName(){
+        return moduleName;
     }
     public JComboBox getLevel(){
         return level;
     }
     public JComboBox getStudentEmail(){ return studentEmail; }
-    public JButton getAddElectiveSubject(){ return addElectiveSubject; }
+    public JButton getAddMarks(){ return addMarks; }
+    public JButton getUpdateMarks(){ return updateMarks; }
     public JButton getLogout() {
         return logout;
     }

@@ -26,6 +26,7 @@ public class MyApp extends JFrame {
     courseTable coursetable;
     ModuleTable moduleTable;
     UserTable userTable;
+    InstructorPanelTable instructorPanelTable;
     StudentCourseTable studentCourseTable;
     InstructorToModuleTable instructorToModuleTable;
     File file = new File("Files");
@@ -49,11 +50,13 @@ public class MyApp extends JFrame {
         courseAdministrationLoggedInModulesPanel = new CourseAdministrationLoggedInModulesPanel();
         courseAdministrationLoggedInInstructorAddToModulePanel = new CourseAdministrationLoggedInInstructorAddToModulePanel();
         instructorPanel = new InstructorPanel();
+
         coursetable = new courseTable();
         moduleTable = new ModuleTable();
         userTable = new UserTable();
         studentCourseTable = new StudentCourseTable();
         instructorToModuleTable = new InstructorToModuleTable();
+        instructorPanelTable = new InstructorPanelTable();
 
         LoginPanel.setVisible(true);
         RegisterPanel.setVisible(false);
@@ -72,12 +75,14 @@ public class MyApp extends JFrame {
         implementModules();
         implementInstructorToModule();
         implementElectiveSubjects();
+        implementInstructorAddMarks();
 
         updateCourseName();
         updateCourseStatusToCancel();
         updateCourseStatusToOpen();
         updateModule();
         updateInstructorFromModel();
+        updateObtainedMarks();
 
         deleteCourse();
         deleteModule();
@@ -87,6 +92,7 @@ public class MyApp extends JFrame {
         refreshModuleTable();
         refreshCourseAdministratorInstructorTable();
         refreshStudentPanelCourseTable();
+        refreshInstructorMarksTable();
 
         panelChange();
         pack();
@@ -138,6 +144,7 @@ public class MyApp extends JFrame {
 //        Logout Buttons
         JButton studentLogoutButton = studentLoggedInCoursePanel.getLogout();
         JButton courseAdministratorLogoutButton = courseAdministrationLoggedInMainPanel.getLogOut();
+        JButton instructorPanelLogoutButton = instructorPanel.getLogout();
 
         registerLabel.addActionListener(e -> {
             try {
@@ -259,6 +266,16 @@ public class MyApp extends JFrame {
         courseAdministratorLogoutButton.addActionListener(e -> {
             try {
                 courseAdministrationLoggedInMainPanel.setVisible(false);
+                LoginPanel.setVisible(true);
+            } catch (Exception ex){
+                JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
+        });
+
+        instructorPanelLogoutButton.addActionListener(e -> {
+            try {
+                instructorPanel.setVisible(false);
                 LoginPanel.setVisible(true);
             } catch (Exception ex){
                 JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -507,12 +524,13 @@ public class MyApp extends JFrame {
             JOptionPane.showMessageDialog(this,"You are logged in as Instructor!!!");
             instructorPanel.loggedInInstructorData(loginEmail);
             instructorPanel.instructorTeachingCourses(loginEmail);
+            refreshInstructorMarksTable();
             LoginPanel.getLoginEmail().setText("");
             LoginPanel.getLoginPassword().setText("");
             instructorPanel.setVisible(true);
             RegisterPanel.setVisible(false);
             LoginPanel.setVisible(false);
-            this.setMinimumSize(new Dimension(820,520));
+            this.setMinimumSize(new Dimension(900,520));
             pack();
             setLocationRelativeTo(null);
         } else if(matchLoginData && loginUserType.equals("Course Administrator")) {
@@ -620,7 +638,6 @@ public class MyApp extends JFrame {
             }
             catch (Exception ex){
                 JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace();
             }
         });
     }
@@ -637,11 +654,8 @@ public class MyApp extends JFrame {
             try {
                 countRegistrationLines();
                 checkLoginData(loginEmail, loginPassword, loginUserType);
-//                studentLoggedInCoursePanel.getLoggedInStudentData();
-
             } catch (Exception ex){
-//                JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace();
+                JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
@@ -727,6 +741,63 @@ public class MyApp extends JFrame {
         });
     }
 
+    private void implementInstructorAddMarks(){
+        JButton addMarks = instructorPanel.getAddMarks();
+
+        addMarks.addActionListener(e -> {
+            try {
+                String courseName = instructorPanel.getCourseName().getSelectedItem().toString();
+                String studentEmail =  instructorPanel.getStudentEmail().getSelectedItem().toString();
+                String moduleName =  instructorPanel.getModuleName().getSelectedItem().toString();
+                String instructorEmail = instructorPanel.getEmail().getText().trim();
+                String level = instructorPanel.getLevel().getSelectedItem().toString();
+                String obtainedMarksEmpty = instructorPanel.getObtainedMarks().getText().trim();
+                String pass = "Pass";
+                String fail = "Fail";
+                if(courseName == "Select Course" && level == "Select Level" && moduleName == "Select Modules" &&  studentEmail == "Select Student" && obtainedMarksEmpty.isEmpty()){
+                    JOptionPane.showMessageDialog(this,"Complete all fields");
+                } else if(level == "Select Level"){
+                    JOptionPane.showMessageDialog(this,"Select Level");
+                } else if(moduleName == "Select Modules"){
+                    JOptionPane.showMessageDialog(this,"No Module is selected");
+                } else if(studentEmail == "Select Student"){
+                    JOptionPane.showMessageDialog(this,"No student is selected");
+                }else if(obtainedMarksEmpty.isEmpty()){
+                    JOptionPane.showMessageDialog(this,"Enter Obtained Marks");
+                } else {
+                    int obtainedMarks = Integer.parseInt(instructorPanel.getObtainedMarks().getText().trim());
+                    int fullMarks = Integer.parseInt(instructorPanel.getFullMarks().getText().trim());
+                    int passMarks = (40*fullMarks)/100;
+                    if (obtainedMarks > fullMarks) {
+                        JOptionPane.showMessageDialog(self, "Obtained Marks cannot be grater than full marks.", "Warning", JOptionPane.WARNING_MESSAGE);
+                    } else {
+                        if (obtainedMarks > 70) {
+                            instructorPanelTable.insert(studentEmail, moduleName, instructorEmail, obtainedMarks, passMarks, fullMarks, 'A', pass);
+                        } else if (obtainedMarks <= 70 && obtainedMarks >= 60) {
+                            instructorPanelTable.insert(studentEmail, moduleName, instructorEmail, obtainedMarks, passMarks, fullMarks, 'B', pass);
+                        } else if (obtainedMarks < 60 && obtainedMarks >= 50) {
+                            instructorPanelTable.insert(studentEmail, moduleName, instructorEmail, obtainedMarks, passMarks, fullMarks, 'C', pass);
+                        } else if (obtainedMarks < 50 && obtainedMarks >= 43) {
+                            instructorPanelTable.insert(studentEmail, moduleName, instructorEmail, obtainedMarks, passMarks, fullMarks, 'D', pass);
+                        } else if (obtainedMarks < 43 && obtainedMarks >= 40) {
+                            instructorPanelTable.insert(studentEmail, moduleName, instructorEmail, obtainedMarks, passMarks, fullMarks, 'E', pass);
+                        } else {
+                            instructorPanelTable.insert(studentEmail, moduleName, instructorEmail, obtainedMarks, passMarks, fullMarks, 'F', fail);
+                        }
+                        refreshInstructorMarksTable();
+                        instructorPanel.getLevel().setSelectedIndex(0);
+                        instructorPanel.getModuleName().setSelectedIndex(0);
+                        instructorPanel.getStudentEmail().setSelectedIndex(0);
+                        instructorPanel.getObtainedMarks().setText("");
+                    }
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        });
+    }
+
 //    Refresh Table
 
     private void refreshCourseTable() {
@@ -798,18 +869,45 @@ public class MyApp extends JFrame {
             ResultSet resultSet1 = studentCourseTable.getElectiveSubjectData(email);
             while (resultSet.next()) {
                 studentLoggedInCoursePanel.getStudentLoggedInCourseModel().addRow(new Object[]{
-                        resultSet.getString("moduleName"),
+                        resultSet.getString("courseName"),
                         resultSet.getString("moduleName"),
                         resultSet.getString("semester"),
                         resultSet.getString("instructorEmail"),
+                        resultSet.getString("moduleType"),
                 });
             }
             while (resultSet1.next()) {
                 studentLoggedInCoursePanel.getStudentLoggedInCourseModel().addRow(new Object[]{
-                        resultSet1.getString("moduleName"),
+                        resultSet1.getString("courseName"),
                         resultSet1.getString("moduleName"),
                         resultSet1.getString("semester"),
                         resultSet1.getString("instructorEmail"),
+                        resultSet1.getString("moduleType"),
+                });
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void refreshInstructorMarksTable() {
+        instructorPanel.getInstructorModel().setRowCount(0);
+        try {
+            String email = instructorPanel.getEmail().getText().trim();
+            System.out.println(email);
+            ResultSet resultSet = instructorPanelTable.getAddedMarks(email);
+            while (resultSet.next()) {
+                instructorPanel.getInstructorModel().addRow(new Object[]{
+                        resultSet.getString("marksId"),
+                        resultSet.getString("studentEmail"),
+                        resultSet.getString("courseName"),
+                        resultSet.getString("level"),
+                        resultSet.getString("moduleName"),
+                        resultSet.getString("obtainedMarks"),
+                        resultSet.getString("passMarks"),
+                        resultSet.getString("fullMarks"),
+                        resultSet.getString("grade"),
+                        resultSet.getString("status"),
                 });
             }
         } catch (SQLException e) {
@@ -1072,6 +1170,83 @@ public class MyApp extends JFrame {
             catch (Exception ex){
                 JOptionPane.showMessageDialog(self, "Coding error", "Error", JOptionPane.ERROR_MESSAGE);
             }
+        });
+    }
+
+    private void updateObtainedMarks(){
+        JButton updateMarksBtn = instructorPanel.getUpdateMarks();
+        DefaultTableModel marksModel = instructorPanel.getInstructorModel();
+        JTable dataTable = instructorPanel.getTable();
+        dataTable.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int selectedRow = dataTable.getSelectedRow();
+                instructorPanel.getCourseName().setSelectedItem(marksModel.getValueAt(selectedRow,2).toString());
+                instructorPanel.getLevel().setSelectedItem(marksModel.getValueAt(selectedRow,3).toString());
+                instructorPanel.getModuleName().setSelectedItem(marksModel.getValueAt(selectedRow,4).toString());
+                instructorPanel.getStudentEmail().setSelectedItem(marksModel.getValueAt(selectedRow,1).toString());
+                instructorPanel.getObtainedMarks().setText(marksModel.getValueAt(selectedRow,5).toString());
+            }
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+        updateMarksBtn.addActionListener(e -> {
+            try {
+                int selectedRow = dataTable.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(self, "Please select the row from table to update marks", "Warning", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    int obtainedMarks = Integer.parseInt(instructorPanel.getObtainedMarks().getText().trim());
+                    String studentEmail = instructorPanel.getStudentEmail().getSelectedItem().toString();
+                    int marks = Integer.parseInt(marksModel.getValueAt(selectedRow, 5).toString());
+                    int marksId = Integer.parseInt(marksModel.getValueAt(selectedRow, 0).toString());
+                    int fullMarks = Integer.parseInt(instructorPanel.getFullMarks().getText().trim());
+                    if (marks == obtainedMarks) {
+                        JOptionPane.showMessageDialog(self, "<HTML><CENTER>Nothing to update.<br>Or you may have tried to change other data as they can't be changed.Only marks can be updated.</CENTER></HTML>");
+                    } else {
+                        String pass = "Pass";
+                        String fail = "Fail";
+                        if (obtainedMarks > fullMarks) {
+                            JOptionPane.showMessageDialog(self, "Obtained Marks cannot be grater than full marks.", "Warning", JOptionPane.WARNING_MESSAGE);
+                        } else {
+                            if (obtainedMarks > 70) {
+                                instructorPanelTable.updateStudentMarks(marksId, obtainedMarks, 'A', pass);
+                            } else if (obtainedMarks <= 70 && obtainedMarks >= 60) {
+                                instructorPanelTable.updateStudentMarks(marksId, obtainedMarks, 'B', pass);
+                            } else if (obtainedMarks < 60 && obtainedMarks >= 50) {
+                                instructorPanelTable.updateStudentMarks(marksId, obtainedMarks, 'C', pass);
+                            } else if (obtainedMarks < 50 && obtainedMarks >= 43) {
+                                instructorPanelTable.updateStudentMarks(marksId, obtainedMarks, 'D', pass);
+                            } else if (obtainedMarks < 43 && obtainedMarks >= 40) {
+                                instructorPanelTable.updateStudentMarks(marksId, obtainedMarks, 'E', pass);
+                            } else {
+                                instructorPanelTable.updateStudentMarks(marksId, obtainedMarks, 'F', fail);
+                            }
+                            refreshInstructorMarksTable();
+                            JOptionPane.showMessageDialog(self, "Marks has been updated to open successfully of " + studentEmail + ".", "Success", JOptionPane.INFORMATION_MESSAGE);
+                            instructorPanel.getLevel().setSelectedIndex(0);
+                            instructorPanel.getModuleName().setSelectedIndex(0);
+                            instructorPanel.getStudentEmail().setSelectedIndex(0);
+                            instructorPanel.getObtainedMarks().setText("");
+                            dataTable.clearSelection();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex){
+                JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
         });
     }
 
