@@ -339,7 +339,7 @@ public class InstructorPanel extends JPanel implements AppLayout {
         buttonLayout.gridy=0;
         studentPanelCoursesButtons.add(updateMarks, buttonLayout);
 
-                buttonLayout.ipady = 5;
+        buttonLayout.ipady = 5;
         buttonLayout.gridx=2;
         buttonLayout.gridy=0;
         studentPanelCoursesButtons.add(logout, buttonLayout);
