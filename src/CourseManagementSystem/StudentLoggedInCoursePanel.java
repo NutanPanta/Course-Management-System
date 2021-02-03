@@ -293,6 +293,7 @@ public class StudentLoggedInCoursePanel extends JPanel implements AppLayout {
     }
     public JComboBox getElectiveModule(){ return electiveModule; }
     public JButton getAddElectiveSubject(){ return addElectiveSubject; }
+    public JButton getViewResult(){ return viewResult; }
     public JButton getLogout() {
         return logout;
     }

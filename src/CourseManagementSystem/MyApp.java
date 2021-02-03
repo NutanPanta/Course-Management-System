@@ -18,6 +18,7 @@ public class MyApp extends JFrame {
     loginPanel LoginPanel;
     registerPanel RegisterPanel;
     StudentLoggedInCoursePanel studentLoggedInCoursePanel;
+    StudentPanelViewResultPanel studentPanelViewResultPanel;
     CourseAdministrationLoggedInMainPanel courseAdministrationLoggedInMainPanel;
     CourseAdministrationLoggedInCoursesPanel courseAdministrationLoggedInCoursesPanel;
     CourseAdministrationLoggedInModulesPanel courseAdministrationLoggedInModulesPanel;
@@ -45,6 +46,7 @@ public class MyApp extends JFrame {
         LoginPanel = new loginPanel();
         RegisterPanel = new registerPanel();
         studentLoggedInCoursePanel = new StudentLoggedInCoursePanel();
+        studentPanelViewResultPanel = new StudentPanelViewResultPanel();
         courseAdministrationLoggedInMainPanel = new CourseAdministrationLoggedInMainPanel();
         courseAdministrationLoggedInCoursesPanel = new CourseAdministrationLoggedInCoursesPanel();
         courseAdministrationLoggedInModulesPanel = new CourseAdministrationLoggedInModulesPanel();
@@ -58,9 +60,10 @@ public class MyApp extends JFrame {
         instructorToModuleTable = new InstructorToModuleTable();
         instructorPanelTable = new InstructorPanelTable();
 
-        LoginPanel.setVisible(true);
+        LoginPanel.setVisible(false);
         RegisterPanel.setVisible(false);
         studentLoggedInCoursePanel.setVisible(false);
+        studentPanelViewResultPanel.setVisible(true);
         courseAdministrationLoggedInMainPanel.setVisible(false);
         courseAdministrationLoggedInCoursesPanel.setVisible(false);
         courseAdministrationLoggedInModulesPanel.setVisible(false);
@@ -111,6 +114,7 @@ public class MyApp extends JFrame {
         mainPanel.add(LoginPanel.panelUI(),layout);
         mainPanel.add(RegisterPanel.panelUI(),layout);
         mainPanel.add(studentLoggedInCoursePanel.panelUI(),layout);
+        mainPanel.add(studentPanelViewResultPanel.panelUI(),layout);
         mainPanel.add(courseAdministrationLoggedInMainPanel.panelUI(),layout);
         mainPanel.add(courseAdministrationLoggedInCoursesPanel.panelUI(),layout);
         mainPanel.add(courseAdministrationLoggedInModulesPanel.panelUI(),layout);
@@ -137,6 +141,8 @@ public class MyApp extends JFrame {
         JButton courseAdministratorCourseButton = courseAdministrationLoggedInMainPanel.getCourses();
         JButton courseAdministratorCourseModuleButton = courseAdministrationLoggedInMainPanel.getModules();
         JButton courseAdministratorInstructorAddToModuleButton = courseAdministrationLoggedInMainPanel.getAddInstructor();
+//        Student Panel View Result Button
+        JButton studentPanelVIewResultButton = studentLoggedInCoursePanel.getViewResult();
 //        Back Buttons
         JButton courseAdministratorCourseBackButton = courseAdministrationLoggedInCoursesPanel.getBack();
         JButton courseAdministratorModuleBackButton = courseAdministrationLoggedInModulesPanel.getBack();
@@ -166,6 +172,20 @@ public class MyApp extends JFrame {
                 RegisterPanel.getRegistrationPassword().setText("");
                 RegisterPanel.setVisible(false);
                 LoginPanel.setVisible(true);
+            } catch (Exception ex){
+                JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
+        });
+
+//        Student Panel Action Listeners
+        studentPanelVIewResultButton.addActionListener(e -> {
+            try {
+                studentLoggedInCoursePanel.setVisible(false);
+                studentPanelViewResultPanel.setVisible(true);
+                this.setMinimumSize(new Dimension(700,480));
+                pack();
+                setLocationRelativeTo(null);
             } catch (Exception ex){
                 JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
 
@@ -511,6 +531,7 @@ public class MyApp extends JFrame {
         } else if (matchLoginData && loginUserType.equals("Student")) {
             JOptionPane.showMessageDialog(this,"You are logged in as Student!!!");
             studentLoggedInCoursePanel.loggedInStudentData(loginEmail);
+            studentPanelViewResultPanel.loggedInStudentData(loginEmail);
             refreshStudentPanelCourseTable();
             LoginPanel.getLoginEmail().setText("");
             LoginPanel.getLoginPassword().setText("");
