@@ -16,7 +16,7 @@ public class loginPanel extends JPanel implements AppLayout {
         emailTextField.setPreferredSize(new Dimension(40,30));
         passwordField = new JTextField(20);
         passwordField.setPreferredSize(new Dimension(40,30));
-        String users[]={"Student","Instructor","Course Administrator"};
+        String users[]={"Select User","Student","Instructor","Course Administrator"};
         userType =new JComboBox(users);
         userType.setBounds(50, 50,90,20);
         loginButton = new JButton("Login");

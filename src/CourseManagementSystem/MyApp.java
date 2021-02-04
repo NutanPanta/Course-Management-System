@@ -530,16 +530,20 @@ public class MyApp extends JFrame {
         boolean emailValidation = emailValidation(registrationEmail);
         boolean isEmailDuplicate = emailDuplication(registrationEmail);
         boolean isUserDuplicate = administrationDuplication(registrationUserType);
-            if (registrationFirstName.isEmpty() && registrationLastName.isEmpty() && registrationEmail.isEmpty() && registrationPassword.isEmpty() && registrationUserType.isEmpty()) {
+            if (registrationFirstName.isEmpty() && registrationLastName.isEmpty() && registrationEmail.isEmpty() && registrationPassword.isEmpty() && registrationUserType.isEmpty() && registrationUserType.equals("Select User") && registrationLevel.equals("Select Level")) {
                 JOptionPane.showMessageDialog(this, "All fields are empty. Fill the form and try again.");
-            } else if (registrationFirstName.isEmpty() || registrationLastName.isEmpty() || registrationEmail.isEmpty() || registrationPassword.isEmpty() || registrationUserType.isEmpty()) {
+            } else if (registrationFirstName.isEmpty() || registrationLastName.isEmpty() || registrationEmail.isEmpty() || registrationPassword.isEmpty() || registrationUserType.isEmpty() || registrationUserType.equals("Select User") || registrationLevel.equals("Select Level")) {
                 JOptionPane.showMessageDialog(this, "Complete all fields and try again.", "Warning", JOptionPane.WARNING_MESSAGE);
+            }  else if(registrationUserType.equals("Select User")){
+                JOptionPane.showMessageDialog(this,"Select a user type");
+            } else if(registrationLevel.equals("Select Level")){
+                JOptionPane.showMessageDialog(this,"No Level Is Selected");
             } else if (!emailValidation) {
                 JOptionPane.showMessageDialog(this, "Enter a valid email");
             } else if (isEmailDuplicate) {
-                JOptionPane.showMessageDialog(this, "This user with this email has already been Registered. Please Login!!!");
+                JOptionPane.showMessageDialog(this, "This user with this email has already been Registered. Please Login");
             } else if (isUserDuplicate) {
-                JOptionPane.showMessageDialog(this, "There is already one course administrator. Please Login!!!");
+                JOptionPane.showMessageDialog(this, "There is already one course administrator. Please Login");
             } else {
                 if(RegisterPanel.getRegistrationCourse().isVisible()){
                 addRegistrationData(registrationFirstName, registrationLastName, registrationEmail, registrationPassword, registrationUserType, registrationCourse, registrationLevel);
@@ -569,16 +573,18 @@ public class MyApp extends JFrame {
         boolean  matchUserType = readAndValidateLoginUserType(loginEmail,loginUserType);
 
 
-        if(loginEmail.isEmpty() && loginPassword.isEmpty()){
-            JOptionPane.showMessageDialog(this,"Complete all fields!!!");
+        if(loginEmail.isEmpty() && loginPassword.isEmpty() && loginUserType.equals("Select User")){
+            JOptionPane.showMessageDialog(this,"Complete all fields");
         } else if(loginEmail.isEmpty()){
-            JOptionPane.showMessageDialog(this,"Email field is empty!!!");
+            JOptionPane.showMessageDialog(this,"Email field is empty");
         } else if(loginPassword.isEmpty()){
-            JOptionPane.showMessageDialog(this,"Password field is empty!!!");
+            JOptionPane.showMessageDialog(this,"Password field is empty");
+        }  else if(loginUserType.equals("Select User")){
+            JOptionPane.showMessageDialog(this,"Select a user type!!!");
         } else if(!matchUserType){
-            JOptionPane.showMessageDialog(this,"User Type or email is incorrect!!!");
+            JOptionPane.showMessageDialog(this,"Incorrect User type or email");
         } else if (matchLoginData && loginUserType.equals("Student")) {
-            JOptionPane.showMessageDialog(this,"You are logged in as Student!!!");
+            JOptionPane.showMessageDialog(this,"You are logged in as Student");
             studentLoggedInCoursePanel.loggedInStudentData(loginEmail);
             studentPanelViewResultPanel.loggedInStudentData(loginEmail);
             studentPanelViewResultPanel.studentLevelCompulsoryModuleNames(loginEmail);

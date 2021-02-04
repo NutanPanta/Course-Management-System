@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class registerPanel extends JPanel implements AppLayout, ActionListener {
     private JTextField firstName, lastName, registerEmail, registerPassword;
@@ -11,6 +13,7 @@ public class registerPanel extends JPanel implements AppLayout, ActionListener {
     private JComboBox registerUserType,registerLevel,registerCourse;
     private JButton registerButton,loginLabel;
     private GridBagConstraints layout;
+    courseTable courseTable;
 
     public registerPanel() {
         setBorder(BorderFactory.createTitledBorder("Register"));
@@ -22,14 +25,13 @@ public class registerPanel extends JPanel implements AppLayout, ActionListener {
         registerEmail.setPreferredSize(new Dimension(40,30));
         registerPassword = new JPasswordField(20);
         registerPassword.setPreferredSize(new Dimension(40,30));
-        String users[]={"Student","Instructor","Course Administrator"};
+        String users[]={"Select User","Student","Instructor","Course Administrator"};
         registerUserType =new JComboBox(users);
         registerUserType.setBounds(50, 50,90,20);
-        String ll[]={"4","5","6"};
+        String ll[]={"Select Level","4","5","6"};
         registerLevel =new JComboBox(ll);
         registerLevel.setBounds(50, 50,90,20);
-        String ce[]={"BIT","BIM"};
-        registerCourse =new JComboBox(ce);
+        registerCourse =new JComboBox();
         registerCourse.setBounds(50, 50,90,20);
         registerButton = new JButton("Register");
         registerUserType.setSelectedItem(users[0]);
@@ -38,7 +40,25 @@ public class registerPanel extends JPanel implements AppLayout, ActionListener {
         loginLabel.setMargin(new Insets(0, 0, 0, 0));
         loginLabel.setContentAreaFilled(false);
         loginLabel.setBorderPainted(false);
+        courseTable = new courseTable();
 
+        courseName();
+
+    }
+
+    private void courseName(){
+        try {
+            ResultSet resultSet = courseTable.getCourseDetails();
+            registerCourse.removeAllItems();
+            registerCourse.addItem("Select Course Names");
+            while (resultSet.next()) {
+                registerCourse.addItem(resultSet.getString("courseName"));
+
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }
 
     @Override

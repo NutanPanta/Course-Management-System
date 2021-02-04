@@ -542,11 +542,43 @@ public class StudentPanelViewResultPanel extends JPanel implements AppLayout {
         }
     }
 
+    private void clear(){
+        clearCompulsory(subjectOneModuleName, subjectTwoModuleName, subjectThreeModuleName, subjectFourModuleName, subjectOneObtainedMarks, subjectTwoObtainedMarks, subjectThreeObtainedMarks, subjectFourObtainedMarks, subjectOnePassMarks, subjectTwoPassMarks, subjectThreePassMarks, subjectFourPassMarks);
+
+        clearCompulsory(subjectOneFullMarks, subjectTwoFullMarks, subjectThreeFullMarks, subjectFourFullMarks, subjectOneGrade, subjectTwoGrade, subjectThreeGrade, subjectFourGrade, subjectOneStatus, subjectTwoStatus, subjectThreeStatus, subjectFourStatus);
+    }
+
+    private void clearCompulsory(JTextField subjectOneModuleName, JTextField subjectTwoModuleName, JTextField subjectThreeModuleName, JTextField subjectFourModuleName, JTextField subjectOneObtainedMarks, JTextField subjectTwoObtainedMarks, JTextField subjectThreeObtainedMarks, JTextField subjectFourObtainedMarks, JTextField subjectOnePassMarks, JTextField subjectTwoPassMarks, JTextField subjectThreePassMarks, JTextField subjectFourPassMarks) {
+        clearElective(subjectOneModuleName, subjectTwoModuleName, subjectThreeModuleName, subjectFourModuleName, subjectOneObtainedMarks, subjectTwoObtainedMarks, subjectThreeObtainedMarks, subjectFourObtainedMarks, subjectOnePassMarks, subjectTwoPassMarks, subjectThreePassMarks, subjectFourPassMarks);
+    }
+
+    private void clear1(){
+        clearElective(subjectFiveModuleName, subjectSixModuleName, subjectSevenModuleName, subjectEightModuleName, subjectFiveObtainedMarks, subjectSixObtainedMarks, subjectSevenObtainedMarks, subjectEightObtainedMarks, subjectFivePassMarks, subjectSixPassMarks, subjectSevenPassMarks, subjectEightPassMarks);
+
+        clearElective(subjectFiveFullMarks, subjectSixFullMarks, subjectSevenFullMarks, subjectEightFullMarks, subjectFiveGrade, subjectSixGrade, subjectSevenGrade, subjectEightGrade, subjectFiveStatus, subjectSixStatus, subjectSevenStatus, subjectEightStatus);
+
+
+    }
+
+    private void clearElective(JTextField subjectFiveModuleName, JTextField subjectSixModuleName, JTextField subjectSevenModuleName, JTextField subjectEightModuleName, JTextField subjectFiveObtainedMarks, JTextField subjectSixObtainedMarks, JTextField subjectSevenObtainedMarks, JTextField subjectEightObtainedMarks, JTextField subjectFivePassMarks, JTextField subjectSixPassMarks, JTextField subjectSevenPassMarks, JTextField subjectEightPassMarks) {
+        subjectFiveModuleName.setText("");
+        subjectSixModuleName.setText("");
+        subjectSevenModuleName.setText("");
+        subjectEightModuleName.setText("");
+
+        subjectFiveObtainedMarks.setText("");
+        subjectSixObtainedMarks.setText("");
+        subjectSevenObtainedMarks.setText("");
+        subjectEightObtainedMarks.setText("");
+
+        subjectFivePassMarks.setText("");
+        subjectSixPassMarks.setText("");
+        subjectSevenPassMarks.setText("");
+        subjectEightPassMarks.setText("");
+    }
+
     public void studentLevelCompulsoryModuleNames(String email) {
-        subjectOneModuleName.setText("");
-        subjectTwoModuleName.setText("");
-        subjectThreeModuleName.setText("");
-        subjectFourModuleName.setText("");
+        clear();
         try {
             ResultSet resultSet = studentCourseTable.getCompulsoryMarksDetailsForResult(email);
             while (resultSet.next()){
@@ -588,16 +620,12 @@ public class StudentPanelViewResultPanel extends JPanel implements AppLayout {
     }
 
     public void studentLevelElectiveModuleNames(String email) {
-        subjectFiveModuleName.setText("");
-        subjectSixModuleName.setText("");
-        subjectSevenModuleName.setText("");
-        subjectEightModuleName.setText("");
+        clear1();
         String level = studentLevel.getText().trim();
-
         if (level.equals("6")) {
-            elective.setVisible(true);
-        }  else {
-            elective.setVisible(false);
+            elective.setText("<HTML><BODY><CENTER><H1>Elective Modules</H1></CENTER></BODY><HTML>");
+        } else {
+            elective.setText("<HTML><BODY><CENTER><H1></H1></CENTER></BODY><HTML>");
         }
         try {
             ResultSet resultSet = studentCourseTable.getElectiveMarksDetailsForResult(email);
