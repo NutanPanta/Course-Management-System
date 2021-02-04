@@ -3,8 +3,11 @@ package CourseManagementSystem;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,6 +24,7 @@ public class MyApp extends JFrame {
     CourseAdministrationLoggedInCoursesPanel courseAdministrationLoggedInCoursesPanel;
     CourseAdministrationLoggedInModulesPanel courseAdministrationLoggedInModulesPanel;
     CourseAdministrationLoggedInInstructorAddToModulePanel courseAdministrationLoggedInInstructorAddToModulePanel;
+    CourseAdministratorGenerateMarksPanel courseAdministratorGenerateMarksPanel;
     InstructorPanel instructorPanel;
     courseTable coursetable;
     ModuleTable moduleTable;
@@ -49,6 +53,7 @@ public class MyApp extends JFrame {
         courseAdministrationLoggedInCoursesPanel = new CourseAdministrationLoggedInCoursesPanel();
         courseAdministrationLoggedInModulesPanel = new CourseAdministrationLoggedInModulesPanel();
         courseAdministrationLoggedInInstructorAddToModulePanel = new CourseAdministrationLoggedInInstructorAddToModulePanel();
+        courseAdministratorGenerateMarksPanel = new CourseAdministratorGenerateMarksPanel();
         instructorPanel = new InstructorPanel();
 
         coursetable = new courseTable();
@@ -62,11 +67,12 @@ public class MyApp extends JFrame {
         RegisterPanel.setVisible(false);
         studentLoggedInCoursePanel.setVisible(false);
         studentPanelViewResultPanel.setVisible(false);
+        instructorPanel.setVisible(false);
         courseAdministrationLoggedInMainPanel.setVisible(false);
         courseAdministrationLoggedInCoursesPanel.setVisible(false);
         courseAdministrationLoggedInModulesPanel.setVisible(false);
         courseAdministrationLoggedInInstructorAddToModulePanel.setVisible(false);
-        instructorPanel.setVisible(false);
+        courseAdministratorGenerateMarksPanel.setVisible(false);
 
         add(appLayout());
         registerUsers();
@@ -113,11 +119,12 @@ public class MyApp extends JFrame {
         mainPanel.add(RegisterPanel.panelUI(),layout);
         mainPanel.add(studentLoggedInCoursePanel.panelUI(),layout);
         mainPanel.add(studentPanelViewResultPanel.panelUI(),layout);
+        mainPanel.add(instructorPanel.panelUI(),layout);
         mainPanel.add(courseAdministrationLoggedInMainPanel.panelUI(),layout);
         mainPanel.add(courseAdministrationLoggedInCoursesPanel.panelUI(),layout);
         mainPanel.add(courseAdministrationLoggedInModulesPanel.panelUI(),layout);
         mainPanel.add(courseAdministrationLoggedInInstructorAddToModulePanel.panelUI(),layout);
-        mainPanel.add(instructorPanel.panelUI(),layout);
+        mainPanel.add(courseAdministratorGenerateMarksPanel.panelUI(),layout);
 
         return mainPanel;
     }
@@ -139,12 +146,15 @@ public class MyApp extends JFrame {
         JButton courseAdministratorCourseButton = courseAdministrationLoggedInMainPanel.getCourses();
         JButton courseAdministratorCourseModuleButton = courseAdministrationLoggedInMainPanel.getModules();
         JButton courseAdministratorInstructorAddToModuleButton = courseAdministrationLoggedInMainPanel.getAddInstructor();
+        JButton courseAdministratorInstructorGenerateMarksButton = courseAdministrationLoggedInMainPanel.getGenerateMarkSheet();
 //        Student Panel View Result Button
-        JButton studentPanelVIewResultButton = studentLoggedInCoursePanel.getViewResult();
+        JButton studentPanelViewResultButton = studentLoggedInCoursePanel.getViewResult();
 //        Back Buttons
+        JButton studentPanelResultBackButton = studentPanelViewResultPanel.getBack();
         JButton courseAdministratorCourseBackButton = courseAdministrationLoggedInCoursesPanel.getBack();
         JButton courseAdministratorModuleBackButton = courseAdministrationLoggedInModulesPanel.getBack();
         JButton courseAdministratorInstructorAddToModuleBackButton = courseAdministrationLoggedInInstructorAddToModulePanel.getBack();
+        JButton courseAdministratorGenerateMarksBackButton = courseAdministratorGenerateMarksPanel.getBack();
 //        Logout Buttons
         JButton studentLogoutButton = studentLoggedInCoursePanel.getLogout();
         JButton courseAdministratorLogoutButton = courseAdministrationLoggedInMainPanel.getLogOut();
@@ -177,11 +187,24 @@ public class MyApp extends JFrame {
         });
 
 //        Student Panel Action Listeners
-        studentPanelVIewResultButton.addActionListener(e -> {
+        studentPanelViewResultButton.addActionListener(e -> {
             try {
                 studentLoggedInCoursePanel.setVisible(false);
                 studentPanelViewResultPanel.setVisible(true);
-                this.setMinimumSize(new Dimension(300,500));
+                this.setMinimumSize(new Dimension(800,800));
+                pack();
+                setLocationRelativeTo(null);
+            } catch (Exception ex){
+                JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
+        });
+
+        studentPanelResultBackButton.addActionListener(e -> {
+            try {
+                studentLoggedInCoursePanel.setVisible(true);
+                studentPanelViewResultPanel.setVisible(false);
+                this.setMinimumSize(new Dimension(820,520));
                 pack();
                 setLocationRelativeTo(null);
             } catch (Exception ex){
@@ -235,6 +258,21 @@ public class MyApp extends JFrame {
             }
         });
 
+        courseAdministratorInstructorGenerateMarksButton.addActionListener(e -> {
+            try {
+                courseAdministrationLoggedInMainPanel.setVisible(false);
+                courseAdministratorGenerateMarksPanel.setVisible(true);
+                courseAdministratorGenerateMarksPanel.getCourseName();
+                this.setMinimumSize(new Dimension(800,800));
+                pack();
+                setLocationRelativeTo(null);
+            } catch (Exception ex){
+                JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+
+            }
+        });
+
 //        Admin Inside Panels Back Buttons Action Listeners
 
         courseAdministratorCourseBackButton.addActionListener(e -> {
@@ -263,6 +301,19 @@ public class MyApp extends JFrame {
             try {
                 courseAdministrationLoggedInMainPanel.setVisible(true);
                 courseAdministrationLoggedInInstructorAddToModulePanel.setVisible(false);
+            } catch (Exception ex){
+                JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
+        });
+
+        courseAdministratorGenerateMarksBackButton.addActionListener(e -> {
+            try {
+                courseAdministrationLoggedInMainPanel.setVisible(true);
+                courseAdministratorGenerateMarksPanel.setVisible(false);
+                setMinimumSize(new Dimension(800,520));
+                pack();
+                setLocationRelativeTo(null);
             } catch (Exception ex){
                 JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
 

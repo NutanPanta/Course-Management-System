@@ -58,6 +58,7 @@ public class courseTable {
         }
         catch (SQLException e){
             JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
         return null;
     }

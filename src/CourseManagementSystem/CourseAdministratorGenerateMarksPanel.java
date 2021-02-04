@@ -1,17 +1,14 @@
 package CourseManagementSystem;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class StudentPanelViewResultPanel extends JPanel implements AppLayout {
-    private JTextField studentLabel,studentName,studentLevelLabel,studentLevel,enrolledCourseLabel,courseName,
+public class CourseAdministratorGenerateMarksPanel extends JPanel implements AppLayout {
+    private JTextField studentEmailLabel,studentLabel,studentName,studentLevelLabel,enrolledCourseLabel,
             subjectOneObtainedMarks,subjectTwoObtainedMarks,subjectThreeObtainedMarks,subjectFourObtainedMarks,subjectFiveObtainedMarks,subjectSixObtainedMarks,subjectSevenObtainedMarks,subjectEightObtainedMarks,
             subjectOneFullMarks,subjectTwoFullMarks,subjectThreeFullMarks,subjectFourFullMarks,subjectFiveFullMarks,subjectSixFullMarks,subjectSevenFullMarks,subjectEightFullMarks,
             subjectOnePassMarks,subjectTwoPassMarks,subjectThreePassMarks,subjectFourPassMarks,subjectFivePassMarks,subjectSixPassMarks,subjectSevenPassMarks,subjectEightPassMarks,
@@ -22,25 +19,25 @@ public class StudentPanelViewResultPanel extends JPanel implements AppLayout {
             total,totalObtainedMarks,totalFullMarks,totalPassMarks,totalGrade,totalStatus;
     private JTextPane title,compulsory,elective;
     private GridBagConstraints layout,details,markSheet;
+    private JComboBox studentEmail,studentLevel,courseName;
     private JButton back;
     UserTable userTable;
     StudentCourseTable studentCourseTable;
+    InstructorPanelTable instructorPanelTable;
+    courseTable courseTable;
 
-    public StudentPanelViewResultPanel(){
-        studentLabel = new JTextField(25);
-        studentLabel.setPreferredSize(new Dimension(40,50));
-        studentLabel.setEnabled(false);
-        studentLabel.setDisabledTextColor(new Color(0,0,0));
-        studentLabel.setFont(studentLabel.getFont().deriveFont(Font.BOLD));
-        studentLabel.setHorizontalAlignment(JTextField.CENTER);
-        studentLabel.setText("Student Name:");
+    public CourseAdministratorGenerateMarksPanel(){
+        enrolledCourseLabel = new JTextField(25);
+        enrolledCourseLabel.setPreferredSize(new Dimension(40,50));
+        enrolledCourseLabel.setEnabled(false);
+        enrolledCourseLabel.setDisabledTextColor(new Color(0,0,0));
+        enrolledCourseLabel.setFont(enrolledCourseLabel.getFont().deriveFont(Font.BOLD));
+        enrolledCourseLabel.setHorizontalAlignment(JTextField.CENTER);
+        enrolledCourseLabel.setText("Enrolled Course Name:");
 
-        studentName = new JTextField(25);
-        studentName.setPreferredSize(new Dimension(40,50));
-        studentName.setEnabled(false);
-        studentName.setDisabledTextColor(new Color(0,0,0));
-        studentName.setFont(studentName.getFont().deriveFont(Font.BOLD));
-        studentName.setHorizontalAlignment(JTextField.CENTER);
+        courseName = new JComboBox();
+        courseName.setBackground(new Color(255,255,255));
+        courseName.setPreferredSize(new Dimension(250,50));
 
         studentLevelLabel = new JTextField(25);
         studentLevelLabel.setPreferredSize(new Dimension(40,50));
@@ -50,27 +47,38 @@ public class StudentPanelViewResultPanel extends JPanel implements AppLayout {
         studentLevelLabel.setText("Student Level:");
         studentLevelLabel.setHorizontalAlignment(JTextField.CENTER);
 
-        studentLevel = new JTextField(25);
-        studentLevel.setPreferredSize(new Dimension(40,50));
-        studentLevel.setEnabled(false);
-        studentLevel.setDisabledTextColor(new Color(0,0,0));
-        studentLevel.setFont(studentLevel.getFont().deriveFont(Font.BOLD));
-        studentLevel.setHorizontalAlignment(JTextField.CENTER);
+        String levels[] = {"Select Level","4","5","6"};
+        studentLevel = new JComboBox(levels);
+        studentLevel.setBackground(new Color(255,255,255));
+        studentLevel.setPreferredSize(new Dimension(250,50));
 
-        enrolledCourseLabel = new JTextField(25);
-        enrolledCourseLabel.setPreferredSize(new Dimension(40,50));
-        enrolledCourseLabel.setEnabled(false);
-        enrolledCourseLabel.setDisabledTextColor(new Color(0,0,0));
-        enrolledCourseLabel.setFont(enrolledCourseLabel.getFont().deriveFont(Font.BOLD));
-        enrolledCourseLabel.setHorizontalAlignment(JTextField.CENTER);
-        enrolledCourseLabel.setText("Enrolled Course Name:");
+        studentEmailLabel = new JTextField(25);
+        studentEmailLabel.setPreferredSize(new Dimension(40,50));
+        studentEmailLabel.setEnabled(false);
+        studentEmailLabel.setDisabledTextColor(new Color(0,0,0));
+        studentEmailLabel.setFont(studentEmailLabel.getFont().deriveFont(Font.BOLD));
+        studentEmailLabel.setHorizontalAlignment(JTextField.CENTER);
+        studentEmailLabel.setText("Student Email:");
 
-        courseName = new JTextField(25);
-        courseName.setPreferredSize(new Dimension(40,50));
-        courseName.setEnabled(false);
-        courseName.setDisabledTextColor(new Color(0,0,0));
-        courseName.setHorizontalAlignment(JTextField.CENTER);
-        courseName.setFont(courseName.getFont().deriveFont(Font.BOLD));
+        studentEmail = new JComboBox();
+        studentEmail.setBackground(new Color(255,255,255));
+        studentEmail.setPreferredSize(new Dimension(260,50));
+        studentEmail.addItem("Select Student");
+
+        studentLabel = new JTextField(25);
+        studentLabel.setPreferredSize(new Dimension(40,50));
+        studentLabel.setEnabled(false);
+        studentLabel.setDisabledTextColor(new Color(0,0,0));
+        studentLabel.setFont(studentEmailLabel.getFont().deriveFont(Font.BOLD));
+        studentLabel.setHorizontalAlignment(JTextField.CENTER);
+        studentLabel.setText("Student Name:");
+
+        studentName = new JTextField(25);
+        studentName.setPreferredSize(new Dimension(40,50));
+        studentName.setEnabled(false);
+        studentName.setDisabledTextColor(new Color(0,0,0));
+        studentName.setFont(studentName.getFont().deriveFont(Font.BOLD));
+        studentName.setHorizontalAlignment(JTextField.CENTER);
 
         subjectOneObtainedMarks = new JTextField(25);
         subjectOneObtainedMarks.setPreferredSize(new Dimension(40,50));
@@ -527,115 +535,222 @@ public class StudentPanelViewResultPanel extends JPanel implements AppLayout {
 
         userTable = new UserTable();
         studentCourseTable = new StudentCourseTable();
+        instructorPanelTable = new InstructorPanelTable();
+        courseTable = new courseTable();
+
+        courseName();
+        refreshStudentEmail();
+        refreshStudentName();
+        refreshMarkSheet();
     }
 
-    public void loggedInStudentData(String Email){
+    private void courseName(){
         try {
-            ResultSet resultSet = userTable.getParticularUserData(Email);
+            ResultSet resultSet = courseTable.getCourseDetails();
+            courseName.removeAllItems();
+            courseName.addItem("Select Course Names");
             while (resultSet.next()) {
-                studentName.setText(resultSet.getString("firstName") + " " + resultSet.getString("lastName"));
-                studentLevel.setText(resultSet.getString("level"));
-                courseName.setText(resultSet.getString("courseName"));
+                courseName.addItem(resultSet.getString("courseName"));
+
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
     }
 
-    public void studentLevelCompulsoryModuleNames(String email) {
-        subjectOneModuleName.setText("");
-        subjectTwoModuleName.setText("");
-        subjectThreeModuleName.setText("");
-        subjectFourModuleName.setText("");
-        try {
-            ResultSet resultSet = studentCourseTable.getCompulsoryMarksDetailsForResult(email);
-            while (resultSet.next()){
-                subjectOneModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
-                subjectOneObtainedMarks.setText(resultSet.getString("obtainedMarks"));
-                subjectOnePassMarks.setText(resultSet.getString("passMarks"));
-                subjectOneFullMarks.setText(resultSet.getString("fullMarks"));
-                subjectOneGrade.setText(resultSet.getString("grade"));
-                subjectOneStatus.setText(resultSet.getString("status"));
-                if (resultSet.next()){
-                    subjectTwoModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
-                    subjectTwoObtainedMarks.setText(resultSet.getString("obtainedMarks"));
-                    subjectTwoPassMarks.setText(resultSet.getString("passMarks"));
-                    subjectTwoFullMarks.setText(resultSet.getString("fullMarks"));
-                    subjectTwoGrade.setText(resultSet.getString("grade"));
-                    subjectTwoStatus.setText(resultSet.getString("status"));
-                    if (resultSet.next()) {
-                        subjectThreeModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
-                        subjectThreeObtainedMarks.setText(resultSet.getString("obtainedMarks"));
-                        subjectThreePassMarks.setText(resultSet.getString("passMarks"));
-                        subjectThreeFullMarks.setText(resultSet.getString("fullMarks"));
-                        subjectThreeGrade.setText(resultSet.getString("grade"));
-                        subjectThreeStatus.setText(resultSet.getString("status"));
-                    }
-                    if (resultSet.next()) {
-                        subjectFourModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
-                        subjectFourObtainedMarks.setText(resultSet.getString("obtainedMarks"));
-                        subjectFourPassMarks.setText(resultSet.getString("passMarks"));
-                        subjectFourFullMarks.setText(resultSet.getString("fullMarks"));
-                        subjectFourGrade.setText(resultSet.getString("grade"));
-                        subjectFourStatus.setText(resultSet.getString("status"));
+    private void studentEmail() {
+        if (courseName.getItemCount() == 0){
+        } else {
+            try {
+                String course = courseName.getSelectedItem().toString();
+                String lvl = studentLevel.getSelectedItem().toString();
+                ResultSet resultSet = instructorPanelTable.getStudentsDetailsOnInstructorPanel(course,lvl);
+                studentEmail.removeAllItems();
+                studentEmail.addItem("Select Student");
+                while (resultSet.next()) {
+                    studentEmail.addItem(resultSet.getString("email"));
+                }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+    }
+
+    private void studentName() {
+        if (studentEmail.getItemCount() == 0){
+        }else {
+            try {
+                if (studentEmail.getSelectedItem().toString() == "Select Student"){
+                    studentName.setText("");
+                } else {
+                    String course = courseName.getSelectedItem().toString();
+                    String lvl = studentLevel.getSelectedItem().toString();
+                    ResultSet resultSet = instructorPanelTable.getStudentsDetailsOnInstructorPanel(course, lvl);
+                    while (resultSet.next()) {
+                        studentName.setText(resultSet.getString("firstName") + " " + resultSet.getString("lastName"));
                     }
                 }
-
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
         }
     }
 
-    public void studentLevelElectiveModuleNames(String email) {
+    private void refreshStudentEmail(){
+        courseName.addActionListener(e -> {
+            studentEmail();
+        });
+
+        studentLevel.addActionListener(e -> {
+            studentEmail();
+            if (studentLevel.getSelectedItem().toString().equals("6")) {
+                elective.setText("<HTML><BODY><CENTER><H1>Elective Modules</H1></CENTER></BODY><HTML>");
+            } else {
+                elective.setText("<HTML><BODY><CENTER><H1></H1></CENTER></BODY><HTML>");
+            }
+        });
+    }
+
+    private void refreshStudentName(){
+        studentEmail.addActionListener(e -> {
+            studentName();
+        });
+    }
+    
+    private void clear(){
+        clearCompulsory(subjectOneModuleName, subjectTwoModuleName, subjectThreeModuleName, subjectFourModuleName, subjectOneObtainedMarks, subjectTwoObtainedMarks, subjectThreeObtainedMarks, subjectFourObtainedMarks, subjectOnePassMarks, subjectTwoPassMarks, subjectThreePassMarks, subjectFourPassMarks);
+
+        clearCompulsory(subjectOneFullMarks, subjectTwoFullMarks, subjectThreeFullMarks, subjectFourFullMarks, subjectOneGrade, subjectTwoGrade, subjectThreeGrade, subjectFourGrade, subjectOneStatus, subjectTwoStatus, subjectThreeStatus, subjectFourStatus);
+    }
+
+    private void clearCompulsory(JTextField subjectOneModuleName, JTextField subjectTwoModuleName, JTextField subjectThreeModuleName, JTextField subjectFourModuleName, JTextField subjectOneObtainedMarks, JTextField subjectTwoObtainedMarks, JTextField subjectThreeObtainedMarks, JTextField subjectFourObtainedMarks, JTextField subjectOnePassMarks, JTextField subjectTwoPassMarks, JTextField subjectThreePassMarks, JTextField subjectFourPassMarks) {
+        clearElective(subjectOneModuleName, subjectTwoModuleName, subjectThreeModuleName, subjectFourModuleName, subjectOneObtainedMarks, subjectTwoObtainedMarks, subjectThreeObtainedMarks, subjectFourObtainedMarks, subjectOnePassMarks, subjectTwoPassMarks, subjectThreePassMarks, subjectFourPassMarks);
+    }
+
+    private void clear1(){
+        clearElective(subjectFiveModuleName, subjectSixModuleName, subjectSevenModuleName, subjectEightModuleName, subjectFiveObtainedMarks, subjectSixObtainedMarks, subjectSevenObtainedMarks, subjectEightObtainedMarks, subjectFivePassMarks, subjectSixPassMarks, subjectSevenPassMarks, subjectEightPassMarks);
+
+        clearElective(subjectFiveFullMarks, subjectSixFullMarks, subjectSevenFullMarks, subjectEightFullMarks, subjectFiveGrade, subjectSixGrade, subjectSevenGrade, subjectEightGrade, subjectFiveStatus, subjectSixStatus, subjectSevenStatus, subjectEightStatus);
+
+
+    }
+
+    private void clearElective(JTextField subjectFiveModuleName, JTextField subjectSixModuleName, JTextField subjectSevenModuleName, JTextField subjectEightModuleName, JTextField subjectFiveObtainedMarks, JTextField subjectSixObtainedMarks, JTextField subjectSevenObtainedMarks, JTextField subjectEightObtainedMarks, JTextField subjectFivePassMarks, JTextField subjectSixPassMarks, JTextField subjectSevenPassMarks, JTextField subjectEightPassMarks) {
         subjectFiveModuleName.setText("");
         subjectSixModuleName.setText("");
         subjectSevenModuleName.setText("");
         subjectEightModuleName.setText("");
-        String level = studentLevel.getText().trim();
 
-        if (level.equals("6")) {
-            elective.setVisible(true);
-        }  else {
-            elective.setVisible(false);
-        }
-        try {
-            ResultSet resultSet = studentCourseTable.getElectiveMarksDetailsForResult(email);
-            while (resultSet.next()){
-                subjectFiveModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
-                subjectFiveObtainedMarks.setText(resultSet.getString("obtainedMarks"));
-                subjectFivePassMarks.setText(resultSet.getString("passMarks"));
-                subjectFiveFullMarks.setText(resultSet.getString("fullMarks"));
-                subjectFiveGrade.setText(resultSet.getString("grade"));
-                subjectFiveStatus.setText(resultSet.getString("status"));
-                if (resultSet.next()) {
-                    subjectSixModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
-                    subjectSixObtainedMarks.setText(resultSet.getString("obtainedMarks"));
-                    subjectSixPassMarks.setText(resultSet.getString("passMarks"));
-                    subjectSixFullMarks.setText(resultSet.getString("fullMarks"));
-                    subjectSixGrade.setText(resultSet.getString("grade"));
-                    subjectSixStatus.setText(resultSet.getString("status"));
+        subjectFiveObtainedMarks.setText("");
+        subjectSixObtainedMarks.setText("");
+        subjectSevenObtainedMarks.setText("");
+        subjectEightObtainedMarks.setText("");
+
+        subjectFivePassMarks.setText("");
+        subjectSixPassMarks.setText("");
+        subjectSevenPassMarks.setText("");
+        subjectEightPassMarks.setText("");
+    }
+
+    public void studentLevelCompulsoryModuleNames() {
+        if (studentEmail.getItemCount() == 0){
+        } else {
+            clear();
+            try {
+                String Email = studentEmail.getSelectedItem().toString().trim();
+                ResultSet resultSet = studentCourseTable.getCompulsoryMarksDetailsForResult(Email);
+                while (resultSet.next()){
+                    subjectOneModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
+                    subjectOneObtainedMarks.setText(resultSet.getString("obtainedMarks"));
+                    subjectOnePassMarks.setText(resultSet.getString("passMarks"));
+                    subjectOneFullMarks.setText(resultSet.getString("fullMarks"));
+                    subjectOneGrade.setText(resultSet.getString("grade"));
+                    subjectOneStatus.setText(resultSet.getString("status"));
+                    if (resultSet.next()){
+                        subjectTwoModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
+                        subjectTwoObtainedMarks.setText(resultSet.getString("obtainedMarks"));
+                        subjectTwoPassMarks.setText(resultSet.getString("passMarks"));
+                        subjectTwoFullMarks.setText(resultSet.getString("fullMarks"));
+                        subjectTwoGrade.setText(resultSet.getString("grade"));
+                        subjectTwoStatus.setText(resultSet.getString("status"));
+                        if (resultSet.next()) {
+                            subjectThreeModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
+                            subjectThreeObtainedMarks.setText(resultSet.getString("obtainedMarks"));
+                            subjectThreePassMarks.setText(resultSet.getString("passMarks"));
+                            subjectThreeFullMarks.setText(resultSet.getString("fullMarks"));
+                            subjectThreeGrade.setText(resultSet.getString("grade"));
+                            subjectThreeStatus.setText(resultSet.getString("status"));
+                        }
+                        if (resultSet.next()) {
+                            subjectFourModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
+                            subjectFourObtainedMarks.setText(resultSet.getString("obtainedMarks"));
+                            subjectFourPassMarks.setText(resultSet.getString("passMarks"));
+                            subjectFourFullMarks.setText(resultSet.getString("fullMarks"));
+                            subjectFourGrade.setText(resultSet.getString("grade"));
+                            subjectFourStatus.setText(resultSet.getString("status"));
+                        }
+                    }
+
                 }
-                if (resultSet.next()) {
-                    subjectSevenModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
-                    subjectSevenObtainedMarks.setText(resultSet.getString("obtainedMarks"));
-                    subjectSevenPassMarks.setText(resultSet.getString("passMarks"));
-                    subjectSevenFullMarks.setText(resultSet.getString("fullMarks"));
-                    subjectSevenGrade.setText(resultSet.getString("grade"));
-                    subjectSevenStatus.setText(resultSet.getString("status"));
-                }
-                if (resultSet.next()) {
-                    subjectEightModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
-                    subjectEightObtainedMarks.setText(resultSet.getString("obtainedMarks"));
-                    subjectEightPassMarks.setText(resultSet.getString("passMarks"));
-                    subjectEightFullMarks.setText(resultSet.getString("fullMarks"));
-                    subjectEightGrade.setText(resultSet.getString("grade"));
-                    subjectEightStatus.setText(resultSet.getString("status"));
-                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
         }
+
+    }
+
+    public void studentLevelElectiveModuleNames() {
+        if (studentEmail.getItemCount() == 0){
+        } else {
+            clear1();
+            try {
+                String Email = studentEmail.getSelectedItem().toString().trim();
+                ResultSet resultSet = studentCourseTable.getElectiveMarksDetailsForResult(Email);
+                while (resultSet.next()) {
+                    subjectFiveModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
+                    subjectFiveObtainedMarks.setText(resultSet.getString("obtainedMarks"));
+                    subjectFivePassMarks.setText(resultSet.getString("passMarks"));
+                    subjectFiveFullMarks.setText(resultSet.getString("fullMarks"));
+                    subjectFiveGrade.setText(resultSet.getString("grade"));
+                    subjectFiveStatus.setText(resultSet.getString("status"));
+                    if (resultSet.next()) {
+                        subjectSixModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
+                        subjectSixObtainedMarks.setText(resultSet.getString("obtainedMarks"));
+                        subjectSixPassMarks.setText(resultSet.getString("passMarks"));
+                        subjectSixFullMarks.setText(resultSet.getString("fullMarks"));
+                        subjectSixGrade.setText(resultSet.getString("grade"));
+                        subjectSixStatus.setText(resultSet.getString("status"));
+                    }
+                    if (resultSet.next()) {
+                        subjectSevenModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
+                        subjectSevenObtainedMarks.setText(resultSet.getString("obtainedMarks"));
+                        subjectSevenPassMarks.setText(resultSet.getString("passMarks"));
+                        subjectSevenFullMarks.setText(resultSet.getString("fullMarks"));
+                        subjectSevenGrade.setText(resultSet.getString("grade"));
+                        subjectSevenStatus.setText(resultSet.getString("status"));
+                    }
+                    if (resultSet.next()) {
+                        subjectEightModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
+                        subjectEightObtainedMarks.setText(resultSet.getString("obtainedMarks"));
+                        subjectEightPassMarks.setText(resultSet.getString("passMarks"));
+                        subjectEightFullMarks.setText(resultSet.getString("fullMarks"));
+                        subjectEightGrade.setText(resultSet.getString("grade"));
+                        subjectEightStatus.setText(resultSet.getString("status"));
+                    }
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+    }
+
+    public void refreshMarkSheet(){
+        studentEmail.addActionListener(e -> {
+            studentLevelCompulsoryModuleNames();
+            studentLevelElectiveModuleNames();
+        });
     }
 
     private JPanel StudentPanelCoursesStudentDetailsPanel(){
@@ -645,7 +760,7 @@ public class StudentPanelViewResultPanel extends JPanel implements AppLayout {
 
         details = new GridBagConstraints();
         details.fill = GridBagConstraints.BOTH;
-//        layout.insets = new Insets(0,0,0,0);
+        layout.insets = new Insets(0,0,0,0);
 
         details.gridx = 0;
         details.gridy = 0;
@@ -655,11 +770,11 @@ public class StudentPanelViewResultPanel extends JPanel implements AppLayout {
         details.gridx = 0;
         details.gridy = 1;
         details.gridwidth = 1;
-        studentPanelCoursesStudentDetails.add(studentLabel,details);
+        studentPanelCoursesStudentDetails.add(enrolledCourseLabel,details);
 
         details.gridx = 1;
         details.gridy = 1;
-        studentPanelCoursesStudentDetails.add(studentName,details);
+        studentPanelCoursesStudentDetails.add(courseName,details);
 
         details.gridx= 2;
         details.gridy= 1;
@@ -671,15 +786,23 @@ public class StudentPanelViewResultPanel extends JPanel implements AppLayout {
 
         details.gridx= 4;
         details.gridy= 1;
-        studentPanelCoursesStudentDetails.add(enrolledCourseLabel,details);
+        studentPanelCoursesStudentDetails.add(studentEmailLabel,details);
 
         details.gridx= 5;
         details.gridy= 1;
-        studentPanelCoursesStudentDetails.add(courseName,details);
+        studentPanelCoursesStudentDetails.add(studentEmail,details);
 
-        details.gridx = 0;
+        details.gridx= 0;
+        details.gridy= 2;
+        studentPanelCoursesStudentDetails.add(studentLabel,details);
+
+        details.gridx= 1;
+        details.gridy= 2;
+        studentPanelCoursesStudentDetails.add(studentName,details);
+
+        details.gridx = 2;
         details.gridy = 2;
-        details.gridwidth = 6;
+        details.gridwidth = 4;
         studentPanelCoursesStudentDetails.add(back,details);
 
         return studentPanelCoursesStudentDetails;
@@ -971,5 +1094,8 @@ public class StudentPanelViewResultPanel extends JPanel implements AppLayout {
 
     public JButton getBack(){
         return back;
+    }
+    public void getCourseName(){
+        courseName();
     }
 }
