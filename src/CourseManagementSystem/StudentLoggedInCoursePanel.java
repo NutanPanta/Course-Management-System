@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -19,6 +21,7 @@ public class StudentLoggedInCoursePanel extends JPanel implements AppLayout {
     loginPanel login;
     StudentCourseTable studentCourseTable;
     JPanel studentPanelCoursesStudentElectiveSubjects;
+    StudentPanelViewResultPanel  studentPanelViewResultPanel;
 
 
     public StudentLoggedInCoursePanel() {
@@ -59,6 +62,7 @@ public class StudentLoggedInCoursePanel extends JPanel implements AppLayout {
         userTable = new UserTable();
         login = new loginPanel();
         studentCourseTable = new StudentCourseTable();
+        studentPanelViewResultPanel = new StudentPanelViewResultPanel();
 
         electiveSubjects();
         refreshElectiveSubjects();
@@ -180,7 +184,7 @@ public class StudentLoggedInCoursePanel extends JPanel implements AppLayout {
         studentPanelCoursesStudentElectiveSubjects = new JPanel();
         studentPanelCoursesStudentElectiveSubjects.setLayout(new GridBagLayout());
         studentPanelCoursesStudentElectiveSubjects.setBackground(Color.decode("#D6D9DF"));
-        studentPanelCoursesStudentElectiveSubjects.setBorder(BorderFactory.createTitledBorder("Student Elective Module Panel"));
+        studentPanelCoursesStudentElectiveSubjects.setBorder(BorderFactory.createTitledBorder("Studying Modules"));
 
         electiveLayout = new GridBagConstraints();
         electiveLayout.fill = GridBagConstraints.HORIZONTAL;
@@ -282,6 +286,7 @@ public class StudentLoggedInCoursePanel extends JPanel implements AppLayout {
     public  JTable getTable(){
         return StudentLoggedInCourseTable;
     }
+    public JTextField getCourseName() { return courseName; }
     public JTextField getEmail() {
         return email;
     }

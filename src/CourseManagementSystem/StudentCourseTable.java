@@ -36,12 +36,39 @@ public class StudentCourseTable {
         }
     }
 
-    ResultSet getModuleDetails(String level){
+    ResultSet getModuleDetails(String courseName, String level){
         try {
-            String select = "Select * from instructorteachingmodules inner join modules on  modules.moduleName = instructorteachingmodules.moduleName and level = ? inner join courses where modules.courseName = courses.courseName and modules.moduleType ='Compulsory' order by cast(modules.semester as unsigned)";
+            String select = "Select * from instructorteachingmodules inner join modules on  modules.moduleName = instructorteachingmodules.moduleName and courseName = ? and level = ? inner join courses where modules.courseName = courses.courseName and modules.moduleType ='Compulsory' order by cast(modules.semester as unsigned)";
 
             PreparedStatement statement = con.prepareStatement(select);
-            statement.setString(1,level);
+            statement.setString(1,courseName);
+            statement.setString(2,level);
+            return statement.executeQuery();
+        }
+        catch (SQLException e){
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return null;
+    }
+
+        ResultSet getCompulsoryMarksDetailsForResult(String email){
+            try {
+                String select = "Select instructormarkstable.moduleName,modules.semester,instructormarkstable.obtainedMarks,instructormarkstable.fullMarks,instructormarkstable.passMarks,instructormarkstable.grade,instructormarkstable.status from instructormarkstable inner join modules on modules.moduleName = instructormarkstable.moduleName inner join users on instructormarkstable.studentEmail = users.email where email = ? and moduleType = 'Compulsory'";
+                PreparedStatement statement = con.prepareStatement(select);
+                statement.setString(1,email);
+                return statement.executeQuery();
+            }
+            catch (SQLException e){
+                JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            return null;
+        }
+
+    ResultSet getElectiveMarksDetailsForResult(String email){
+        try {
+            String select = "Select instructormarkstable.moduleName,modules.semester,instructormarkstable.obtainedMarks,instructormarkstable.fullMarks,instructormarkstable.passMarks,instructormarkstable.grade,instructormarkstable.status from instructormarkstable inner join modules on modules.moduleName = instructormarkstable.moduleName inner join users on instructormarkstable.studentEmail = users.email where email = ? and moduleType = 'Elective'";
+            PreparedStatement statement = con.prepareStatement(select);
+            statement.setString(1,email);
             return statement.executeQuery();
         }
         catch (SQLException e){

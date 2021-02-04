@@ -3,8 +3,6 @@ package CourseManagementSystem;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.*;
@@ -60,10 +58,10 @@ public class MyApp extends JFrame {
         instructorToModuleTable = new InstructorToModuleTable();
         instructorPanelTable = new InstructorPanelTable();
 
-        LoginPanel.setVisible(false);
+        LoginPanel.setVisible(true);
         RegisterPanel.setVisible(false);
         studentLoggedInCoursePanel.setVisible(false);
-        studentPanelViewResultPanel.setVisible(true);
+        studentPanelViewResultPanel.setVisible(false);
         courseAdministrationLoggedInMainPanel.setVisible(false);
         courseAdministrationLoggedInCoursesPanel.setVisible(false);
         courseAdministrationLoggedInModulesPanel.setVisible(false);
@@ -183,7 +181,7 @@ public class MyApp extends JFrame {
             try {
                 studentLoggedInCoursePanel.setVisible(false);
                 studentPanelViewResultPanel.setVisible(true);
-                this.setMinimumSize(new Dimension(700,480));
+                this.setMinimumSize(new Dimension(300,500));
                 pack();
                 setLocationRelativeTo(null);
             } catch (Exception ex){
@@ -532,6 +530,8 @@ public class MyApp extends JFrame {
             JOptionPane.showMessageDialog(this,"You are logged in as Student!!!");
             studentLoggedInCoursePanel.loggedInStudentData(loginEmail);
             studentPanelViewResultPanel.loggedInStudentData(loginEmail);
+            studentPanelViewResultPanel.studentLevelCompulsoryModuleNames(loginEmail);
+            studentPanelViewResultPanel.studentLevelElectiveModuleNames(loginEmail);
             refreshStudentPanelCourseTable();
             LoginPanel.getLoginEmail().setText("");
             LoginPanel.getLoginPassword().setText("");
@@ -885,8 +885,9 @@ public class MyApp extends JFrame {
         studentLoggedInCoursePanel.getStudentLoggedInCourseModel().setRowCount(0);
         try {
             String lvl = studentLoggedInCoursePanel.getLevel().getText().trim();
+            String courseName = studentLoggedInCoursePanel.getCourseName().getText().trim();
             String email = studentLoggedInCoursePanel.getEmail().getText().trim();
-            ResultSet resultSet = studentCourseTable.getModuleDetails(lvl);
+            ResultSet resultSet = studentCourseTable.getModuleDetails(courseName,lvl);
             ResultSet resultSet1 = studentCourseTable.getElectiveSubjectData(email);
             while (resultSet.next()) {
                 studentLoggedInCoursePanel.getStudentLoggedInCourseModel().addRow(new Object[]{

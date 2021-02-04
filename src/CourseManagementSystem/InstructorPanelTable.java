@@ -29,7 +29,7 @@ public class InstructorPanelTable {
 
             statement.executeUpdate();
             statement.close();
-            JOptionPane.showMessageDialog(null,"Marks has been added of" + moduleName + " to " + studentEmail + " by " + instructorEmail);
+            JOptionPane.showMessageDialog(null,obtainedMarks + " marks has been added of " + moduleName + " to " + studentEmail + " by " + instructorEmail);
         }catch (SQLException e){
             if (e instanceof SQLIntegrityConstraintViolationException) {
                 JOptionPane.showMessageDialog(null,"Marks has already been added for this student in this module.");
