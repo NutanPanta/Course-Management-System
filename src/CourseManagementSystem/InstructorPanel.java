@@ -235,12 +235,9 @@ public class InstructorPanel extends JPanel implements AppLayout {
         moduleName.addActionListener(e ->{
             moduleType();
             if (moduleType.getText().trim().equals("Elective")) {
-                if (moduleName.getItemCount() == 0) {
-                } else {
-                    studentEmail1();
-                }
+                studentEmail1();
             } else {
-                    studentEmail();
+                studentEmail();
             }
         });
 
