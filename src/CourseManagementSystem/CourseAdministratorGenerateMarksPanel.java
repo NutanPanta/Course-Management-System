@@ -881,18 +881,21 @@ public class CourseAdministratorGenerateMarksPanel extends JPanel implements App
         details.gridy= 1;
         studentPanelCoursesStudentDetails.add(studentEmail,details);
 
-        details.gridx= 0;
-        details.gridy= 2;
-        studentPanelCoursesStudentDetails.add(studentLabel,details);
 
-        details.gridx= 1;
-        details.gridy= 2;
-        studentPanelCoursesStudentDetails.add(studentName,details);
-
-        details.gridx = 2;
+        details.gridx = 0;
         details.gridy = 2;
         details.gridwidth = 4;
         studentPanelCoursesStudentDetails.add(back,details);
+
+        details.gridx= 4;
+        details.gridy= 2;
+        details.gridwidth = 1;
+        studentPanelCoursesStudentDetails.add(studentLabel,details);
+
+        details.gridx= 5;
+        details.gridy= 2;
+        studentPanelCoursesStudentDetails.add(studentName,details);
+
 
         return studentPanelCoursesStudentDetails;
     }

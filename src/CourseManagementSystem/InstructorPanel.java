@@ -60,7 +60,7 @@ public class InstructorPanel extends JPanel implements AppLayout {
         DefaultTableModel courseAdministratorInstructorModel = new DefaultTableModel();
         courseAdministratorInstructorModel.setColumnIdentifiers(TableNames);
 
-        addMarks = new JButton("Add Elective");
+        addMarks = new JButton("Add Marks");
         updateMarks = new JButton("Update Marks");
         logout = new JButton("Logout");
 
