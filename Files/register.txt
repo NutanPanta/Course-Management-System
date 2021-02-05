@@ -69,3 +69,11 @@ Password: johnson
 User Type: Instructor
 Course: null
 Level: null
+
+First Name: Aashish
+Last Name: Giri
+Email: aashish@gmail.com
+Password: giri
+User Type: Student
+Course: BIT
+Level: 6

@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public class InstructorPanel extends JPanel implements AppLayout {
     private DefaultTableModel instructorModel;
     private JTable instructorTable;
-    private JTextField instructorName,email,studentName,obtainedMarks,fullMarks;
+    private JTextField instructorName,email,studentName,obtainedMarks,fullMarks,moduleType;
     private JComboBox courseName,level,moduleName,studentEmail;
     private JButton addMarks,updateMarks, logout;
     private GridBagConstraints layout, studentLayout,electiveLayout, buttonLayout;
@@ -20,6 +20,7 @@ public class InstructorPanel extends JPanel implements AppLayout {
     StudentCourseTable studentCourseTable;
     InstructorPanelTable instructorPanelTable;
     JPanel studentPanelCoursesStudentElectiveSubjects;
+    String MT;
 
 
     public InstructorPanel() {
@@ -51,11 +52,17 @@ public class InstructorPanel extends JPanel implements AppLayout {
         fullMarks.setDisabledTextColor(new Color(0,0,0));
         fullMarks.setText("100");
 
+        moduleType = new JTextField(20);
+        moduleType.setPreferredSize(new Dimension(40,30));
+        moduleType.setEnabled(false);
+        moduleType.setDisabledTextColor(new Color(0,0,0));
+
 
         courseName = new JComboBox();
         level = new JComboBox(ll);
         moduleName = new JComboBox();
         studentEmail = new JComboBox();
+        studentEmail.addItem("Select Student");
 
         DefaultTableModel courseAdministratorInstructorModel = new DefaultTableModel();
         courseAdministratorInstructorModel.setColumnIdentifiers(TableNames);
@@ -124,20 +131,38 @@ public class InstructorPanel extends JPanel implements AppLayout {
             try {
                 String course = courseName.getSelectedItem().toString();
                 String lvl = level.getSelectedItem().toString();
-                ResultSet resultSet = instructorPanelTable.getStudentsDetailsOnInstructorPanel(course, lvl);
+                ResultSet resultSet = instructorPanelTable.getStudentsCompulsoryDetailsOnInstructorPanel(course, lvl);
                 studentEmail.removeAllItems();
-                studentEmail.addItem("Select Student");
                 while (resultSet.next()) {
-                    studentEmail.addItem(resultSet.getString("email"));
+                    if (resultSet.getString("moduleType").equals("Compulsory")){
+                        studentEmail.addItem(resultSet.getString("email"));
+                    }
                 }
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(this, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
             }
         }
     }
 
+    private void studentEmail1() {
+            try {
+                String Email = email.getText().trim();
+                ResultSet resultSet1 = instructorPanelTable.getStudentsElectiveDetailsOnInstructorPanel(Email);
+                studentEmail.removeAllItems();
+                    while (resultSet1.next()) {
+                        studentEmail.addItem(resultSet1.getString("email"));
+                    }
+
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+    }
+
     private void studentName() {
         if (studentEmail.getItemCount() == 0){
+            studentEmail.addItem("Select Student");
         }else {
             try {
                 if (studentEmail.getSelectedItem().toString() == "Select Student"){
@@ -145,13 +170,36 @@ public class InstructorPanel extends JPanel implements AppLayout {
                 } else {
                     String course = courseName.getSelectedItem().toString();
                     String lvl = level.getSelectedItem().toString();
-                    ResultSet resultSet = instructorPanelTable.getStudentsDetailsOnInstructorPanel(course, lvl);
+                    String mail = studentEmail.getSelectedItem().toString().trim();
+                    ResultSet resultSet = instructorPanelTable.getStudentsDetails(mail,course, lvl);
                     while (resultSet.next()) {
                         studentName.setText(resultSet.getString("firstName") + " " + resultSet.getString("lastName"));
                     }
                 }
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(this, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void moduleType() {
+        if (moduleName.getItemCount() == 0){
+        }else {
+            try {
+                if (moduleName.getSelectedItem().toString() == "Select Modules"){
+                    moduleType.setText("");
+                } else {
+                    String Email = email.getText().trim();
+                    String module = moduleName.getSelectedItem().toString().trim();
+                    String cName = courseName.getSelectedItem().toString().trim();
+                    ResultSet resultSet = instructorPanelTable.getInstructorTeachingModuleName(Email,cName,module);
+                    while (resultSet.next()) {
+                        moduleType.setText(resultSet.getString("modules.moduleType"));
+                    }
+                }
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
             }
         }
     }
@@ -169,6 +217,7 @@ public class InstructorPanel extends JPanel implements AppLayout {
                 }
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
             }
     }
 
@@ -182,6 +231,19 @@ public class InstructorPanel extends JPanel implements AppLayout {
             studentEmail();
             instructorTeachingModules();
         });
+
+        moduleName.addActionListener(e ->{
+            moduleType();
+            if (moduleType.getText().trim().equals("Elective")) {
+                if (moduleName.getItemCount() == 0) {
+                } else {
+                    studentEmail1();
+                }
+            } else {
+                    studentEmail();
+            }
+        });
+
     }
 
     private void refreshStudentName(){

@@ -580,52 +580,96 @@ public class StudentPanelViewResultPanel extends JPanel implements AppLayout {
 
     public void studentLevelCompulsoryModuleNames(String email) {
         clear();
+        clear1();
         try {
             ResultSet resultSet = studentCourseTable.getCompulsoryMarksDetailsForResult(email);
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 subjectOneModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
                 subjectOneObtainedMarks.setText(resultSet.getString("obtainedMarks"));
                 subjectOnePassMarks.setText(resultSet.getString("passMarks"));
                 subjectOneFullMarks.setText(resultSet.getString("fullMarks"));
                 subjectOneGrade.setText(resultSet.getString("grade"));
                 subjectOneStatus.setText(resultSet.getString("status"));
-                totalObtained +=  Integer.parseInt(subjectOneObtainedMarks.getText().trim());
-                totalFM +=  Integer.parseInt(subjectOneFullMarks.getText().trim());
-                totalPM +=  Integer.parseInt(subjectOnePassMarks.getText().trim());
-                if (resultSet.next()){
+                totalObtained += Integer.parseInt(subjectOneObtainedMarks.getText().trim());
+                totalFM += Integer.parseInt(subjectOneFullMarks.getText().trim());
+                totalPM += Integer.parseInt(subjectOnePassMarks.getText().trim());
+                if (resultSet.next()) {
                     subjectTwoModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
                     subjectTwoObtainedMarks.setText(resultSet.getString("obtainedMarks"));
                     subjectTwoPassMarks.setText(resultSet.getString("passMarks"));
                     subjectTwoFullMarks.setText(resultSet.getString("fullMarks"));
                     subjectTwoGrade.setText(resultSet.getString("grade"));
                     subjectTwoStatus.setText(resultSet.getString("status"));
-                    totalObtained +=  Integer.parseInt(subjectTwoObtainedMarks.getText().trim());
-                    totalFM +=  Integer.parseInt(subjectTwoFullMarks.getText().trim());
-                    totalPM +=  Integer.parseInt(subjectTwoPassMarks.getText().trim());
-                    if (resultSet.next()) {
-                        subjectThreeModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
-                        subjectThreeObtainedMarks.setText(resultSet.getString("obtainedMarks"));
-                        subjectThreePassMarks.setText(resultSet.getString("passMarks"));
-                        subjectThreeFullMarks.setText(resultSet.getString("fullMarks"));
-                        subjectThreeGrade.setText(resultSet.getString("grade"));
-                        subjectThreeStatus.setText(resultSet.getString("status"));
-                        totalObtained +=  Integer.parseInt(subjectThreeObtainedMarks.getText().trim());
-                        totalFM +=  Integer.parseInt(subjectThreeFullMarks.getText().trim());
-                        totalPM +=  Integer.parseInt(subjectThreePassMarks.getText().trim());
-                    }
-                    if (resultSet.next()) {
-                        subjectFourModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
-                        subjectFourObtainedMarks.setText(resultSet.getString("obtainedMarks"));
-                        subjectFourPassMarks.setText(resultSet.getString("passMarks"));
-                        subjectFourFullMarks.setText(resultSet.getString("fullMarks"));
-                        subjectFourGrade.setText(resultSet.getString("grade"));
-                        subjectFourStatus.setText(resultSet.getString("status"));
-                        totalObtained +=  Integer.parseInt(subjectFourObtainedMarks.getText().trim());
-                        totalFM +=  Integer.parseInt(subjectFourFullMarks.getText().trim());
-                        totalPM +=  Integer.parseInt(subjectFourPassMarks.getText().trim());
-                    }
+                    totalObtained += Integer.parseInt(subjectTwoObtainedMarks.getText().trim());
+                    totalFM += Integer.parseInt(subjectTwoFullMarks.getText().trim());
+                    totalPM += Integer.parseInt(subjectTwoPassMarks.getText().trim());
                 }
-
+                if (resultSet.next()) {
+                    subjectThreeModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
+                    subjectThreeObtainedMarks.setText(resultSet.getString("obtainedMarks"));
+                    subjectThreePassMarks.setText(resultSet.getString("passMarks"));
+                    subjectThreeFullMarks.setText(resultSet.getString("fullMarks"));
+                    subjectThreeGrade.setText(resultSet.getString("grade"));
+                    subjectThreeStatus.setText(resultSet.getString("status"));
+                    totalObtained += Integer.parseInt(subjectThreeObtainedMarks.getText().trim());
+                    totalFM += Integer.parseInt(subjectThreeFullMarks.getText().trim());
+                    totalPM += Integer.parseInt(subjectThreePassMarks.getText().trim());
+                }
+                if (resultSet.next()) {
+                    subjectFourModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
+                    subjectFourObtainedMarks.setText(resultSet.getString("obtainedMarks"));
+                    subjectFourPassMarks.setText(resultSet.getString("passMarks"));
+                    subjectFourFullMarks.setText(resultSet.getString("fullMarks"));
+                    subjectFourGrade.setText(resultSet.getString("grade"));
+                    subjectFourStatus.setText(resultSet.getString("status"));
+                    totalObtained += Integer.parseInt(subjectFourObtainedMarks.getText().trim());
+                    totalFM += Integer.parseInt(subjectFourFullMarks.getText().trim());
+                    totalPM += Integer.parseInt(subjectFourPassMarks.getText().trim());
+                }
+                if (resultSet.next()) {
+                    subjectFiveModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
+                    subjectFiveObtainedMarks.setText(resultSet.getString("obtainedMarks"));
+                    subjectFivePassMarks.setText(resultSet.getString("passMarks"));
+                    subjectFiveFullMarks.setText(resultSet.getString("fullMarks"));
+                    subjectFiveGrade.setText(resultSet.getString("grade"));
+                    subjectFiveStatus.setText(resultSet.getString("status"));
+                    totalObtained += Integer.parseInt(subjectFourObtainedMarks.getText().trim());
+                    totalFM += Integer.parseInt(subjectFourFullMarks.getText().trim());
+                    totalPM += Integer.parseInt(subjectFourPassMarks.getText().trim());
+                }
+                if (resultSet.next()) {
+                    subjectSixModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
+                    subjectSixObtainedMarks.setText(resultSet.getString("obtainedMarks"));
+                    subjectSixPassMarks.setText(resultSet.getString("passMarks"));
+                    subjectSixFullMarks.setText(resultSet.getString("fullMarks"));
+                    subjectSixGrade.setText(resultSet.getString("grade"));
+                    subjectSixStatus.setText(resultSet.getString("status"));
+                    totalObtained += Integer.parseInt(subjectSixObtainedMarks.getText().trim());
+                    totalFM += Integer.parseInt(subjectSixFullMarks.getText().trim());
+                    totalPM += Integer.parseInt(subjectSixPassMarks.getText().trim());
+                }
+                if (resultSet.next()) {
+                    subjectSevenModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
+                    subjectSevenObtainedMarks.setText(resultSet.getString("obtainedMarks"));
+                    subjectSevenPassMarks.setText(resultSet.getString("passMarks"));
+                    subjectSevenFullMarks.setText(resultSet.getString("fullMarks"));
+                    subjectSevenGrade.setText(resultSet.getString("grade"));
+                    subjectSevenStatus.setText(resultSet.getString("status"));
+                    totalObtained += Integer.parseInt(subjectSevenObtainedMarks.getText().trim());
+                    totalFM += Integer.parseInt(subjectSevenFullMarks.getText().trim());
+                    totalPM += Integer.parseInt(subjectSevenPassMarks.getText().trim());
+                }
+                if (resultSet.next()) {
+                    subjectEightModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
+                    subjectEightObtainedMarks.setText(resultSet.getString("obtainedMarks"));
+                    subjectEightPassMarks.setText(resultSet.getString("passMarks"));
+                    subjectEightFullMarks.setText(resultSet.getString("fullMarks"));
+                    subjectEightGrade.setText(resultSet.getString("grade"));
+                    subjectEightStatus.setText(resultSet.getString("status"));
+                    totalObtained += Integer.parseInt(subjectEightObtainedMarks.getText().trim());
+                    totalFM += Integer.parseInt(subjectEightFullMarks.getText().trim());
+                    totalPM += Integer.parseInt(subjectEightPassMarks.getText().trim());
+                }
             }
             String level = studentLevel.getText().trim();
             if (!level.equals("6")) {
@@ -663,64 +707,61 @@ public class StudentPanelViewResultPanel extends JPanel implements AppLayout {
     }
 
     public void studentLevelElectiveModuleNames(String email) {
-        clear1();
         String level = studentLevel.getText().trim();
         if (level.equals("6")) {
+        clear1();
             elective.setText("<HTML><BODY><CENTER><H1>Elective Modules</H1></CENTER></BODY><HTML>");
-        } else {
-            elective.setText("<HTML><BODY><CENTER><H1></H1></CENTER></BODY><HTML>");
-        }
-        try {
-            ResultSet resultSet = studentCourseTable.getElectiveMarksDetailsForResult(email);
-            while (resultSet.next()){
-                subjectFiveModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
-                subjectFiveObtainedMarks.setText(resultSet.getString("obtainedMarks"));
-                subjectFivePassMarks.setText(resultSet.getString("passMarks"));
-                subjectFiveFullMarks.setText(resultSet.getString("fullMarks"));
-                subjectFiveGrade.setText(resultSet.getString("grade"));
-                subjectFiveStatus.setText(resultSet.getString("status"));
-                totalObtained += Integer.parseInt(subjectFiveObtainedMarks.getText().trim());
-                totalFM +=  Integer.parseInt(subjectFiveFullMarks.getText().trim());
-                totalPM +=  Integer.parseInt(subjectFivePassMarks.getText().trim());
 
-                if (resultSet.next()) {
-                    subjectSixModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
-                    subjectSixObtainedMarks.setText(resultSet.getString("obtainedMarks"));
-                    subjectSixPassMarks.setText(resultSet.getString("passMarks"));
-                    subjectSixFullMarks.setText(resultSet.getString("fullMarks"));
-                    subjectSixGrade.setText(resultSet.getString("grade"));
-                    subjectSixStatus.setText(resultSet.getString("status"));
-                    totalObtained += Integer.parseInt(subjectSixObtainedMarks.getText().trim());
-                    totalFM +=  Integer.parseInt(subjectSixFullMarks.getText().trim());
-                    totalPM +=  Integer.parseInt(subjectSixPassMarks.getText().trim());
+            try {
+                ResultSet resultSet = studentCourseTable.getElectiveMarksDetailsForResult(email);
+                while (resultSet.next()){
+                    subjectFiveModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
+                    subjectFiveObtainedMarks.setText(resultSet.getString("obtainedMarks"));
+                    subjectFivePassMarks.setText(resultSet.getString("passMarks"));
+                    subjectFiveFullMarks.setText(resultSet.getString("fullMarks"));
+                    subjectFiveGrade.setText(resultSet.getString("grade"));
+                    subjectFiveStatus.setText(resultSet.getString("status"));
+                    totalObtained += Integer.parseInt(subjectFiveObtainedMarks.getText().trim());
+                    totalFM +=  Integer.parseInt(subjectFiveFullMarks.getText().trim());
+                    totalPM +=  Integer.parseInt(subjectFivePassMarks.getText().trim());
+
+                    if (resultSet.next()) {
+                        subjectSixModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
+                        subjectSixObtainedMarks.setText(resultSet.getString("obtainedMarks"));
+                        subjectSixPassMarks.setText(resultSet.getString("passMarks"));
+                        subjectSixFullMarks.setText(resultSet.getString("fullMarks"));
+                        subjectSixGrade.setText(resultSet.getString("grade"));
+                        subjectSixStatus.setText(resultSet.getString("status"));
+                        totalObtained += Integer.parseInt(subjectSixObtainedMarks.getText().trim());
+                        totalFM +=  Integer.parseInt(subjectSixFullMarks.getText().trim());
+                        totalPM +=  Integer.parseInt(subjectSixPassMarks.getText().trim());
+                    }
+                    if (resultSet.next()) {
+                        subjectSevenModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
+                        subjectSevenObtainedMarks.setText(resultSet.getString("obtainedMarks"));
+                        subjectSevenPassMarks.setText(resultSet.getString("passMarks"));
+                        subjectSevenFullMarks.setText(resultSet.getString("fullMarks"));
+                        subjectSevenGrade.setText(resultSet.getString("grade"));
+                        subjectSevenStatus.setText(resultSet.getString("status"));
+                        totalObtained += Integer.parseInt(subjectSevenObtainedMarks.getText().trim());
+                        totalFM +=  Integer.parseInt(subjectSevenFullMarks.getText().trim());
+                        totalPM +=  Integer.parseInt(subjectSevenPassMarks.getText().trim());
+                    }
+                    if (resultSet.next()) {
+                        subjectEightModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
+                        subjectEightObtainedMarks.setText(resultSet.getString("obtainedMarks"));
+                        subjectEightPassMarks.setText(resultSet.getString("passMarks"));
+                        subjectEightFullMarks.setText(resultSet.getString("fullMarks"));
+                        subjectEightGrade.setText(resultSet.getString("grade"));
+                        subjectEightStatus.setText(resultSet.getString("status"));
+                        totalObtained += Integer.parseInt(subjectEightObtainedMarks.getText().trim());
+                        totalFM +=  Integer.parseInt(subjectEightFullMarks.getText().trim());
+                        totalPM +=  Integer.parseInt(subjectEightPassMarks.getText().trim());
+                    }
                 }
-                if (resultSet.next()) {
-                    subjectSevenModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
-                    subjectSevenObtainedMarks.setText(resultSet.getString("obtainedMarks"));
-                    subjectSevenPassMarks.setText(resultSet.getString("passMarks"));
-                    subjectSevenFullMarks.setText(resultSet.getString("fullMarks"));
-                    subjectSevenGrade.setText(resultSet.getString("grade"));
-                    subjectSevenStatus.setText(resultSet.getString("status"));
-                    totalObtained += Integer.parseInt(subjectSevenObtainedMarks.getText().trim());
-                    totalFM +=  Integer.parseInt(subjectSevenFullMarks.getText().trim());
-                    totalPM +=  Integer.parseInt(subjectSevenPassMarks.getText().trim());
-                }
-                if (resultSet.next()) {
-                    subjectEightModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
-                    subjectEightObtainedMarks.setText(resultSet.getString("obtainedMarks"));
-                    subjectEightPassMarks.setText(resultSet.getString("passMarks"));
-                    subjectEightFullMarks.setText(resultSet.getString("fullMarks"));
-                    subjectEightGrade.setText(resultSet.getString("grade"));
-                    subjectEightStatus.setText(resultSet.getString("status"));
-                    totalObtained += Integer.parseInt(subjectEightObtainedMarks.getText().trim());
-                    totalFM +=  Integer.parseInt(subjectEightFullMarks.getText().trim());
-                    totalPM +=  Integer.parseInt(subjectEightPassMarks.getText().trim());
-                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        if (level.equals("6")) {
             totalObtainedMarks.setText(String.valueOf(totalObtained));
             totalFullMarks.setText(String.valueOf(totalFM));
             totalPassMarks.setText(String.valueOf(totalPM));
@@ -748,6 +789,8 @@ public class StudentPanelViewResultPanel extends JPanel implements AppLayout {
                 totalGrade.setText("F");
                 totalStatus.setText("Fail");
             }
+        } else {
+            elective.setText("<HTML><BODY><CENTER><H1></H1></CENTER></BODY><HTML>");
         }
     }
 
