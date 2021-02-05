@@ -25,6 +25,7 @@ public class CourseAdministratorGenerateMarksPanel extends JPanel implements App
     StudentCourseTable studentCourseTable;
     InstructorPanelTable instructorPanelTable;
     courseTable courseTable;
+    public int totalObtained,totalFM,totalPM,totalObtainedMarksInPercentage = 0;
 
     public CourseAdministratorGenerateMarksPanel(){
         enrolledCourseLabel = new JTextField(25);
@@ -668,6 +669,9 @@ public class CourseAdministratorGenerateMarksPanel extends JPanel implements App
                     subjectOneFullMarks.setText(resultSet.getString("fullMarks"));
                     subjectOneGrade.setText(resultSet.getString("grade"));
                     subjectOneStatus.setText(resultSet.getString("status"));
+                    totalObtained +=  Integer.parseInt(subjectOneObtainedMarks.getText().trim());
+                    totalFM +=  Integer.parseInt(subjectOneFullMarks.getText().trim());
+                    totalPM +=  Integer.parseInt(subjectOnePassMarks.getText().trim());
                     if (resultSet.next()){
                         subjectTwoModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
                         subjectTwoObtainedMarks.setText(resultSet.getString("obtainedMarks"));
@@ -675,6 +679,9 @@ public class CourseAdministratorGenerateMarksPanel extends JPanel implements App
                         subjectTwoFullMarks.setText(resultSet.getString("fullMarks"));
                         subjectTwoGrade.setText(resultSet.getString("grade"));
                         subjectTwoStatus.setText(resultSet.getString("status"));
+                        totalObtained +=  Integer.parseInt(subjectTwoObtainedMarks.getText().trim());
+                        totalFM +=  Integer.parseInt(subjectTwoFullMarks.getText().trim());
+                        totalPM +=  Integer.parseInt(subjectTwoPassMarks.getText().trim());
                         if (resultSet.next()) {
                             subjectThreeModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
                             subjectThreeObtainedMarks.setText(resultSet.getString("obtainedMarks"));
@@ -682,6 +689,9 @@ public class CourseAdministratorGenerateMarksPanel extends JPanel implements App
                             subjectThreeFullMarks.setText(resultSet.getString("fullMarks"));
                             subjectThreeGrade.setText(resultSet.getString("grade"));
                             subjectThreeStatus.setText(resultSet.getString("status"));
+                            totalObtained +=  Integer.parseInt(subjectThreeObtainedMarks.getText().trim());
+                            totalFM +=  Integer.parseInt(subjectThreeFullMarks.getText().trim());
+                            totalPM +=  Integer.parseInt(subjectThreePassMarks.getText().trim());
                         }
                         if (resultSet.next()) {
                             subjectFourModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
@@ -690,6 +700,9 @@ public class CourseAdministratorGenerateMarksPanel extends JPanel implements App
                             subjectFourFullMarks.setText(resultSet.getString("fullMarks"));
                             subjectFourGrade.setText(resultSet.getString("grade"));
                             subjectFourStatus.setText(resultSet.getString("status"));
+                            totalObtained +=  Integer.parseInt(subjectFourObtainedMarks.getText().trim());
+                            totalFM +=  Integer.parseInt(subjectFourFullMarks.getText().trim());
+                            totalPM +=  Integer.parseInt(subjectFourPassMarks.getText().trim());
                         }
                     }
 
@@ -697,6 +710,36 @@ public class CourseAdministratorGenerateMarksPanel extends JPanel implements App
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
+        }
+        totalObtainedMarks.setText(String.valueOf(totalObtained));
+        totalFullMarks.setText(String.valueOf(totalFM));
+        totalPassMarks.setText(String.valueOf(totalPM));
+        if (totalObtained == 0 || totalFM == 0 || totalPM == 0){
+
+        } else {
+            totalObtainedMarksInPercentage = (totalObtained * 100) / totalFM;
+        }
+        if (!totalFullMarks.getText().trim().equals("800")){
+            totalGrade.setText("Marks of all 8 modules must be given");
+            totalStatus.setText("Marks of all 8 modules must be given");
+        } else if (totalObtainedMarksInPercentage > 70) {
+            totalGrade.setText("A");
+            totalStatus.setText("Pass");
+        } else if (totalObtainedMarksInPercentage <= 70 && totalObtainedMarksInPercentage >= 60) {
+            totalGrade.setText("B");
+            totalStatus.setText("Pass");
+        } else if (totalObtainedMarksInPercentage < 60 && totalObtainedMarksInPercentage >= 50) {
+            totalGrade.setText("C");
+            totalStatus.setText("Pass");
+        } else if (totalObtainedMarksInPercentage < 50 && totalObtainedMarksInPercentage >= 43) {
+            totalGrade.setText("D");
+            totalStatus.setText("Pass");
+        } else if (totalObtainedMarksInPercentage < 43 && totalObtainedMarksInPercentage >= 40) {
+            totalGrade.setText("E");
+            totalStatus.setText("Pass");
+        }  else {
+            totalGrade.setText("F");
+            totalStatus.setText("Fail");
         }
 
     }
@@ -715,6 +758,9 @@ public class CourseAdministratorGenerateMarksPanel extends JPanel implements App
                     subjectFiveFullMarks.setText(resultSet.getString("fullMarks"));
                     subjectFiveGrade.setText(resultSet.getString("grade"));
                     subjectFiveStatus.setText(resultSet.getString("status"));
+                    totalObtained += Integer.parseInt(subjectFiveObtainedMarks.getText().trim());
+                    totalFM +=  Integer.parseInt(subjectFiveFullMarks.getText().trim());
+                    totalPM +=  Integer.parseInt(subjectFivePassMarks.getText().trim());
                     if (resultSet.next()) {
                         subjectSixModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
                         subjectSixObtainedMarks.setText(resultSet.getString("obtainedMarks"));
@@ -722,6 +768,9 @@ public class CourseAdministratorGenerateMarksPanel extends JPanel implements App
                         subjectSixFullMarks.setText(resultSet.getString("fullMarks"));
                         subjectSixGrade.setText(resultSet.getString("grade"));
                         subjectSixStatus.setText(resultSet.getString("status"));
+                        totalObtained += Integer.parseInt(subjectSixObtainedMarks.getText().trim());
+                        totalFM +=  Integer.parseInt(subjectSixFullMarks.getText().trim());
+                        totalPM +=  Integer.parseInt(subjectSixPassMarks.getText().trim());
                     }
                     if (resultSet.next()) {
                         subjectSevenModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
@@ -730,6 +779,9 @@ public class CourseAdministratorGenerateMarksPanel extends JPanel implements App
                         subjectSevenFullMarks.setText(resultSet.getString("fullMarks"));
                         subjectSevenGrade.setText(resultSet.getString("grade"));
                         subjectSevenStatus.setText(resultSet.getString("status"));
+                        totalObtained += Integer.parseInt(subjectSevenObtainedMarks.getText().trim());
+                        totalFM +=  Integer.parseInt(subjectSevenFullMarks.getText().trim());
+                        totalPM +=  Integer.parseInt(subjectSevenPassMarks.getText().trim());
                     }
                     if (resultSet.next()) {
                         subjectEightModuleName.setText(resultSet.getString("moduleName") + "(" + resultSet.getString("semester") + ")");
@@ -738,10 +790,44 @@ public class CourseAdministratorGenerateMarksPanel extends JPanel implements App
                         subjectEightFullMarks.setText(resultSet.getString("fullMarks"));
                         subjectEightGrade.setText(resultSet.getString("grade"));
                         subjectEightStatus.setText(resultSet.getString("status"));
+                        totalObtained += Integer.parseInt(subjectEightObtainedMarks.getText().trim());
+                        totalFM +=  Integer.parseInt(subjectEightFullMarks.getText().trim());
+                        totalPM +=  Integer.parseInt(subjectEightPassMarks.getText().trim());
                     }
                 }
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+            }
+            totalObtainedMarks.setText(String.valueOf(totalObtained));
+            totalFullMarks.setText(String.valueOf(totalFM));
+            totalPassMarks.setText(String.valueOf(totalPM));
+            if (totalObtained == 0 || totalFM == 0 || totalPM == 0){
+
+            } else {
+                totalObtainedMarksInPercentage = (totalObtained * 100) / totalFM;
+            }
+
+            if (!totalFullMarks.getText().trim().equals("800")){
+                totalGrade.setText("Marks of all 8 modules must be given");
+                totalStatus.setText("Marks of all 8 modules must be given");
+            } else if (totalObtainedMarksInPercentage > 70) {
+                totalGrade.setText("A");
+                totalStatus.setText("Pass");
+            } else if (totalObtainedMarksInPercentage <= 70 && totalObtainedMarksInPercentage >= 60) {
+                totalGrade.setText("B");
+                totalStatus.setText("Pass");
+            } else if (totalObtainedMarksInPercentage < 60 && totalObtainedMarksInPercentage >= 50) {
+                totalGrade.setText("C");
+                totalStatus.setText("Pass");
+            } else if (totalObtainedMarksInPercentage < 50 && totalObtainedMarksInPercentage >= 43) {
+                totalGrade.setText("D");
+                totalStatus.setText("Pass");
+            } else if (totalObtainedMarksInPercentage < 43 && totalObtainedMarksInPercentage >= 40) {
+                totalGrade.setText("E");
+                totalStatus.setText("Pass");
+            }  else {
+                totalGrade.setText("F");
+                totalStatus.setText("Fail");
             }
         }
     }
@@ -750,6 +836,9 @@ public class CourseAdministratorGenerateMarksPanel extends JPanel implements App
         studentEmail.addActionListener(e -> {
             studentLevelCompulsoryModuleNames();
             studentLevelElectiveModuleNames();
+            totalObtained = 0;
+            totalFM = 0;
+            totalPM = 0;
         });
     }
 
@@ -1090,8 +1179,6 @@ public class CourseAdministratorGenerateMarksPanel extends JPanel implements App
 
         return this;
     }
-
-
     public JButton getBack(){
         return back;
     }

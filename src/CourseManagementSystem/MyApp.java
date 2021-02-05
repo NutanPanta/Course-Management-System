@@ -326,6 +326,9 @@ public class MyApp extends JFrame {
             try {
                 studentLoggedInCoursePanel.setVisible(false);
                 LoginPanel.setVisible(true);
+                studentPanelViewResultPanel.totalObtained = 0;
+                studentPanelViewResultPanel.totalFM = 0;
+                studentPanelViewResultPanel.totalPM = 0;
             } catch (Exception ex){
                 JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
 
@@ -973,7 +976,6 @@ public class MyApp extends JFrame {
         instructorPanel.getInstructorModel().setRowCount(0);
         try {
             String email = instructorPanel.getEmail().getText().trim();
-            System.out.println(email);
             ResultSet resultSet = instructorPanelTable.getAddedMarks(email);
             while (resultSet.next()) {
                 instructorPanel.getInstructorModel().addRow(new Object[]{
@@ -1328,14 +1330,6 @@ public class MyApp extends JFrame {
 
         });
     }
-
-
-
-
-
-
-
-
 
 //    Delete
 
