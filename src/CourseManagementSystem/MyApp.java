@@ -36,7 +36,7 @@ public class MyApp extends JFrame {
 
     public MyApp() {
         setVisible(true);
-        setResizable(true);
+        setResizable(false);
         setTitle("Course Management System");
         setMinimumSize(new Dimension(800,520));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
