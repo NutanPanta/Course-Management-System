@@ -14,8 +14,7 @@ public class CourseAdministrationLoggedInModulesPanel extends JPanel implements 
     private JTable courseAdministratorModuleTable;
     private JButton addModule, deleteModule, updateModule, back;
     private JTextField moduleName;
-    private JComboBox course, level,semester;
-    private JCheckBox isElective;
+    private JComboBox course, level,semester,moduleType;
     private JLabel elective;
     private GridBagConstraints layout, formLayout, buttonLayout;
     courseTable coursetable;
@@ -27,16 +26,18 @@ public class CourseAdministrationLoggedInModulesPanel extends JPanel implements 
         String[] TableNames = {"Module Id","Module Name","Course Name","level","Course Type","Semester"};
         String ll[]={"Select Level","4","5","6"};
         String st[] = {"Select Semester","1","2"};
+        String mt[] = {"Select ModuleType","Compulsory","Elective"};
         course = new JComboBox();
         semester =new JComboBox(st);
         level =new JComboBox(ll);
+        moduleType =new JComboBox(mt);
+        moduleType.setSelectedIndex(1);
         level.setBounds(50, 50,90,20);
         course.setBounds(50, 50,90,20);
         semester.setBounds(50, 50,90,20);
+        moduleType.setBounds(50, 50,90,20);
         DefaultTableModel courseAdministratorCourseModel = new DefaultTableModel();
         courseAdministratorCourseModel.setColumnIdentifiers(TableNames);
-
-        isElective = new JCheckBox();
 
         back = new JButton("Back");
         addModule = new JButton("Add Module");
@@ -47,7 +48,7 @@ public class CourseAdministrationLoggedInModulesPanel extends JPanel implements 
 
         coursetable = new courseTable();
         courseName();
-        isElective.setVisible(false);
+        moduleType.setVisible(false);
 
 
     }
@@ -140,7 +141,7 @@ public class CourseAdministrationLoggedInModulesPanel extends JPanel implements 
 
         formLayout.gridx = 1;
         formLayout.gridy = 4;
-        courseAdministratorModuleForm.add(isElective, formLayout);
+        courseAdministratorModuleForm.add(moduleType, formLayout);
 
 
 
@@ -216,12 +217,12 @@ public class CourseAdministrationLoggedInModulesPanel extends JPanel implements 
         String item = level.getSelectedItem().toString();
 
         if (item == "6") {
-            isElective.setVisible(true);
+            moduleType.setVisible(true);
             elective.setVisible(true);
         }  else {
-            isElective.setVisible(false);
+            moduleType.setVisible(false);
             elective.setVisible(false);
-            isElective.setSelected(false);
+            moduleType.setSelectedIndex(1);
         }
 
     }
@@ -233,7 +234,7 @@ public class CourseAdministrationLoggedInModulesPanel extends JPanel implements 
     public JComboBox getCourse() { return course; }
     public JComboBox getLevel() { return level; }
     public JComboBox getSemester() { return semester; }
-    public JCheckBox getIsElective() { return isElective; }
+    public JComboBox getModuleType() { return moduleType; }
     public JTextField getModuleName() { return moduleName; }
     public JButton getAddModule() {
         return addModule;

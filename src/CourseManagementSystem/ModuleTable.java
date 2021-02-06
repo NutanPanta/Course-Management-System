@@ -51,6 +51,24 @@ public class ModuleTable {
         return null;
     }
 
+    ResultSet getModuleCount(String courseName,String level,String semester,String moduleType){
+        try {
+            String select = "SELECT COUNT(moduleName) AS total  FROM modules WHERE courseName = ? AND level = ? AND semester = ? AND moduleType = ?";
+
+            PreparedStatement statement = con.prepareStatement(select);
+            statement.setString(1,courseName);
+            statement.setString(2,level);
+            statement.setString(3,semester);
+            statement.setString(4,moduleType);
+
+            return statement.executeQuery();
+        }
+        catch (SQLException e){
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return null;
+    }
+
     ResultSet getModuleData(){
         try {
             String select = "Select * FROM modules, courses WHERE courses.courseName=modules.courseName and courses.courseStatus = 'Open'";

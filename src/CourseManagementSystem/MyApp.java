@@ -3,11 +3,8 @@ package CourseManagementSystem;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -642,13 +639,17 @@ public class MyApp extends JFrame {
 
 //    Validate Module Data from Course Administrator
 
-    private void checkModuleData(String courseName,String moduleName,String level,String elective, String semester) {
+    private void checkModuleData(String courseName,String moduleName,String level,String elective, String semester) throws SQLException {
         String cname =  Objects.requireNonNull(courseAdministrationLoggedInModulesPanel.getCourse().getSelectedItem()).toString();
         String mName = courseAdministrationLoggedInModulesPanel.getModuleName().getText().trim();
         String lvl = Objects.requireNonNull(courseAdministrationLoggedInModulesPanel.getLevel().getSelectedItem()).toString();
         String sem = Objects.requireNonNull(courseAdministrationLoggedInModulesPanel.getSemester().getSelectedItem()).toString();
-        String moduleType = courseAdministrationLoggedInModulesPanel.getIsElective().isSelected() ? "Elective" : "Compulsory";
-
+        String moduleType = courseAdministrationLoggedInModulesPanel.getModuleType().getSelectedItem().toString().trim();
+        ResultSet resultSet = moduleTable.getModuleCount(cname,lvl,sem,moduleType);
+        int count = 0;
+        while (resultSet.next()){
+            count = resultSet.getInt("total");
+        }
         if (cname.equals("Select Course Names")) {
             JOptionPane.showMessageDialog(this,"Select course name!!!");
         } else if(mName.isEmpty()){
@@ -657,8 +658,27 @@ public class MyApp extends JFrame {
             JOptionPane.showMessageDialog(this,"Select Level!!!");
         } else if (sem.equals("Select Semester")) {
             JOptionPane.showMessageDialog(this,"Select Semester!!!");
-        } else {
-                moduleTable.insert(mName,cname, lvl, moduleType, sem);
+        }  else if (moduleType.equals("Select ModuleType")) {
+            JOptionPane.showMessageDialog(self,"Select ModuleType!!!");
+        }  else {
+            if (lvl.equals("6")){
+                if (moduleType.equals("Compulsory")  && count < 2){
+                    moduleTable.insert(mName, cname, lvl, moduleType, sem);
+                    count++;
+                } else if (moduleType.equals("Elective")  && count < 4){
+                    moduleTable.insert(mName, cname, lvl, moduleType, sem);
+                    count++;
+                } else {
+                    JOptionPane.showMessageDialog(this, "Compulsory subject for level 6 for each sem cannot be more than 2 and not more than 4 for elective Modules.");
+                }
+            } else {
+                if (count < 4){
+                    moduleTable.insert(mName,cname, lvl, moduleType, sem);
+                    count++;
+                } else {
+                    JOptionPane.showMessageDialog(this,"Each Semester cannot have more than 4 modules");
+                }
+            }
             courseAdministrationLoggedInModulesPanel.getModuleName().setText("");
         }
     }
@@ -763,13 +783,13 @@ public class MyApp extends JFrame {
         String mName = courseAdministrationLoggedInModulesPanel.getModuleName().getText().trim();
         String lvl = Objects.requireNonNull(courseAdministrationLoggedInModulesPanel.getLevel().getSelectedItem()).toString();
         String sem = courseAdministrationLoggedInModulesPanel.getLevel().getSelectedItem().toString();
-        String courseType = courseAdministrationLoggedInModulesPanel.getIsElective().isSelected() ? "Elective" : "Compulsory";
+        String moduleType = courseAdministrationLoggedInModulesPanel.getModuleType().getSelectedItem().toString().trim();
 
         JButton addModuleBtn = courseAdministrationLoggedInModulesPanel.getAddModule();
 
         addModuleBtn.addActionListener(e -> {
             try {
-                checkModuleData(cname,mName,lvl,sem,courseType);
+                checkModuleData(cname,mName,lvl,sem,moduleType);
                 refreshModuleTable();
 
             } catch (Exception ex) {
@@ -1155,7 +1175,7 @@ public class MyApp extends JFrame {
                 courseAdministrationLoggedInModulesPanel.getModuleName().setText(moduleModel.getValueAt(selectedRow,1).toString());
                 courseAdministrationLoggedInModulesPanel.getCourse().setSelectedItem(moduleModel.getValueAt(selectedRow, 2).toString());
                 courseAdministrationLoggedInModulesPanel.getLevel().setSelectedItem(moduleModel.getValueAt(selectedRow, 3).toString());
-                courseAdministrationLoggedInModulesPanel.getIsElective().setSelected(moduleModel.getValueAt(selectedRow, 4).toString().equals("Elective"));
+                courseAdministrationLoggedInModulesPanel.getModuleType().setSelectedItem(moduleModel.getValueAt(selectedRow, 4).toString().equals("Elective"));
                 courseAdministrationLoggedInModulesPanel.getSemester().setSelectedItem(moduleModel.getValueAt(selectedRow, 5).toString());
             }
             @Override
@@ -1181,7 +1201,7 @@ public class MyApp extends JFrame {
                     String cname =  Objects.requireNonNull(courseAdministrationLoggedInModulesPanel.getCourse().getSelectedItem()).toString();
                     String lvl = Objects.requireNonNull(courseAdministrationLoggedInModulesPanel.getLevel().getSelectedItem()).toString();
                     String sem = Objects.requireNonNull(courseAdministrationLoggedInModulesPanel.getSemester().getSelectedItem()).toString();
-                    String courseType = courseAdministrationLoggedInModulesPanel.getIsElective().isSelected() ? "Elective" : "Compulsory";
+                    String moduleType = courseAdministrationLoggedInModulesPanel.getModuleType().getSelectedItem().toString().trim();
                     if (cname.equals("Select Course Names")) {
                         JOptionPane.showMessageDialog(self,"Select course name!!!");
                     } else if(mName.isEmpty()){
@@ -1190,9 +1210,11 @@ public class MyApp extends JFrame {
                         JOptionPane.showMessageDialog(self,"Select Level!!!");
                     } else if (sem.equals("Select Semester")) {
                         JOptionPane.showMessageDialog(self,"Select Semester!!!");
-                    } else {
+                    } else if (moduleType.equals("Select ModuleType")) {
+                        JOptionPane.showMessageDialog(self,"Select ModuleType!!!");
+                    }  else {
                         int id = Integer.parseInt(moduleModel.getValueAt(selectedRow, 0).toString());
-                        moduleTable.updateModule(id,mName,cname,lvl,courseType,sem);
+                        moduleTable.updateModule(id,mName,cname,lvl,moduleType,sem);
                         refreshModuleTable();
 
                         courseAdministrationLoggedInModulesPanel.getModuleName().setText("");
