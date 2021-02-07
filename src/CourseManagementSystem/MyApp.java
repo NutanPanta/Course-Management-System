@@ -30,7 +30,7 @@ public class MyApp extends JFrame {
     StudentCourseTable studentCourseTable;
     InstructorToModuleTable instructorToModuleTable;
     File file = new File("Files");
-    int rln;
+    int rln,count;
 
     MyApp self = this;
 
@@ -645,11 +645,6 @@ public class MyApp extends JFrame {
         String lvl = Objects.requireNonNull(courseAdministrationLoggedInModulesPanel.getLevel().getSelectedItem()).toString();
         String sem = Objects.requireNonNull(courseAdministrationLoggedInModulesPanel.getSemester().getSelectedItem()).toString();
         String moduleType = courseAdministrationLoggedInModulesPanel.getModuleType().getSelectedItem().toString().trim();
-        ResultSet resultSet = moduleTable.getModuleCount(cname,lvl,sem,moduleType);
-        int count = 0;
-        while (resultSet.next()){
-            count = resultSet.getInt("total");
-        }
         if (cname.equals("Select Course Names")) {
             JOptionPane.showMessageDialog(this,"Select course name!!!");
         } else if(mName.isEmpty()){
@@ -664,17 +659,14 @@ public class MyApp extends JFrame {
             if (lvl.equals("6")){
                 if (moduleType.equals("Compulsory")  && count < 2){
                     moduleTable.insert(mName, cname, lvl, moduleType, sem);
-                    count++;
                 } else if (moduleType.equals("Elective")  && count < 4){
                     moduleTable.insert(mName, cname, lvl, moduleType, sem);
-                    count++;
                 } else {
                     JOptionPane.showMessageDialog(this, "Compulsory subject for level 6 for each sem cannot be more than 2 and not more than 4 for elective Modules.");
                 }
             } else {
                 if (count < 4){
                     moduleTable.insert(mName,cname, lvl, moduleType, sem);
-                    count++;
                 } else {
                     JOptionPane.showMessageDialog(this,"Each Semester cannot have more than 4 modules");
                 }
@@ -682,7 +674,6 @@ public class MyApp extends JFrame {
             courseAdministrationLoggedInModulesPanel.getModuleName().setText("");
         }
     }
-
 
     //    Validate Add Instructor TO Module Data From Course Administrator
 
@@ -921,7 +912,12 @@ public class MyApp extends JFrame {
     private void refreshModuleTable() {
         courseAdministrationLoggedInModulesPanel.getCourseAdministratorModuleModel().setRowCount(0);
         try {
+            String cname =  Objects.requireNonNull(courseAdministrationLoggedInModulesPanel.getCourse().getSelectedItem()).toString();
+            String lvl = Objects.requireNonNull(courseAdministrationLoggedInModulesPanel.getLevel().getSelectedItem()).toString();
+            String sem = Objects.requireNonNull(courseAdministrationLoggedInModulesPanel.getSemester().getSelectedItem()).toString();
+            String moduleType = courseAdministrationLoggedInModulesPanel.getModuleType().getSelectedItem().toString().trim();
             ResultSet resultSet = moduleTable.getModuleData();
+            ResultSet resultSet1 = moduleTable.getModuleCount(cname,lvl,sem,moduleType);
             while (resultSet.next()) {
                 courseAdministrationLoggedInModulesPanel.getCourseAdministratorModuleModel().addRow(new Object[]{
                         resultSet.getInt("moduleId"),
@@ -932,6 +928,9 @@ public class MyApp extends JFrame {
                         resultSet.getString("semester"),
 
                 });
+            }
+            while (resultSet1.next()){
+                count = resultSet1.getInt("total");
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
