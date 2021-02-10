@@ -857,7 +857,6 @@ public class CourseAdministratorGenerateMarksPanel extends JPanel implements App
                 } else {
                     totalObtainedMarksInPercentage = (totalObtained * 100) / totalFM;
                 }
-                System.out.println(totalObtainedMarksInPercentage);
                 if (totalFM != 800) {
                     totalGrade.setText("Marks of all 8 modules must be given");
                     totalStatus.setText("Marks of all 8 modules must be given");

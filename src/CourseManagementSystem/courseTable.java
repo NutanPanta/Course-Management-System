@@ -38,7 +38,7 @@ public class courseTable {
 
     ResultSet getCourseData(){
         try {
-            String select = "SELECT *FROM courses";
+            String select = "SELECT * FROM courses";
 
             PreparedStatement statement = con.prepareStatement(select);
             return statement.executeQuery();

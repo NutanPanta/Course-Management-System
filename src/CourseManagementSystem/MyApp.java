@@ -433,6 +433,8 @@ public class MyApp extends JFrame {
         return isEmailDuplicate;
     }
 
+//    As there cannot be more than one course administrator this method checks for any user trying to register with course administrator
+
     private boolean administrationDuplication(String userType) {
         boolean isUserDuplicate = false;
         try {
@@ -488,6 +490,8 @@ public class MyApp extends JFrame {
         }
         return matchLoginData;
     }
+
+//    Check weather the usertype matches with user email
 
     private boolean readAndValidateLoginUserType(String Email, String userType) throws IOException {
         String loginEmail = LoginPanel.getLoginEmail().getText().trim();

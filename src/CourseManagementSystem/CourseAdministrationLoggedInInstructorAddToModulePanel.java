@@ -106,7 +106,7 @@ public class CourseAdministrationLoggedInInstructorAddToModulePanel extends JPan
 
     private void instructorName(){
         if (instructorEmail.getItemCount() == 0){
-            moduleName.addItem("Select Instructor");
+            instructorEmail.addItem("Select Instructor");
         }else {
             instructorName.setText("");
             try {

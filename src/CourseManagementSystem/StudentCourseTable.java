@@ -39,7 +39,6 @@ public class StudentCourseTable {
     ResultSet getModuleDetails(String courseName, String level){
         try {
             String select = "Select * from instructorteachingmodules inner join modules on  modules.moduleName = instructorteachingmodules.moduleName and courseName = ? and level = ? inner join courses where modules.courseName = courses.courseName and modules.moduleType ='Compulsory' order by cast(modules.semester as unsigned)";
-
             PreparedStatement statement = con.prepareStatement(select);
             statement.setString(1,courseName);
             statement.setString(2,level);
