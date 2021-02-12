@@ -676,7 +676,11 @@ public class StudentPanelViewResultPanel extends JPanel implements AppLayout {
                 totalObtainedMarks.setText(String.valueOf(totalObtained));
                 totalFullMarks.setText(String.valueOf(totalFM));
                 totalPassMarks.setText(String.valueOf(totalPM));
-                totalObtainedMarksInPercentage = (totalObtained * 100) / totalFM;
+                if (totalObtained == 0 || totalFM == 0 || totalPM == 0) {
+
+                } else {
+                    totalObtainedMarksInPercentage = (totalObtained * 100) / totalFM;
+                }
                 if (!totalFullMarks.getText().trim().equals("800")){
                     totalGrade.setText("Marks of all 8 modules must be given");
                     totalStatus.setText("Marks of all 8 modules must be given");
