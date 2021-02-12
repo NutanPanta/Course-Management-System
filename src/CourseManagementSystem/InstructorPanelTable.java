@@ -97,7 +97,7 @@ public class InstructorPanelTable {
 
     ResultSet getStudentsElectiveDetailsOnInstructorPanel(String email){
         try {
-            String select = "select DISTINCT studentelectivesubjects.email from studentelectivesubjects inner join instructorteachingmodules on studentelectivesubjects.moduleName = instructorteachingmodules.moduleName where instructorteachingmodules.instructorEmail = ?";
+            String select = "select DISTINCT studentElectiveModules.email from studentElectiveModules inner join instructorteachingmodules on studentElectiveModules.moduleName = instructorteachingmodules.moduleName where instructorteachingmodules.instructorEmail = ?";
             PreparedStatement statement = con.prepareStatement(select);
             statement.setString(1,email);
             return statement.executeQuery();

@@ -36,7 +36,6 @@ public class UserTable {
         }
     }
 
-
     ResultSet getParticularUserData(String Email) {
         try {
             String select = "SELECT * FROM users WHERE email = ?";

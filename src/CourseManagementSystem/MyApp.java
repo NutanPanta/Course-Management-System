@@ -3,8 +3,6 @@ package CourseManagementSystem;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.*;
@@ -32,7 +30,7 @@ public class MyApp extends JFrame {
     StudentCourseTable studentCourseTable;
     InstructorToModuleTable instructorToModuleTable;
     File file = new File("Files");
-    int rln,count;
+    int rln,moduleCount,electiveModulesCount;
 
     MyApp self = this;
 
@@ -80,7 +78,7 @@ public class MyApp extends JFrame {
         implementCourses();
         implementModules();
         implementInstructorToModule();
-        implementElectiveSubjects();
+        implementElectiveModules();
         implementInstructorAddMarks();
 
         updateCourseName();
@@ -100,6 +98,7 @@ public class MyApp extends JFrame {
         refreshStudentPanelCourseTable();
         refreshInstructorMarksTable();
         refreshModuleCount();
+        refreshElectiveModulesCount();
 
         panelChange();
         pack();
@@ -572,7 +571,7 @@ public class MyApp extends JFrame {
 
 //    Validate Login Data
 
-    private void checkLoginData(String Email, String pwd,String userType) throws IOException, SQLException {
+    private void checkLoginData(String Email, String pwd,String userType) throws IOException {
         String loginEmail = LoginPanel.getLoginEmail().getText().trim();
         String loginPassword = LoginPanel.getLoginPassword().getText().trim();
         String loginUserType = Objects.requireNonNull(LoginPanel.getLoginUserType().getSelectedItem()).toString();
@@ -664,15 +663,15 @@ public class MyApp extends JFrame {
             JOptionPane.showMessageDialog(self,"Select ModuleType!!!");
         }  else {
             if (lvl.equals("6")){
-                if (moduleType.equals("Compulsory")  && count < 2){
+                if (moduleType.equals("Compulsory")  && moduleCount < 2){
                     moduleTable.insert(mName, cname, lvl, moduleType, sem);
-                } else if (moduleType.equals("Elective")  && count < 4){
+                } else if (moduleType.equals("Elective")  && moduleCount < 4){
                     moduleTable.insert(mName, cname, lvl, moduleType, sem);
                 } else {
                     JOptionPane.showMessageDialog(this, "Compulsory subject for level 6 for each sem cannot be more than 2 and not more than 4 for elective Modules.");
                 }
             } else {
-                if (count < 4){
+                if (moduleCount < 4){
                     moduleTable.insert(mName,cname, lvl, moduleType, sem);
                 } else {
                     JOptionPane.showMessageDialog(this,"Each Semester cannot have more than 4 modules");
@@ -755,6 +754,7 @@ public class MyApp extends JFrame {
                 checkLoginData(loginEmail, loginPassword, loginUserType);
             } catch (Exception ex){
                 JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
             }
         });
     }
@@ -814,7 +814,7 @@ public class MyApp extends JFrame {
         });
     }
 
-    private void implementElectiveSubjects(){
+    private void implementElectiveModules(){
         JButton addElectiveBtn = studentLoggedInCoursePanel.getAddElectiveSubject();
 
         addElectiveBtn.addActionListener(e -> {
@@ -832,8 +832,13 @@ public class MyApp extends JFrame {
                 } else if(semester == "Select Semester"){
                     JOptionPane.showMessageDialog(this,"Semester is not selected");
                 } else {
-                    studentCourseTable.insert(email,electiveModule);
-                    refreshStudentPanelCourseTable();
+                    if (electiveModulesCount < 2) {
+                        studentCourseTable.insert(email, electiveModule);
+                        refreshStudentPanelCourseTable();
+                        refreshElectiveModulesCount();
+                    } else {
+                        JOptionPane.showMessageDialog(this,"Each Semester cannot have more than 2 Elective Modules");
+                    }
                 }
 
             } catch (Exception ex) {
@@ -952,7 +957,24 @@ public class MyApp extends JFrame {
                 String moduleType = courseAdministrationLoggedInModulesPanel.getModuleType().getSelectedItem().toString().trim();
                 ResultSet resultSet = moduleTable.getModuleCount(cname, lvl, sem, moduleType);
                 while (resultSet.next()) {
-                    count = resultSet.getInt("total");
+                    moduleCount = resultSet.getInt("total");
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(self, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void getElectiveModulesCount() {
+        try {
+            if (studentLoggedInCoursePanel.getElectiveModule().getItemCount() == 0){
+
+            } else {
+                String studentEmail = studentLoggedInCoursePanel.getEmail().getText().trim();
+                String sem = Objects.requireNonNull(studentLoggedInCoursePanel.getSemester().getSelectedItem()).toString();
+                ResultSet resultSet = studentCourseTable.getElectiveSubjectCount(studentEmail, sem);
+                while (resultSet.next()) {
+                    electiveModulesCount = resultSet.getInt("total");
                 }
             }
         } catch (SQLException e) {
@@ -965,6 +987,15 @@ public class MyApp extends JFrame {
         courseAdministrationLoggedInModulesPanel.getLevel().addActionListener(e -> getModuleCount());
         courseAdministrationLoggedInModulesPanel.getSemester().addActionListener(e -> getModuleCount());
         courseAdministrationLoggedInModulesPanel.getModuleType().addActionListener(e -> getModuleCount());
+    }
+
+    private void refreshElectiveModulesCount(){
+        studentLoggedInCoursePanel.getSemester().addActionListener(e -> {
+            getElectiveModulesCount();
+        });
+        studentLoggedInCoursePanel.getElectiveModule().addActionListener(e -> {
+            getElectiveModulesCount();
+        });
     }
 
     private void refreshCourseAdministratorInstructorTable() {

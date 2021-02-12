@@ -17,7 +17,7 @@ public class StudentCourseTable {
 
     void insert(String email,String moduleName){
         try {
-            String insert = "INSERT INTO studentElectiveSubjects(email,moduleName)" + "VALUES(?,?)";
+            String insert = "INSERT INTO studentElectiveModules(email,moduleName)" + "VALUES(?,?)";
             PreparedStatement statement = con.prepareStatement(insert);
 
             statement.setString(1,email);
@@ -29,11 +29,28 @@ public class StudentCourseTable {
 
         }catch (SQLException e){
             if (e instanceof SQLIntegrityConstraintViolationException) {
-                JOptionPane.showMessageDialog(null,"Duplicate Module Name");
+                JOptionPane.showMessageDialog(null,"This module has already been added as your elective modules. Choose Another");
             }else {
                 JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+    }
+
+    ResultSet getElectiveSubjectCount(String email,String semester){
+        try {
+            String select = "SELECT COUNT(studentelectivemodules.moduleName) AS total FROM studentelectivemodules inner join modules on studentelectivemodules.moduleName = modules.moduleName where studentelectivemodules.email = ? AND modules.semester = ?";
+
+            PreparedStatement statement = con.prepareStatement(select);
+            statement.setString(1,email);
+            statement.setString(2,semester);
+
+            return statement.executeQuery();
+        }
+        catch (SQLException e){
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+        return null;
     }
 
     ResultSet getModuleDetails(String courseName, String level){
@@ -50,18 +67,18 @@ public class StudentCourseTable {
         return null;
     }
 
-        ResultSet getCompulsoryMarksDetailsForResult(String email){
-            try {
-                String select = "Select instructormarkstable.moduleName,modules.semester,instructormarkstable.obtainedMarks,instructormarkstable.fullMarks,instructormarkstable.passMarks,instructormarkstable.grade,instructormarkstable.status from instructormarkstable inner join modules on modules.moduleName = instructormarkstable.moduleName inner join users on instructormarkstable.studentEmail = users.email where email = ? and moduleType = 'Compulsory'";
-                PreparedStatement statement = con.prepareStatement(select);
-                statement.setString(1,email);
-                return statement.executeQuery();
-            }
-            catch (SQLException e){
-                JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-            return null;
+    ResultSet getCompulsoryMarksDetailsForResult(String email){
+        try {
+            String select = "Select instructormarkstable.moduleName,modules.semester,instructormarkstable.obtainedMarks,instructormarkstable.fullMarks,instructormarkstable.passMarks,instructormarkstable.grade,instructormarkstable.status from instructormarkstable inner join modules on modules.moduleName = instructormarkstable.moduleName inner join users on instructormarkstable.studentEmail = users.email where email = ? and moduleType = 'Compulsory'";
+            PreparedStatement statement = con.prepareStatement(select);
+            statement.setString(1,email);
+            return statement.executeQuery();
         }
+        catch (SQLException e){
+            JOptionPane.showMessageDialog(null, "Coding error.Please wait while it is being fixed.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return null;
+    }
 
     ResultSet getElectiveMarksDetailsForResult(String email){
         try {
@@ -91,7 +108,7 @@ public class StudentCourseTable {
 
     ResultSet getElectiveSubjectData(String email){
         try {
-            String select = "Select * from studentelectivesubjects inner join modules on studentelectivesubjects.moduleName = modules.moduleName inner join instructorteachingmodules on studentelectivesubjects.moduleName = instructorteachingmodules.moduleName  where email=? order by cast(modules.semester as unsigned)";
+            String select = "Select * from studentElectiveModules inner join modules on studentElectiveModules.moduleName = modules.moduleName inner join instructorteachingmodules on studentElectiveModules.moduleName = instructorteachingmodules.moduleName  where email=? order by cast(modules.semester as unsigned)";
             PreparedStatement statement = con.prepareStatement(select);
             statement.setString(1,email);
             return statement.executeQuery();

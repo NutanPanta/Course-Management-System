@@ -769,7 +769,11 @@ public class StudentPanelViewResultPanel extends JPanel implements AppLayout {
             totalObtainedMarks.setText(String.valueOf(totalObtained));
             totalFullMarks.setText(String.valueOf(totalFM));
             totalPassMarks.setText(String.valueOf(totalPM));
-            totalObtainedMarksInPercentage = (totalObtained * 100) / totalFM;
+            if (totalObtained == 0 || totalFM == 0 || totalPM == 0) {
+
+            } else {
+                totalObtainedMarksInPercentage = (totalObtained * 100) / totalFM;
+            }
             if (totalFM != 800) {
                 totalGrade.setText("Marks of all 8 modules must be given");
                 totalStatus.setText("Marks of all 8 modules must be given");
@@ -796,7 +800,6 @@ public class StudentPanelViewResultPanel extends JPanel implements AppLayout {
             elective.setText("<HTML><BODY><CENTER><H1></H1></CENTER></BODY><HTML>");
         }
     }
-
 
     private JPanel StudentPanelCoursesStudentDetailsPanel(){
         JPanel studentPanelCoursesStudentDetails = new JPanel();
@@ -1126,7 +1129,6 @@ public class StudentPanelViewResultPanel extends JPanel implements AppLayout {
 
         return this;
     }
-
 
     public JButton getBack(){
         return back;
