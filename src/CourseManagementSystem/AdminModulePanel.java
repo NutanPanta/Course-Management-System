@@ -1,0 +1,274 @@
+package CourseManagementSystem;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class AdminModulePanel extends JPanel implements AppLayout, ActionListener {
+    private DefaultTableModel courseAdministratorCourseModel;
+    private JTable courseAdministratorModuleTable;
+    private JButton addModule, deleteModule, updateModule, back;
+    private JTextField moduleName;
+    private JComboBox<String> course, level, semester, moduleType;
+    private JLabel elective;
+    private GridBagConstraints gridLayout, formLayout, buttonLayout;
+    courseTable coursetable;
+
+    public AdminModulePanel() {
+        setBorder(BorderFactory.createTitledBorder("Register Module"));
+        moduleName = new JTextField(20);
+        moduleName.setPreferredSize(new Dimension(40, 30));
+        String[] TableNames = { "Module Id", "Module Name", "Course Name", "level", "Course Type", "Semester" };
+        String levels[] = { "Select Level", "4", "5", "6" };
+        String semesters[] = { "Select Semester", "1", "2" };
+        String moduleTypes[] = { "Select ModuleType", "Compulsory", "Elective" };
+        course = new JComboBox<>();
+        semester = new JComboBox<>(semesters);
+        level = new JComboBox<>(levels);
+        moduleType = new JComboBox<>(moduleTypes);
+        moduleType.setSelectedIndex(1);
+        level.setBounds(50, 50, 90, 20);
+        course.setBounds(50, 50, 90, 20);
+        semester.setBounds(50, 50, 90, 20);
+        moduleType.setBounds(50, 50, 90, 20);
+        courseAdministratorCourseModel = new DefaultTableModel();
+        courseAdministratorCourseModel.setColumnIdentifiers(TableNames);
+
+        back = new JButton("Back");
+        addModule = new JButton("Add Module");
+        deleteModule = new JButton("Delete Module");
+        updateModule = new JButton("Update Module");
+
+        courseAdministratorModuleTable = new JTable(courseAdministratorCourseModel);
+
+        coursetable = new courseTable();
+        courseName();
+        moduleType.setVisible(false);
+
+    }
+
+    private void courseName() {
+        try {
+            ResultSet resultSet = coursetable.openCourses();
+            course.removeAllItems();
+            course.addItem("Select Course Names");
+            while (resultSet.next()) {
+                course.addItem(resultSet.getString("courseName"));
+
+            }
+        } catch (SQLException error) {
+            JOptionPane.showMessageDialog(this, "Internal Server Error", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private JPanel courseAdministratorCourseTablePanel() {
+
+        JScrollPane scrollPane = new JScrollPane(courseAdministratorModuleTable);
+        courseAdministratorModuleTable.setDefaultEditor(Object.class, null);
+        courseAdministratorModuleTable.setSelectionBackground(Color.BLACK);
+        courseAdministratorModuleTable.setSelectionForeground(Color.WHITE);
+        JTableHeader header = courseAdministratorModuleTable.getTableHeader();
+        header.setBackground(Color.decode("#D6D9DE"));
+
+        JPanel courseAdministratorCoursePanel = new JPanel();
+        courseAdministratorCoursePanel.setBackground(Color.decode("#D6D9DE"));
+        courseAdministratorCoursePanel.add(scrollPane);
+
+        return courseAdministratorCoursePanel;
+    }
+
+    private JPanel courseAdministratorModuleFormPanel() {
+        JPanel courseAdministratorModuleForm = new JPanel();
+        courseAdministratorModuleForm.setLayout(new GridBagLayout());
+        courseAdministratorModuleForm.setBackground(Color.decode("#D6D9DE"));
+
+        formLayout = new GridBagConstraints();
+        formLayout.fill = GridBagConstraints.HORIZONTAL;
+        formLayout.insets = new Insets(5, 5, 5, 5);
+
+        formLayout.gridx = 0;
+        formLayout.gridy = 0;
+        formLayout.gridwidth = 1;
+        courseAdministratorModuleForm.add(new JLabel("Course"), formLayout);
+
+        formLayout.weightx = 1;
+        formLayout.gridwidth = 3;
+        formLayout.gridx = 1;
+        formLayout.gridy = 0;
+        courseAdministratorModuleForm.add(course, formLayout);
+
+        formLayout.gridx = 0;
+        formLayout.gridy = 1;
+        formLayout.gridwidth = 1;
+        courseAdministratorModuleForm.add(new JLabel("Module Name"), formLayout);
+
+        formLayout.gridx = 1;
+        formLayout.gridy = 1;
+        formLayout.gridwidth = 3;
+        courseAdministratorModuleForm.add(moduleName, formLayout);
+
+        formLayout.gridx = 0;
+        formLayout.gridy = 2;
+        formLayout.gridwidth = 1;
+        courseAdministratorModuleForm.add(new JLabel("Level"), formLayout);
+
+        formLayout.gridx = 1;
+        formLayout.gridy = 2;
+        formLayout.gridwidth = 4;
+        courseAdministratorModuleForm.add(level, formLayout);
+
+        formLayout.gridx = 0;
+        formLayout.gridy = 3;
+        formLayout.gridwidth = 1;
+        courseAdministratorModuleForm.add(new JLabel("Semester"), formLayout);
+
+        formLayout.gridx = 1;
+        formLayout.gridy = 3;
+        formLayout.gridwidth = 4;
+        courseAdministratorModuleForm.add(semester, formLayout);
+
+        formLayout.gridx = 0;
+        formLayout.gridy = 4;
+        formLayout.gridwidth = 1;
+        elective = new JLabel("Elective");
+        courseAdministratorModuleForm.add(elective, formLayout);
+
+        formLayout.gridx = 1;
+        formLayout.gridy = 4;
+        courseAdministratorModuleForm.add(moduleType, formLayout);
+
+        elective.setVisible(false);
+
+        return courseAdministratorModuleForm;
+    }
+
+    private JPanel courseAdministratorModuleButtonPanel() {
+        JPanel courseAdministratorModuleButton = new JPanel();
+        courseAdministratorModuleButton.setLayout(new GridBagLayout());
+        courseAdministratorModuleButton.setBackground(Color.decode("#D6D9DE"));
+        buttonLayout = new GridBagConstraints();
+        buttonLayout.fill = GridBagConstraints.HORIZONTAL;
+        buttonLayout.insets = new Insets(20, 10, 5, 10);
+        buttonLayout.ipadx = 20;
+        buttonLayout.ipady = 20;
+
+        buttonLayout.gridx = 0;
+        buttonLayout.gridy = 0;
+        courseAdministratorModuleButton.add(addModule, buttonLayout);
+
+        buttonLayout.gridx = 1;
+        buttonLayout.gridy = 0;
+        courseAdministratorModuleButton.add(deleteModule, buttonLayout);
+
+        buttonLayout.gridx = 0;
+        buttonLayout.gridy = 1;
+        buttonLayout.gridwidth = 4;
+        courseAdministratorModuleButton.add(updateModule, buttonLayout);
+
+        buttonLayout.gridx = 0;
+        buttonLayout.gridy = 2;
+        buttonLayout.gridwidth = 4;
+        courseAdministratorModuleButton.add(back, buttonLayout);
+
+        return courseAdministratorModuleButton;
+    }
+
+    @Override
+    public JPanel panelUI() {
+        setLayout(new GridBagLayout());
+        gridLayout = new GridBagConstraints();
+        gridLayout.fill = GridBagConstraints.BOTH;
+        gridLayout.insets = new Insets(5, 0, 5, 0);
+        this.setBackground(Color.decode("#D6D9DE"));
+
+        gridLayout.gridx = 3;
+        gridLayout.gridy = 3;
+
+        gridLayout.gridx = 1;
+        gridLayout.gridy = 0;
+        add(courseAdministratorModuleFormPanel(), gridLayout);
+
+        gridLayout.gridx = 1;
+        gridLayout.gridy = 1;
+        add(courseAdministratorModuleButtonPanel(), gridLayout);
+
+        gridLayout.weighty = 0.5;
+        gridLayout.gridx = 0;
+        gridLayout.gridy = 0;
+        gridLayout.gridheight = 3;
+        add(courseAdministratorCourseTablePanel(), gridLayout);
+
+        level.addActionListener(this);
+
+        return this;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent error) {
+        String item = level.getSelectedItem().toString();
+
+        if (item == "6") {
+            moduleType.setVisible(true);
+            elective.setVisible(true);
+        } else {
+            moduleType.setVisible(false);
+            elective.setVisible(false);
+            moduleType.setSelectedIndex(1);
+        }
+
+    }
+
+    public DefaultTableModel getCourseAdministratorModuleModel() {
+        return (DefaultTableModel) getTable().getModel();
+    }
+
+    public JTable getTable() {
+        return courseAdministratorModuleTable;
+    }
+
+    public JComboBox<String> getCourse() {
+        return course;
+    }
+
+    public JComboBox<String> getLevel() {
+        return level;
+    }
+
+    public JComboBox<String> getSemester() {
+        return semester;
+    }
+
+    public JComboBox<String> getModuleType() {
+        return moduleType;
+    }
+
+    public JTextField getModuleName() {
+        return moduleName;
+    }
+
+    public JButton getAddModule() {
+        return addModule;
+    }
+
+    public JButton getDeleteModule() {
+        return deleteModule;
+    }
+
+    public JButton getUpdateModule() {
+        return updateModule;
+    }
+
+    public JButton getBack() {
+        return back;
+    }
+
+    public void getCourseName() {
+        courseName();
+    }
+}

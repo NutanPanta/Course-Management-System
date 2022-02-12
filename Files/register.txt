@@ -1,0 +1,23 @@
+First Name: Admin
+Last Name: Panel
+Email: admin@cms.com
+Password: admin
+User Type: Course Administrator
+Course: null
+Level: null
+
+First Name: Instructor
+Last Name: Panel
+Email: instrcutor@cms.com
+Password: instructor
+User Type: Instructor
+Course: null
+Level: null
+
+First Name: Student
+Last Name: Panel
+Email: student@cms.com
+Password: student
+User Type: Student
+Course: BIT
+Level: 4

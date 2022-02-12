@@ -1,0 +1,87 @@
+First Name: test
+Last Name: tested
+Email: test@test.com
+Password: test
+User Type: Course Administrator
+Course: null
+Level: null
+
+First Name: Nutan
+Last Name: Panta
+Email: nutanrajpanta@gmail.com
+Password: nutan
+User Type: Student
+Course: BIT
+Level: 6
+
+First Name: Nutan
+Last Name: Panta
+Email: nutanpanta@gmail.com
+Password: nutan
+User Type: Instructor
+Course: null
+Level: null
+
+First Name: test2
+Last Name: tested
+Email: test2@test.com
+Password: test2
+User Type: Student
+Course: BIT
+Level: 4
+
+First Name: Johnson
+Last Name: Dhakal
+Email: johnsondhakal@gmail.com
+Password: johnsondhakal
+User Type: Instructor
+Course: null
+Level: null
+
+First Name: Nirmal
+Last Name: Thing
+Email: nirmalthing@gmail.com
+Password: nirmalthing
+User Type: Instructor
+Course: null
+Level: null
+
+First Name: Shiva
+Last Name: Giri
+Email: shiva@gmail.com
+Password: shiva
+User Type: Student
+Course: BIT
+Level: 5
+
+First Name: Shiva
+Last Name: Giri
+Email: shivagiri@gmail.com
+Password: shiva
+User Type: Instructor
+Course: null
+Level: null
+
+First Name: Johnson
+Last Name: Dhakal
+Email: johnson@gmail.com
+Password: johnson
+User Type: Instructor
+Course: null
+Level: null
+
+First Name: Aashish
+Last Name: Giri
+Email: aashish@gmail.com
+Password: giri
+User Type: Student
+Course: BIT
+Level: 6
+
+First Name: a
+Last Name: b
+Email: a@a.com
+Password: ab
+User Type: Student
+Course: BIT
+Level: 4
